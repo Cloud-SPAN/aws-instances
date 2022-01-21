@@ -1,0 +1,3 @@
+
+An error occurred (InvalidChangeBatch) when calling the ChangeResourceRecordSets operation: [Tried to delete resource record set [name='instance03-gc.cloud-span.aws.york.ac.uk.', type='A'] but the rdata provided is invalid]
+[1;31mError[0m deleting [0;33mdomain:[0m instance03-gc.cloud-span.aws.york.ac.uk; [0;33mip:[0m 

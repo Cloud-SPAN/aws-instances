@@ -1,0 +1,36 @@
+{
+    "KeyFingerprint": "4b:4c:3a:19:03:9d:40:8b:9c:e3:27:b3:11:52:18:ee:0d:1d:51:83",
+    "KeyMaterial": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAzm7NOkcgYyCdnTiHzzb7nSVBSmlqnntUinS54ToQW1YBberv\nTD2TCovPNtf1KeY4zk4BoHnRpqaTauAlY1fZrdXII27XvnIuOylpEa2SuhQWVSNa\nBbluMAPSIdwsZCKc3LAHu5wt1ygaPM3UB/kQmeh+ybYaoe5Y7OTRKaIYZLZvbQMm\ne2AcBPUaVgjffjG7L9ic9Ejuhx7CtFk+5wlb/ocWrWkdmEentnE9eGbtSnXMUgi1\n5R7ms45/u6NrLi2D3xy0IayH2uR1VV7wy9EQI00LVS4asq+biJhhN/KWZRBz0BIS\n2efOOA8ZT1KPy5OWvQggrGsQV9I9jgmRPvbBGwIDAQABAoIBAG51o6NXg+EHBs+l\n/CXJCgIgeTtUBRUgcTBVHVGDPFVjRAiI+dsV56RxA0QZcrok0qix3PT9uk0uPRun\nLNpnm7cE+b7cBN2HQ22szugCtMyVCw4riHQfsPJIWRx9L9O1IbKFDt44x96lOsTm\nblqFz3hLi+xrYPzdCQBZwAJDFkJs1clAM2bnEx6fyQXFGjdyDwYzU96wTSZ1VZ0+\njPNZM86/lglfHGkbcFCjOzPSUK3cWLhS4nvCRxJuZqFEyypdloiXCHdyJTpIJJkH\n6iS7bLQdHQxDIZBjyVkmInOBTdW1rnsBBbZmjL+thOskyvThkQVGrY+W0ZJGil/U\nU/2tWwECgYEA9cEvft0qVgtxTpyZcqv3I1zlN0ExGaEenB8TZkXZyVG+sFW4eXiO\nK3agbOLZxcbyXadxXZEAffcmtUe3O/ppq0EthlMIvcJbg6ce3MTieUpwyqcUdojn\nDoKRTdUKFjBT44/2fGqljcLhs28JacLHFPWBuSY7LX0y9UOh3Vi+JSECgYEA1wn0\nU0O6pk8b9jMZDOTT2RXF+bsfOHOiNmQRpihPQvVKtymLg65AuzRuSzQgs0t4Z6dD\n5iK8PvHrRcTA5/0RMQUWgRGTyF6xinLaWZtgHCZ9sXiiBeaGZjWZUHYuqNw0V5i8\nEV9fMhMqCRoAoO0612dIXKycrawL9ilrCGt7YrsCgYALXLErdmI8tC666baWfKji\nc6sNUPBKNQ7LPQySj+wvyJ2+XVg4FYDNNaDZJ+vVnwsZlWJCZy/UoxahDv3DwiIc\njtjh+vjOfSvp/FIK9vdZkD2CwRLLIC0+mH7LUGw09msKfF9zBSM+WKJCv4F56E14\nBJnIy6G0yrMOb+AN8cpowQKBgAU2u5LNQJhJsL7ebEwQvEY2Le+pJs+ilhtFf9wM\nfCd+dQpN2pEdx3oCgm4WXHicatXwi0foLbJFAVRWueqmCyWqHuqQN4oTKbDWqg6k\nIsdr8347E4qbFUUjJY164BS+ChLZpC2zp0Y6irlfxQYh2lxgp7N/h+j6E+wrAupY\nWMyDAoGBAOkOvHD8ZgyTFHzh4nk+PXEnZ+FCRYkoV/w4vixafwX1BmXW21ht71xc\nYHEIPvwslof3l/hDS/fYsLZzNDbvs5XsQjFWZv+8ZfRxrVvE5fbG3p9lvW6tNkaj\nfmZG6AcWoLZyy7Np0NxfLUCJkTnqN7171CkaCgZGr0J8bJRtAi0K\n-----END RSA PRIVATE KEY-----",
+    "KeyName": "login-key-instanceEmma",
+    "KeyPairId": "key-0ad5ca0fce4b9e7b8",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "login-key-instanceEmma"
+        },
+        {
+            "Key": "name",
+            "Value": "login-key-instanceEmma"
+        },
+        {
+            "Key": "group",
+            "Value": "BIOL"
+        },
+        {
+            "Key": "project",
+            "Value": "cloud-span"
+        },
+        {
+            "Key": "status",
+            "Value": "prod"
+        },
+        {
+            "Key": "pushed_by",
+            "Value": "manual"
+        },
+        {
+            "Key": "defined_in",
+            "Value": "manual"
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+
+Error parsing parameter '--change-batch': Invalid JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+JSON received: {\n "Comment": "Deleting subdomain",\n "Changes": [\n {\n "Action": "DELETE",\n "ResourceRecordSet": {\n "Name": "instance05-gc.cloud-span.aws.york.ac.uk",\n "Type": "A",\n "TTL": 3600,\n "ResourceRecords": [{ "Value": "54.216.215.80"}]\n }\n }\n ]\n }\n
+
+Error deallocating [1;33meip:[0m 54.216.215.80 ; [1;33meipAllocationId:[0m  

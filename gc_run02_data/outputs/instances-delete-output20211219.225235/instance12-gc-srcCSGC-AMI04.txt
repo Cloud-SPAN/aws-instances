@@ -1,0 +1,16 @@
+{
+    "TerminatingInstances": [
+        {
+            "CurrentState": {
+                "Code": 32,
+                "Name": "shutting-down"
+            },
+            "InstanceId": "i-018e7acccc345e4fb",
+            "PreviousState": {
+                "Code": 16,
+                "Name": "running"
+            }
+        }
+    ]
+}
+[0;32mSuccess[0m terminating instance: instance12-gc

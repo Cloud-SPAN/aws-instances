@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "aws", line 19, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 671, in _load_unlocked
+  File "PyInstaller/loader/pyimod03_importers.py", line 511, in exec_module
+  File "PyInstaller/loader/pyimod03_importers.py", line 317, in get_code
+  File "PyInstaller/loader/pyimod02_archive.py", line 332, in extract
+KeyboardInterrupt
+[62117] Failed to execute script aws
+[1;31mError[0m (0) terminating instance: instance04-gc

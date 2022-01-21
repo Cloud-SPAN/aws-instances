@@ -1,0 +1,36 @@
+{
+    "KeyFingerprint": "05:a4:1a:b4:a4:16:6c:64:11:c1:c8:10:bb:a1:a9:97:3c:b2:69:e6",
+    "KeyMaterial": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpgIBAAKCAQEAsm+JAePoMnWT77nWotzFQ5uyT1qy6wj8vYJVSm6JA+BvbcLj\nY4gPGC6hABgExXb/Dnf+mu/kjqMYJIJkhDdix/fG8/2ObJ9mBRSdYt+CuVx3rH21\nbwixMl0TNKZ1HJ9u6xW01WWTC76lhTjS0M7lfGxQiE3NBKKSU04tya5QM8p2Xk7C\nubrL0ocvTqlB6WYcaburoP9pWaHDIUvnh1uAHkGzZjpqMJCCIxkO5vD2uE34TnD1\ndNWhpk9CTtATBZ5X+qZyF6RqGrzOmC1DKOjaQmwp62eC2j+fXeeT/fVOJ6nMN0lI\nAJQAnTrt2HuzRAnDj8nTk+Vz59IjY++++Gc6SwIDAQABAoIBAQCW9sRso/y0jEOg\nQ5NzcOM4gwbGGo9bSNxEHXu5oHEtpXnA3GzzrY5PwEuYv7lxs26xOBZh0WqGvzfS\n07rlHdLmKhzaGwCfp/BxhfJuT3nTB4d8mVKiYTFB0ftIxTg6Ai2emVvIW8qf2ilB\n4ESEQzdnIGC2IVS+gijYcEFO67qRRWARUhMalAWr8TEEZCaSbQus2hp5Y1pThnpt\nMr/X5G9/0eiyCs9v7Ue50VY05kOK2mbf5Tdg8yJYk3pDZQS3gVOSSuTinpemIBzw\nhosgOh65ryiqjjssW9GgMoOHYExHksQrddLB2AUiWzC4FhfLhHGBaTNEYZFSYTTA\n1Gf+QJTxAoGBAP2bQW38oL/Ey4dzKaX+yhgbt+4m5j00sahNvWL39I5liZzWSH4/\nY/Nk02+Sge1b1rtXiSEUc4epZgh0TMlPLSxLWSOpome9EhstYOiSpqTFMad73OgQ\nA+3LkccPyh0yzdIlbqltrzZL6v6dHG+079jIUz4lMaYHTj1oAtjuzkYzAoGBALQe\nqGHq0aRM00Rvt8sziXz9Uu4G+6EitES2qHAFS+aIiLJXQBEwVhIiTdcvehegk4qv\noKlb43NcZ9zGZlkSMilraUCbzUgX7FTd6rZeqfetaY4rO6oAFg5FqN3aLFZ9JPIH\nzFL56hKAxhMSlOQi3QEvrOUt98XTPlQXNOWxWrOJAoGBAOmC4yQa0QjCc4UsjNTD\nXeIE477tImKI+mw16IQQO6ZB6Av5YpacV7PsyqKZC/k57uZhG2rSIe5wE/sE2w8h\nUD7QwisMLvXGKb3McsazAa4FxEqqyiUDWhrCrl/UMg3gkZNF1Dc9P2+HR8FZeK2C\ntLWu/rbiGGz/nRL9imGkwVnxAoGBAIbQz52CoemFKzh1Gi844vavsYvBpEPmcuFf\nilFWVYo2tYIu9iAnerTWAkdHHO5kXSqX6/v3cBYfmwnPYjnW+b6wy7X1J8CHT3fy\nJkTcNAHTRUeJKn5C1D9Yel2beEZAIxAZMCEHN+Eji54o8VKUmbDSm2lqb6MdSvCr\n8gbeKZJpAoGBALcYrJObgGwfMaOY+8FPJBJT/e4XTsptzDJqwfndJVyCaJoVAf02\nfmihZNxi4N5/4JjSpkV1u7l5h+vOOWv75EKlFbqIm+mtWeQktYSPajTR/pQydXJd\nCwBr1cweXmAASf6gA2O8rSRwwyntQrITU8yrfi4CeIExzzXNQt10NgXM\n-----END RSA PRIVATE KEY-----",
+    "KeyName": "login-key-instanceSarah",
+    "KeyPairId": "key-0e46e6c6ff2b3ba7c",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "login-key-instanceSarah"
+        },
+        {
+            "Key": "name",
+            "Value": "login-key-instanceSarah"
+        },
+        {
+            "Key": "group",
+            "Value": "BIOL"
+        },
+        {
+            "Key": "project",
+            "Value": "cloud-span"
+        },
+        {
+            "Key": "status",
+            "Value": "prod"
+        },
+        {
+            "Key": "pushed_by",
+            "Value": "manual"
+        },
+        {
+            "Key": "defined_in",
+            "Value": "manual"
+        }
+    ]
+}

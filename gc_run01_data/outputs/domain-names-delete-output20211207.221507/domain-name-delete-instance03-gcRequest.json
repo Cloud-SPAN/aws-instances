@@ -1,0 +1,1 @@
+{ "Comment": "Deleting subdomain", "Changes": [ { "Action": "DELETE", "ResourceRecordSet": { "Name": "instance03-gc", "Type": "A", "TTL": 3600, "ResourceRecords": [{ "Value": "54.77.12.160"}] } } ] }

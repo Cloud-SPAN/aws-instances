@@ -1,0 +1,1 @@
+[0;32mSuccess[0m deleting [0;33mlogin-key:[0m login-key-instance13; [0;33minstance:[0m instance13-gc

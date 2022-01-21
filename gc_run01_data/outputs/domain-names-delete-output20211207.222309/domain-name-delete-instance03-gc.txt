@@ -1,0 +1,9 @@
+{
+    "ChangeInfo": {
+        "Id": "/change/C0724166203CKP6A5S2Z5",
+        "Status": "PENDING",
+        "SubmittedAt": "2021-12-07T22:23:14.943000+00:00",
+        "Comment": "Deleting subdomain"
+    }
+}
+Success deallocating [1;33meip:[0m 54.77.12.160 ; [1;33meipAllocationId:[0m  

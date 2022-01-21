@@ -1,0 +1,11 @@
+
+usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+To see help text, you can run:
+
+  aws help
+  aws <command> help
+  aws <command> <subcommand> help
+
+aws: error: argument --association-id: expected one argument
+
+[0;31mError[0m disassociating elasticIP, [0;33minstance:[0m instance03-gc; [0;33meipAssociationId:[0m 

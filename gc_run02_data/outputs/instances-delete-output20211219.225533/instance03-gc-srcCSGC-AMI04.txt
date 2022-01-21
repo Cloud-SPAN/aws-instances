@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "PyInstaller/hooks/rthooks/pyi_rth_pkgres.py", line 13, in <module>
+
+[62112] Failed to execute script pyi_rth_pkgres
+[1;31mError[0m (0) terminating instance: instance03-gc

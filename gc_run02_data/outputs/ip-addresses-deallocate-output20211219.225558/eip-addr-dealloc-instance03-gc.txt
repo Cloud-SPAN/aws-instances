@@ -1,0 +1,11 @@
+
+usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+To see help text, you can run:
+
+  aws help
+  aws <command> help
+  aws <command> <subcommand> help
+
+aws: error: argument --allocation-id: expected one argument
+
+[1;31mError[0m (0) deallocating [0;33meip:[0m ; [0;33minstance:[0m instance03-gc-srcCSGC-AMI04; [0;33meipAllocationId:[0m 

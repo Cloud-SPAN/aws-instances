@@ -1,0 +1,137 @@
+{
+    "Groups": [],
+    "Instances": [
+        {
+            "AmiLaunchIndex": 0,
+            "ImageId": "ami-05be6a5ff8a9091e0",
+            "InstanceId": "i-029588ccec1d3daed",
+            "InstanceType": "t2.small",
+            "KeyName": "login-key-instance27",
+            "LaunchTime": "2021-11-18T00:18:58+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "eu-west-1a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-10-0-11-163.eu-west-1.compute.internal",
+            "PrivateIpAddress": "10.0.11.163",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-00ff8cd3b7407dc83",
+            "VpcId": "vpc-01e55c4a61cab7cd1",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "5ca53276-f6c6-44dc-8a48-0881b97d8841",
+            "EbsOptimized": false,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2021-11-18T00:18:58+00:00",
+                        "AttachmentId": "eni-attach-0a0a96dcc0b1f3694",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "CSGC Security Group",
+                            "GroupId": "sg-0771b67fde13b3899"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "06:90:5a:23:a6:11",
+                    "NetworkInterfaceId": "eni-0eb1de4e1a46d05bd",
+                    "OwnerId": "987741929147",
+                    "PrivateDnsName": "ip-10-0-11-163.eu-west-1.compute.internal",
+                    "PrivateIpAddress": "10.0.11.163",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-10-0-11-163.eu-west-1.compute.internal",
+                            "PrivateIpAddress": "10.0.11.163"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-00ff8cd3b7407dc83",
+                    "VpcId": "vpc-01e55c4a61cab7cd1",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "CSGC Security Group",
+                    "GroupId": "sg-0771b67fde13b3899"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "group",
+                    "Value": "BIOL"
+                },
+                {
+                    "Key": "status",
+                    "Value": "prod"
+                },
+                {
+                    "Key": "name",
+                    "Value": "instance27-gc-srcCSGC-AMI04"
+                },
+                {
+                    "Key": "pushed_by",
+                    "Value": "manual"
+                },
+                {
+                    "Key": "project",
+                    "Value": "cloud-span"
+                },
+                {
+                    "Key": "defined_in",
+                    "Value": "manual"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "instance27-gc-srcCSGC-AMI04"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 1
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            }
+        }
+    ],
+    "OwnerId": "987741929147",
+    "ReservationId": "r-08074d2ac5207c072"
+}

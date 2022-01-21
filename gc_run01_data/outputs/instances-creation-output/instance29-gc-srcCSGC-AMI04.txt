@@ -1,0 +1,137 @@
+{
+    "Groups": [],
+    "Instances": [
+        {
+            "AmiLaunchIndex": 0,
+            "ImageId": "ami-05be6a5ff8a9091e0",
+            "InstanceId": "i-00778efed7f7df2c6",
+            "InstanceType": "t2.small",
+            "KeyName": "login-key-instance29",
+            "LaunchTime": "2021-11-18T00:19:04+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "eu-west-1a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-10-0-69-188.eu-west-1.compute.internal",
+            "PrivateIpAddress": "10.0.69.188",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-00ff8cd3b7407dc83",
+            "VpcId": "vpc-01e55c4a61cab7cd1",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "16f72fa8-be7f-4a7d-b532-4a9ece8ca06a",
+            "EbsOptimized": false,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2021-11-18T00:19:04+00:00",
+                        "AttachmentId": "eni-attach-0d287cdb34c061ab8",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "CSGC Security Group",
+                            "GroupId": "sg-0771b67fde13b3899"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "06:09:de:6d:41:e1",
+                    "NetworkInterfaceId": "eni-0cbd479f330997f75",
+                    "OwnerId": "987741929147",
+                    "PrivateDnsName": "ip-10-0-69-188.eu-west-1.compute.internal",
+                    "PrivateIpAddress": "10.0.69.188",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-10-0-69-188.eu-west-1.compute.internal",
+                            "PrivateIpAddress": "10.0.69.188"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-00ff8cd3b7407dc83",
+                    "VpcId": "vpc-01e55c4a61cab7cd1",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "CSGC Security Group",
+                    "GroupId": "sg-0771b67fde13b3899"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "instance29-gc-srcCSGC-AMI04"
+                },
+                {
+                    "Key": "name",
+                    "Value": "instance29-gc-srcCSGC-AMI04"
+                },
+                {
+                    "Key": "pushed_by",
+                    "Value": "manual"
+                },
+                {
+                    "Key": "project",
+                    "Value": "cloud-span"
+                },
+                {
+                    "Key": "defined_in",
+                    "Value": "manual"
+                },
+                {
+                    "Key": "status",
+                    "Value": "prod"
+                },
+                {
+                    "Key": "group",
+                    "Value": "BIOL"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 1
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            }
+        }
+    ],
+    "OwnerId": "987741929147",
+    "ReservationId": "r-04702db7a52eed82d"
+}

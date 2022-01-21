@@ -1,0 +1,1 @@
+{\n "Comment": "Deleting subdomain",\n "Changes": [\n {\n "Action": "DELETE",\n "ResourceRecordSet": {\n "Name": "instance04-gc.cloud-span.aws.york.ac.uk",\n "Type": "A",\n "TTL": 3600,\n "ResourceRecords": [{ "Value": "54.195.205.19"}]\n }\n }\n ]\n }\n

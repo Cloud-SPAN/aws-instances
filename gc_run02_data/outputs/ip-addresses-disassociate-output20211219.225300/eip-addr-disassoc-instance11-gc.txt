@@ -1,0 +1,3 @@
+
+An error occurred (InvalidNetworkInterfaceID.NotFound) when calling the DisassociateAddress operation: The networkInterface ID 'eni-0ad0da62a64587e39' does not exist
+[0;31mError[0m disassociating elasticIP, [0;33minstance:[0m instance11-gc; [0;33meipAssociationId:[0m eipassoc-03067bc6790536e57

@@ -1,0 +1,15 @@
+{
+ 	 "Comment": "Deleting subdomain",
+ 	 "Changes": [
+ 	 	 {
+ 	 	 	 "Action": "DELETE",
+ 	 	 	 "ResourceRecordSet": {
+ 	 	 	 	 "Name": "instance30-gc.cloud-span.aws.york.ac.uk",
+ 	 	 	 	 "Type": "A",
+ 	 	 	 	 "TTL": 3600,
+ 	 	 	 	 "ResourceRecords": [{ "Value": "52.49.159.239"}]
+ 	 	 	 }
+ 	 	 }
+ 	 ]
+ }
+

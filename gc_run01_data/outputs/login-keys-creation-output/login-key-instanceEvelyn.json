@@ -1,0 +1,36 @@
+{
+    "KeyFingerprint": "dd:55:1c:a3:2f:bc:1b:95:4c:cc:31:6f:c1:30:02:06:06:20:67:82",
+    "KeyMaterial": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAj9J2rDVScjbgqXjaEHn2+eHG+2BNmhj3pOxN3Jy07WZ+tyvP\n/vluuAWeOeLuxFPMEclDdN31H1gTOxpvJiyQ3BW/c2TqyB8ktCbtEJ4/szRitQZZ\n+QAkKyp+5sxmk9cX6H0L7y1A5NAmLUD+9IFox30nLtBeshNhzngVVcEanq09SPOh\n4JZ9/k2lV9jOTWGZPOoqF7k73gw7eqL8r/9chMjVhSgJOCLyVBZimmcayLnTqxYW\n2vO3JPXIUQf6JrOizdpNfXDJsaz68jWhoOpt6yY9VLxrLfmx+KNOcU7cQglprVqj\n4DHiNvRvOS/BZqHaVdJRhI3X15mozqaUZ1q5cwIDAQABAoIBAEBLhEYEKHFq2xCo\nOEQ5YhHfv0bNjKOhGcSe50gCvleLBIb6jSeddsPJryyNqNQX6hjhcsiiGV0D0MUR\nUjMspS3egxIhQVxpn8zxwfU16aBBgQcQadSJHaI2gzjGk+zvsX57uIQaJPKlowuE\nDPZdi+vypTumZ08Qnx7gTBlkFHRurVO04hLcR9cdPrrRIsTuoNfSAf4FWcB0hBBt\nWpLHZhlmx4o9t3i1uywKg3idE2VSMZ5vms8Gsde+gSRw6EqJOdW45g2fltjrz2gJ\n30gS9zEkjWRZ2z7HCR24lnCpb9mFAmqA4JdXlhI713FMyIukn1D9yvdPj15/oFgF\ncrV65AECgYEA1wt33UXLM0V303qFzBYlLPKnPrxRK4PuSJ9Lr0tPJyyLtXIOSHlV\n7nA4nxPJn1jqlcLI333EDhHomFzEghVXruWxRGRfWwRw3SgNz0zXCHof6naenuLR\nLSasjfwtpMrhxZPK0RPVOpnkMdYQUrTV52kXzNpb/jgRHdTC+B26bnMCgYEAqzaG\nvpze4DskKgu9mI7Gy/cNewqJAeJI1Eijc8TAfOrwT9OVU0q8IoJj4DGFjtlCyEGX\nWrYtHm/KnXKue7CrwrRtFmRtDYIHh4krjMIv9THewRiGwo3cNC5gnhbv90llb27C\n8oyt52appLXeJRnfAaR+BKED9Ac+CXwr5pF4yQECgYBWhvTKAgVLMg6O92PSxK5c\nsZ597cQzYDiG3CHV/NVyi8gDUEtS+g+Li3gc+hdMmLh7Xg75bl9u0eHnPJyNQw0v\nAJkdTc3Yj6biNfWojeCQNqOU8fnNMLK+GiugTfIHtuK1X0xiaDqKA9X//4Q94ymW\nnYDIGqydU+3/NNbmgv+65QKBgB30Wjq7I1tDvZ4Fk9Q/FpTU0mz2eOX1exx44O/+\nOlcgm467y+JYrvWyrlqpD17gsAhtQVfDi71Jfb9yMwi87jAQdQ134IR+fWa/Hvlv\neAiEAx7xdZJQU3hlrM274Zv4IWEPldftuPdFROTmVMlU72lQKCQTL6fgJIBwUxXx\n2ZoBAoGBAKn95PmnVtd2mE7cPIgsBIg9uZwKHs+a6Huv1LnJM36XjodhpmC9mAOb\nRIPgjDseEnbi508SGy5eMWG2k6NMd2CO9dmk4+BNASi/jRXrrq00QD2cyMyH7PgZ\nQZImocLOeMhxZpLPfuv6poWBd9ECWa4wp17bt/eZqhHjSnZkxJnl\n-----END RSA PRIVATE KEY-----",
+    "KeyName": "login-key-instanceEvelyn",
+    "KeyPairId": "key-0cfdac7fac3ed489e",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "login-key-instanceEvelyn"
+        },
+        {
+            "Key": "name",
+            "Value": "login-key-instanceEvelyn"
+        },
+        {
+            "Key": "group",
+            "Value": "BIOL"
+        },
+        {
+            "Key": "project",
+            "Value": "cloud-span"
+        },
+        {
+            "Key": "status",
+            "Value": "prod"
+        },
+        {
+            "Key": "pushed_by",
+            "Value": "manual"
+        },
+        {
+            "Key": "defined_in",
+            "Value": "manual"
+        }
+    ]
+}

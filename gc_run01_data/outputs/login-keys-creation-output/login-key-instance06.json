@@ -1,0 +1,36 @@
+{
+    "KeyFingerprint": "54:f7:e0:f5:ea:6a:e9:f3:10:f0:55:79:dc:ad:20:c0:5a:b0:00:a4",
+    "KeyMaterial": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAykfU18OU7GsdNi1K8rihFkef1Pt8LiywcUuYdRuNiMl7wtTk\nRax+imAs+KK4VGwoHBJPB+TEtqg3tp+DFPn4d9+Ky41zSIWMfdC3Q20lh+8wg5z/\niAV8+1dxzrFV+eBZ7tyNvcLUDRjE6jclwijIaRP2iwHkPQHG8qokdNweAJbZN9F1\npR00A1gDl7rFAMG+rkIF04hrFTi5gamcgNqs12CEh3WXXV6ruEw5pUmqJzu6qWhm\nQk1yNCy4W1smv5VKP+CjWEKXXIeFfvlHALUIFgZNePg1AlquBY5teTfG7vSuZhth\npzENHdq6qSwXyv9hEhILnplyea4QWOnqShx8XQIDAQABAoIBAD7Lh9anf77ZDct4\nyhCJonBhMcwTehx3gRraxexs7kYtjj8QigDbKLlaW/ufwCttHBKC2Ifxy+OMWydV\nY4MKisjj25mPQt+bnd6dAZdr9b+6UEw7W9RlJ8R7A/iPcspMjH6rd1EWf2/FZbP0\nBMO+l2CPcvT6VFlgCNviV8jzYFj77VIJbOB8nANcv/tGBSwVntixPROsoNpKmUq6\nMmr6CBaRxOCCYofR56ehqkANj3nJyl5Gup0rQuE3nKuT93ldUcH9vynaeIlKEIuA\n1a0VYBiG5bsBMLi0+q6sKP1FlhkFVJYH9T3pQdOzuRgZbwCFWXK/m137OKsg0HzZ\n4ocfr70CgYEA/A8/BEWtCOH6GFSheUO+x3KarJLRlE5rLDTKHv/pDWqFoCMFC3VB\nT4Bl37ynotHcB8nkOG+2/UCnqkOk3UQzVjc03Pi3v1fLJArePsDr14s7E80G5bLg\nHHIfqAzEg0LSv5v+/eOwV358NWgjouGuVkqb6pFpSjY+lbkKKNGKqZcCgYEAzXFe\nGVGHI34rR+j3l9ayK+nzmqwwWIhscSkk1UFEu3cMjSnzaJvk8eX33j9BnImj2JIe\nDqSzBP6pe+0/yvTPhiSi88pDTgyuQ8NizZaoa985ubeIUjfqKXGf0uHHahfTF84r\nGIG5tqekUhgRpBXeTHLD08wjtF6/ONHmLkz+ACsCgYEA9gxT8XGqdW9R2QpUDbHJ\nu5vtzOQM3X6nM6HcY+Jftw7ynd1RgVvWgyrNR1g7M78z0A6OT2EN+a1xfc1GVA/N\nJS4C1mmbxJaI4AgT5qIgFmn9I1kSkIrKJjppGHxOH+vNGenHQkNO0jnQOboMf2VZ\n7zYpeRK0+xJ0iWb1ud7CQsUCgYEAhAIHg99GJYFJ0EAa7/7tp5gBhu6Ddi/a9m+I\nklsJDig18XL2S854MxMgzTb6MtqiZGOnWqNrwJbeUpok9oWN31UlO99IlhtB0pr2\nnsHi4MWj8vjCaIozNYQkPT4Eg+BhLJe2S1339i0MQg/jLfs7RwYrXKl8e8axupHt\nBO1F/NcCgYASIgA/pNzze0/82nOr/4YUHcCTnjtZEknlUUkNxmJ4NkXbIfOsQNxO\nk2tOGjsAZKhr2h1IDKLbGaBl7c7hNLVQMtrziXCzA1YFlhPQvwofw1iOCKfNMYGK\nRFddsRF0hZeBXNvfYembbqEEusQbSSBqrvHH0BOoJtRj2XQQzNPYHw==\n-----END RSA PRIVATE KEY-----",
+    "KeyName": "login-key-instance06",
+    "KeyPairId": "key-038f52dca30cb2dce",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "login-key-instance06"
+        },
+        {
+            "Key": "name",
+            "Value": "login-key-instance06"
+        },
+        {
+            "Key": "group",
+            "Value": "BIOL"
+        },
+        {
+            "Key": "project",
+            "Value": "cloud-span"
+        },
+        {
+            "Key": "status",
+            "Value": "prod"
+        },
+        {
+            "Key": "pushed_by",
+            "Value": "manual"
+        },
+        {
+            "Key": "defined_in",
+            "Value": "manual"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "ChangeInfo": {
+        "Id": "/change/C061916010LQ6OXMJ9ACE",
+        "Status": "PENDING",
+        "SubmittedAt": "2021-12-09T14:03:05.726000+00:00",
+        "Comment": "Deleting subdomain"
+    }
+}
+Success deleting [1;33mdomain:[0m instance23-gc.cloud-span.aws.york.ac.uk; [1;33mip:[0m 54.73.93.132

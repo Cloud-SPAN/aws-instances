@@ -13,6 +13,8 @@
 #		      and tuning the handling of inputs and outputs in all the scripts invoked by this one.
 #-----------------------------------------------------
 #
+source colours_functions.sh
+
 case $# in
     1) echo -e "`colour greenlight ${0##./}` is creating and launching instances specified in input file `colour brownlight $1`";;
     0|*) echo -e "`colour gl ${0##./}` creates instances, IP addresses and domain names and associates them."

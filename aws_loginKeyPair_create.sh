@@ -64,6 +64,7 @@ do
     				    {Key=pushed_by, Value=$tag_pushedby_value}, \
 				    {Key=defined_in, Value=$tag_definedin_value},  \
 				  ]" > $outputsDirThisRun/$loginkey.json
+    ## above in "Value=${loginkey,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
 	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}"
 	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$loginkey.json

@@ -51,11 +51,12 @@ do
     				    {Key=pushed_by,	Value=$tag_pushedby_value}, \
 				    {Key=defined_in,	Value=$tag_definedin_value},  \
 				  ]" > $outputsDirThisRun/$eipResultsFileName.txt
+    ## above in "Value=${eipResultsFileName,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
 	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}"
 	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$eipResultsFileName.txt
     else
-	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}}"
+	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}"
 	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$eipResultsFileName.txt
     fi
 done

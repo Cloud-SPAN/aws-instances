@@ -47,7 +47,7 @@ do
 	echo -e "`colour gl Success` terminating instance: ${instance%-srcCSGC-AMI04}"
 	echo -e "`colour gl Success` terminating instance: ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
     else
-	echo -e "`colour red Error` ($?) terminating instance: ${instance%-srcCSGC-AMI04}}"
+	echo -e "`colour red Error` ($?) terminating instance: ${instance%-srcCSGC-AMI04}"
 	echo -e "`colour red Error` ($?) terminating instance: ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
     fi
 done

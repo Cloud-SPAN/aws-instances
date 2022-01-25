@@ -28,7 +28,11 @@ case $# in
 		 error_in_use
 		 exit 2
 	     fi
-	 elif [ -f $1 ]; then
+ 	 elif [[ $1 == '-h' || $1 == '--help' ]]; then
+	     # login details file specified by caller
+	     error_in_use
+	     exit 2
+ 	 elif [ -f $1 ]; then
 	     # login details file specified by caller
 	     logindetails=( `cat $1` )
 	 else

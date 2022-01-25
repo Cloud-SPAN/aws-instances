@@ -14,13 +14,13 @@
 #-----------------------------------------------------
 #
 case $# in
-    1) echo "${0##./} is creating and launching instances with input from $1";;
-    0|*) echo "${0##./}  creates instances, IP addresses and domain names and associates them."
+    1) echo -e "`colour greenlight ${0##./}` is creating and launching instances specified in input file `colour brownlight $1`";;
+    0|*) echo -e "`colour gl ${0##./}` creates instances, IP addresses and domain names and associates them."
 	 echo " "
-	 echo "Usage:  ${0##./} instancesNamesFile"
+	 echo -e "`colour bl "Usage:  ${0##./} instancesNamesFile"`"
 	 echo ""
 	 echo "  - provide the full or relative path to the file containing the names of the instances to create."
-	 echo "  - for example:  ${0##./}  instances_data/inputs/instancesIDs.txt"
+	 echo -e "  - for example:  `colour bl "${0##./}  instances_data/inputs/instancesNames.txt"`"
 	 echo "  - an outputs directory will be created (if it doesn't exist) at same level of the inputs directory."
 	 echo "    where the results of the aws commands will be stored."
 	 exit 2;;

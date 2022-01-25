@@ -48,9 +48,9 @@ do
     done
 
     echo "Cleaning any previous keys associated with the instance $instance.$hostZone"
-    ssh-keygen -f "/home/jorge/.ssh/known_hosts" -R "$instance.$hostZone"
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$instance.$hostZone"
 
-    echo -e "`colour bl "Checking/waiting for SSH server (you may see a few 'Connection timed out' messages. Please wait)"`";
+    echo -e "`colour bl "Waiting for SSH server, please wait (you may see some 'Connection timed out/Connection refused' messages)"`";
     ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hola. Bye.\"; exit "
     sshON=$?
     

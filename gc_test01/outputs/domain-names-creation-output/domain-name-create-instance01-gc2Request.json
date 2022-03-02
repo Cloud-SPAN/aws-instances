@@ -1,0 +1,15 @@
+{
+ 	 "Comment": "Creating subdomain",
+ 	 "Changes": [
+ 	 	 {
+ 	 	 	 "Action": "CREATE",
+ 	 	 	 "ResourceRecordSet": {
+ 	 	 	 	 "Name": "instance01-gc2.cloud-span.aws.york.ac.uk",
+ 	 	 	 	 "Type": "A",
+ 	 	 	 	 "TTL": 3600,
+ 	 	 	 	 "ResourceRecords": [{ "Value": "54.74.181.39"}]
+ 	 	 	 }
+ 	 	 }
+ 	 ]
+ }
+

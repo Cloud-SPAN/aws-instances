@@ -1,0 +1,1 @@
+ssh -i gc_run03_data/outputs/login-keys/login-key-instance01.pem csuser@instance01-gc.cloud-span.aws.york.ac.uk

@@ -45,7 +45,7 @@ case $# in
 	 machinedomainname=${logindetails[1]}
 	 loginkeyfile=${logindetails[2]}
 
-	 echo "login in thus: ssh -i $loginkeyfile $username@$machinedomainname"
+	 echo "logging thus: ssh -i $loginkeyfile $username@$machinedomainname"
 	 ssh -i $loginkeyfile $username@$machinedomainname
 	 exit 0;;
     *) error_in_use "$1"

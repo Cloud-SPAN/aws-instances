@@ -1,0 +1,37 @@
+{
+    "KeyFingerprint": "9f:4e:ae:3d:fa:23:9e:62:1b:89:2e:50:c2:f5:9c:e1:46:33:e0:a1",
+    "KeyMaterial": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpQIBAAKCAQEAgcKrUQjEAL2L3lOkXsFme1qJn8THmqOyaJTLzcX1LuqN6oTP\nO94k+HCchNLUkqVAnSy0+WhDsEZRSFwiJrqQn9V0yW3DSWCY/CmHRiXfOB12kKnj\n4NO8OEszO1Sd61+DN2OtaBVhHcrsHqmWV45aD+yB+PVTOvw/Vrc85OCu5Hv7OWyu\najMTBfEEf90dZFcqhgv9W9YyYpSFS/qK+/6Qo5aHHEpfO9yp/mKaGu4XT8IU5P49\n8Nwqvj3szx7wkNMEZPsFfAtvateIF4Z7u5BaT+SQOrmKV6oaEjBnlnHWGvkB6tFn\nB1f0HHVIGgwhfsOAdInPI4xRcSRJX5KslI4rbwIDAQABAoIBAQCA4BlKeExC9/6s\np6H+wlLIfNlnJwef3KlbGT15d/zVxfuBSrqQGUfav+2UNdkOdLZB5J8xfo6Lyqr8\nFRWOJYlyVYySakOk4x3OhGhoEUEr+IdDkphTObgcqQOPD7FwjgJCxur5DxLPhjUR\nFxnMiAOHATztSKqLUPCPbZo7L7REFDy8Ae2lpdAyR8lC2Av1iQqHaBxhszyp59oI\nB4slHnSeBTG2b68E7POWEim6nXGTJ9amGHW5ddyV+20Y5EzwUAaYOszVYr6bZcs7\nok2Mf5Gi4gtHHEYPJNMAgFY5nI7Jd4GU3xFhsxAlm5EndKrhfSUIdpMbJFx6fu8h\nHv97OQaBAoGBAL65OQuldCCLEpAGDMbNTpH9ObFoECqcaAxAGNZNXQaIT8oS1czV\nHEV4ueb0BKorznnksdXukOfKXiVQciCT73s/EzxfxErh+iE6AaJWzmwAQkVWN/Ug\nDc8V1U5+Y8UuKWN2X22hhvIr+hQ6WCOrNu+pAbPgvlUZiwNAn7Sf547PAoGBAK4r\n/kQiTHkzfBuYVjUC85voP+khzJjZyB5F2yIOhP6j0tFZNiAnGYdNOqObDJY05bb/\nI0aIDLPq1gVqO81FiyZBXDjm2n0/RsvaBztcoqmzptyxXO4xND+TJniuo6EX9H2k\n58BVol7XqkEVsjxudm20yuIHYPzTld6QeqG0KcFhAoGAXnPMVIAz6on1P24/lZTH\nfHUzxTAMEY4z2R1FL5xQnZOUMDbzuuUvgxguuLnQNZZMQwGHMLNc/+2wgjo8yvV4\nfEjYdeXXiF4xSZM4i/UBdWsLZts0Cyk8rXnakWz2bAhYZvGQgPKlqfkteCcMz11T\nb4z7UuHSYMKtnYa7kPA/9PECgYEAh7X9vCchgTrNlE7htRKksLGJwuS0H9FprbTu\npx27IRKTPM4Pb4QnzxYs/7fbWdrDtxAb82QkybfMpZF+IVbzso4xBqFSU08Pod0z\nz1xB3or+FG4ao/ow5OyKiHRDSU16EsCAV4wiJVZT8byvEYlcu+SoRPBM8RMIbtAS\nzZatBmECgYEAvfCsjV0hEoDVOy/VnVLxF4nA06hRPQulfAUICx4xQYZ2bCfXV+0O\nXV76K7iQOEP8qDpH14E4uQRJt/6y2YtzBsC9Jl81b77ro7Z6tWn6hubeBacFqbV9\nGqLXCuZj0BTNqv704CHPaHvUPGfGgQHqe3+gox8ubp/RR00rLhqbk0k=\n-----END RSA PRIVATE KEY-----",
+    "KeyName": "login-key-instance02-gc2",
+    "KeyPairId": "key-09a4b6912b46b4fee",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "login-key-instance02-gc2"
+        },
+        {
+            "Key": "name",
+            "Value": "login-key-instance02-gc2"
+        },
+        {
+            "Key": "group",
+            "Value": "BIOL"
+        },
+        {
+            "Key": "project",
+            "Value": "cloud-span"
+        },
+        {
+            "Key": "status",
+            "Value": "prod"
+        },
+        {
+            "Key": "pushed_by",
+            "Value": "manual"
+        },
+        {
+            "Key": "defined_in",
+            "Value": "manual"
+        }
+    ]
+}
+[0;32mSuccess[0m creating [0;33mlogin-key:[0m login-key-instance02-gc2; [0;33minstance:[0m instance02-gc2

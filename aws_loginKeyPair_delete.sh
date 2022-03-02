@@ -31,16 +31,16 @@ mapfile instancesNames < $instancesNamesFile
 
 for instance in ${instancesNames[@]}
 do
-    loginkey=${instance%-srcCSGC-AMI04}
+    loginkey=${instance%-src*}
     loginkey="login-key-${loginkey%-gc}"
     #continue
     aws ec2 delete-key-pair --key-name $loginkey  >  $outputsDirThisRun/$loginkey.txt	     
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$loginkey.txt
+	echo -e "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"
+	echo -e "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" >> $outputsDirThisRun/$loginkey.txt
     else
-	echo -e "`colour red Error` ($?) deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour red Error` ($?) deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$loginkey.txt
+	echo -e "`colour red Error` ($?) deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"
+	echo -e "`colour red Error` ($?) deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" >> $outputsDirThisRun/$loginkey.txt
     fi
 done
 exit 0

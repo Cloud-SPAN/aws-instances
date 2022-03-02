@@ -1,8 +1,0 @@
-{
-    "PublicIp": "52.51.196.10",
-    "AllocationId": "eipalloc-0c99e101612dc0445",
-    "PublicIpv4Pool": "amazon",
-    "NetworkBorderGroup": "eu-west-1",
-    "Domain": "vpc"
-}
-[0;32mSuccess[0m allocating [0;33melastic IP address for instance:[0m instance01-gc

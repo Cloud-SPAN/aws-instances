@@ -1,1 +1,0 @@
-[0;32mSuccess[0m disassociating elasticIP, [0;33minstance:[0m instance15-gc; [0;33meipAssociationId:[0m eipassoc-0e33bcc7f4fc55b42

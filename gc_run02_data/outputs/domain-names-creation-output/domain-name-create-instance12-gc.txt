@@ -1,9 +1,0 @@
-{
-    "ChangeInfo": {
-        "Id": "/change/C0468280PIJY4YYWJHNH",
-        "Status": "PENDING",
-        "SubmittedAt": "2021-12-19T22:41:32.757000+00:00",
-        "Comment": "Creating subdomain"
-    }
-}
-[0;32mSuccess[0m creating [1;33mdomain:[0m instance12-gc.cloud-span.aws.york.ac.uk; [1;33mip:[0m 63.34.134.163

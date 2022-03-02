@@ -32,7 +32,7 @@ for instance in ${instancesIDs[@]}
 do
     # get the elastic ip out of the instance id.
     #echo -e "`colour brown "instance name:"` $instance"
-    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-srcCSGC-AMI04}.txt"
+    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
     eipAllocID=`awk -F " " '$1 == "\"AllocationId\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
     # and we get the IP similarly
     eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
@@ -40,11 +40,11 @@ do
     instanceCreationFile="$outputsDir/instances-creation-output/$instance.txt"
     instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $instanceCreationFile`
      
-    eipAssociationFile="$outputsDirThisRun/${instance%-srcCSGC-AMI04}-ip-associationID.txt"
+    eipAssociationFile="$outputsDirThisRun/${instance%-src*}-ip-associationID.txt"
     echo -e "`colour bl "eip:"` $eip ; `colour brown eipAllocationId:` $eipAllocID; `colour b iid:` $instanceID"
 
-    echo -n "Checking ${instance%-srcCSGC-AMI04} is running: "
-    tmpfile="/tmp/${instance%-srcCSGC-AMI04}.txt"
+    echo -n "Checking ${instance%-src*} is running: "
+    tmpfile="/tmp/${instance%-src*}.txt"
     while true 
     do
 	echo -n "."

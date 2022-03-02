@@ -1,3 +1,0 @@
-
-An error occurred (InvalidParameterCombination) when calling the TerminateInstances operation: No instances specified
-[1;31mError[0m (0) terminating instance: instance05-gc

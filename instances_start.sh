@@ -45,10 +45,10 @@ do
     aws  ec2  start-instances  --instance-ids $instanceID  > $outputsDirThisRun/$instance.txt 2>&1
 
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` starting instance: ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour gl Success` starting instance: ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
+	echo -e "`colour gl Success` starting instance: ${instance%-src*}"
+	echo -e "`colour gl Success` starting instance: ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     else
-	echo -e "`colour red Error` ($?) starting instance: ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour red Error` ($?) starting instance: ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
+	echo -e "`colour red Error` ($?) starting instance: ${instance%-src*}"
+	echo -e "`colour red Error` ($?) starting instance: ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     fi
 done

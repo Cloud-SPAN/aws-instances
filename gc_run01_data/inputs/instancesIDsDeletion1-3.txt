@@ -1,3 +1,0 @@
-instance01-gc-srcCSGC-AMI04
-instance02-gc-srcCSGC-AMI04
-instance03-gc-srcCSGC-AMI04

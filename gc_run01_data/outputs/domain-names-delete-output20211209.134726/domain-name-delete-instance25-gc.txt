@@ -1,3 +1,0 @@
-
-An error occurred (ExpiredToken) when calling the ChangeResourceRecordSets operation: The security token included in the request is expired
-Error deleting [1;33mdomain:[0m instance25-gc.cloud-span.aws.york.ac.uk; [1;33mip:[0m 52.49.140.204

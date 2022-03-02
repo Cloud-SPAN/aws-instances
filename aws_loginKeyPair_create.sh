@@ -51,7 +51,7 @@ mapfile instancesNames < $instancesNamesFile
 
 for instance in ${instancesNames[@]}
 do
-    loginkey=${instance%-srcCSGC-AMI04}
+    loginkey=${instance%-src*}
     loginkey="login-key-${loginkey%-gc}"
     echo Creating $loginkey
     #continue
@@ -66,8 +66,8 @@ do
 				  ]" > $outputsDirThisRun/$loginkey.json
     ## above in "Value=${loginkey,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$loginkey.json
+	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"
+	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" >> $outputsDirThisRun/$loginkey.json
 	#awk -f loginKey_extract.awk $outputsDirThisRun/$loginkey.json > $outputsDir/login-keys/$loginkey.pem
 	awk '
 	BEGIN {
@@ -91,8 +91,8 @@ do
 	chmod 700 $outputsDir/login-keys/$loginkey.pem
 
     else
-	echo -e "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$loginkey.json
+	echo -e "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}"
+	echo -e "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}" >> $outputsDirThisRun/$loginkey.json
     fi
 done
 exit 0

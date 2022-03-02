@@ -1,4 +1,0 @@
-{
-    "AssociationId": "eipassoc-0e33bcc7f4fc55b42"
-}
-[0;32mSuccess[0m associating [0;33meip:[0m 34.250.210.153; [0;33minstance:[0m instance15-gc-srcCSGC-AMI04; [0;33meipAllocationId:[0m eipalloc-08d3713b57d1c14f9

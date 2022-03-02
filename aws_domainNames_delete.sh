@@ -37,9 +37,9 @@ mapfile instancesIDs < $instancesNamesFile
 for instance in ${instancesIDs[@]}
 do
     # get the elastic ip out of the instance id.
-    subDomainName=${instance%-srcCSGC-AMI04}		# get rid of suffix
-    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-srcCSGC-AMI04}.txt"
-    dnDeleteFile="$outputsDirThisRun/domain-name-delete-${instance%-srcCSGC-AMI04}.txt"
+    subDomainName=${instance%-src*}		# get rid of suffix
+    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
+    dnDeleteFile="$outputsDirThisRun/domain-name-delete-${instance%-src*}.txt"
     
     # get the IP within the file eipAllocationFile with awk, where:
     # - -F is the field separator (single space " ") within each line

@@ -36,19 +36,19 @@ for instance in ${instancesIDs[@]}
 do
     # get the elastic ip out of the instance id.
     #echo -e "`colour brown "instance name:"` $instance"
-    eipAssociationFile="$outputsDir/ip-addresses-association-output/${instance%-srcCSGC-AMI04}-ip-associationID.txt"
-    eipDisassociationFile="$outputsDirThisRun/eip-addr-disassoc-${instance%-srcCSGC-AMI04}.txt"
+    eipAssociationFile="$outputsDir/ip-addresses-association-output/${instance%-src*}-ip-associationID.txt"
+    eipDisassociationFile="$outputsDirThisRun/eip-addr-disassoc-${instance%-src*}.txt"
     eipAssocID=`awk -F " " '$1 == "\"AssociationId\":" {print substr($2, 2, length($2) -2)}' $eipAssociationFile`
-    #echo -e "`colour bl "instance:"` ${instance%-srcCSGC-AMI04}; `colour brown eipAssociationId:` $eipAssocID"
+    #echo -e "`colour bl "instance:"` ${instance%-src*}; `colour brown eipAssociationId:` $eipAssocID"
     
     #aws ec2 reset-address-attribute  --allocation-id  $eipAllocID  --attribute domain-name > $eipDisassociationFile 2>&1
     aws ec2 disassociate-address  --association-id  $eipAssocID > $eipDisassociationFile 2>&1
     
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` disassociating elasticIP, `colour bl "instance:"` ${instance%-srcCSGC-AMI04}; `colour bl eipAssociationId:` $eipAssocID"
-	echo -e "`colour gl Success` disassociating elasticIP, `colour bl "instance:"` ${instance%-srcCSGC-AMI04}; `colour bl eipAssociationId:` $eipAssocID" >> $eipDisassociationFile
+	echo -e "`colour gl Success` disassociating elasticIP, `colour bl "instance:"` ${instance%-src*}; `colour bl eipAssociationId:` $eipAssocID"
+	echo -e "`colour gl Success` disassociating elasticIP, `colour bl "instance:"` ${instance%-src*}; `colour bl eipAssociationId:` $eipAssocID" >> $eipDisassociationFile
     else
-	echo -e "`colour lightred Error` disassociating elasticIP, `colour bl "instance:"` ${instance%-srcCSGC-AMI04}; `colour bl eipAssociationId:` $eipAssocID"
-	echo -e "`colour lightred Error` disassociating elasticIP, `colour bl "instance:"` ${instance%-srcCSGC-AMI04}; `colour bl eipAssociationId:` $eipAssocID" >> $eipDisassociationFile
+	echo -e "`colour lightred Error` disassociating elasticIP, `colour bl "instance:"` ${instance%-src*}; `colour bl eipAssociationId:` $eipAssocID"
+	echo -e "`colour lightred Error` disassociating elasticIP, `colour bl "instance:"` ${instance%-src*}; `colour bl eipAssociationId:` $eipAssocID" >> $eipDisassociationFile
     fi
 done

@@ -57,7 +57,7 @@ mapfile instancesNames < $instancesNamesFile
 
 for instance in ${instancesNames[@]}
 do
-    logkeyend=${instance%-srcCSGC-AMI04}
+    logkeyend=${instance%-src*}
     logkeyend=${logkeyend%-gc}
     #echo "$instance  login-key-$logkeyend"
     #continue
@@ -75,11 +75,11 @@ do
 				  ]" >  $outputsDirThisRun/$instance.txt 2>&1
     ## above in "Value=${instance,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` creating `colour bl instance:` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour gl Success` creating `colour bl instance:` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
+	echo -e "`colour gl Success` creating `colour bl instance:` ${instance%-src*}"
+	echo -e "`colour gl Success` creating `colour bl instance:` ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     else
-	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
+	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}"
+	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     fi
 done
 

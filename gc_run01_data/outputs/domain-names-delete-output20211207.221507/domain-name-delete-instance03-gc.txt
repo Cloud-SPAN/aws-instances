@@ -1,3 +1,0 @@
-
-An error occurred (ExpiredToken) when calling the ChangeResourceRecordSets operation: The security token included in the request is expired
-Error deallocating [1;33meip:[0m 54.77.12.160 ; [1;33meipAllocationId:[0m  

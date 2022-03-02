@@ -39,7 +39,7 @@ mapfile instancesNames < $instancesNamesFile
 for instance in ${instancesNames[@]}
 do
     #aws ec2 allocate-address  --dry-run --domain vpc --tag-specifications \\
-    eipResultsFileName="elastic-IPaddress-for-${instance%-srcCSGC-AMI04}"
+    eipResultsFileName="elastic-IPaddress-for-${instance%-src*}"
     #echo Allocating $eip
     #continue
     aws ec2 allocate-address --domain vpc --tag-specifications \
@@ -53,10 +53,10 @@ do
 				  ]" > $outputsDirThisRun/$eipResultsFileName.txt
     ## above in "Value=${eipResultsFileName,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$eipResultsFileName.txt
+	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-src*}"
+	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-src*}" >> $outputsDirThisRun/$eipResultsFileName.txt
     else
-	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$eipResultsFileName.txt
+	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-src*}"
+	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-src*}" >> $outputsDirThisRun/$eipResultsFileName.txt
     fi
 done

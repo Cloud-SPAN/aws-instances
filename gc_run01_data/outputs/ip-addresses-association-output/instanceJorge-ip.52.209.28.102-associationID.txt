@@ -1,3 +1,0 @@
-{
-    "AssociationId": "eipassoc-0054d2f6ec45297f4"
-}

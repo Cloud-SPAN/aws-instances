@@ -22,17 +22,17 @@ mapfile instancesNames < $instancesNamesFile
 for instance in ${instancesNames[@]}
 do
     # replace echo with ssh
-    instance=${instance%-srcCSGC-AMI04}
+    instance=${instance%-src*}
     keyfile=${instance%-gc}
     echo ""
     echo -e "$(colour cyan "Configuring $instance: ")"
 
     # we need to ensure the domain is available before any issuing any ssh; otherwise will get Connection refused port 22 or similar
-    domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${instance%-srcCSGC-AMI04}.txt"
+    domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${instance%-src*}.txt"
     domainNameChangeID=`awk -F " " '$1 == "\"Id\":" {print substr($2, 2, length($2) -3)}' $domainNameCreationFile`
     
     echo -n "Checking $instance.$hostZone is reachable: "
-    tmpfile="/tmp/domainName${instance%-srcCSGC-AMI04}-status.txt"
+    tmpfile="/tmp/domainName${instance%-src*}-status.txt"
     while true 
     do
 	echo -n "."

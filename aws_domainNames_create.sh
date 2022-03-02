@@ -34,9 +34,9 @@ mapfile instancesNames < $instancesNamesFile
 
 for instance in ${instancesNames[@]}
 do
-    subDomainName=${instance%-srcCSGC-AMI04}
-    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-srcCSGC-AMI04}.txt"
-    dnCreateFile="$outputsDirThisRun/domain-name-create-${instance%-srcCSGC-AMI04}.txt"
+    subDomainName=${instance%-src*}
+    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
+    dnCreateFile="$outputsDirThisRun/domain-name-create-${instance%-src*}.txt"
     
     # get the IP within the file eipAllocationFile with awk, where:
     # - -F is the field separator (single space " ") within each line

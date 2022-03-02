@@ -44,10 +44,10 @@ do
     instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $outputsDir/instances-creation-output/$instance.txt`
     aws  ec2  terminate-instances  --instance-ids $instanceID  > $outputsDirThisRun/$instance.txt 2>&1
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` terminating instance: ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour gl Success` terminating instance: ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
+	echo -e "`colour gl Success` terminating instance: ${instance%-src*}"
+	echo -e "`colour gl Success` terminating instance: ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     else
-	echo -e "`colour red Error` ($?) terminating instance: ${instance%-srcCSGC-AMI04}"
-	echo -e "`colour red Error` ($?) terminating instance: ${instance%-srcCSGC-AMI04}" >> $outputsDirThisRun/$instance.txt
+	echo -e "`colour red Error` ($?) terminating instance: ${instance%-src*}"
+	echo -e "`colour red Error` ($?) terminating instance: ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     fi
 done

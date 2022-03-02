@@ -36,8 +36,8 @@ for instance in ${instancesIDs[@]}
 do
     # get the elastic ip out of the instance id.
     #echo -e "`colour brown "instance name:"` $instance"
-    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-srcCSGC-AMI04}.txt"
-    eipDeallocationFile="$outputsDirThisRun/eip-addr-dealloc-${instance%-srcCSGC-AMI04}.txt"
+    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
+    eipDeallocationFile="$outputsDirThisRun/eip-addr-dealloc-${instance%-src*}.txt"
     # get the eip allocation id (eipAllocID) from within the file eipAllocationFile with awk:
     # -F is the field separator (single space " ") within each line;
     # /AllocationId/ is the field we are looking for, which precedes the actual eipAllocID.

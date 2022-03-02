@@ -1,3 +1,0 @@
-
-An error occurred (InvalidChangeBatch) when calling the ChangeResourceRecordSets operation: [Tried to delete resource record set [name='instance01-gc.', type='A'] but it was not found]
-Error deallocating [1;33meip:[0m 54.228.18.89 ; [1;33meipAllocationId:[0m  

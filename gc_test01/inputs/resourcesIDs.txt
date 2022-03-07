@@ -1,6 +1,0 @@
-imageId			ami-0a0eb19a9204f8d9c
-instanceType		t2.small
-securityGroupId		sg-0771b67fde13b3899
-subnetId		subnet-00ff8cd3b7407dc83
-hostZone		cloud-span.aws.york.ac.uk  
-hostZoneId		Z012538133YPRCJ0WP3UZ	   

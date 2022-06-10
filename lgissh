@@ -39,8 +39,8 @@ case $# in
 		# gc_run02_data/outputs/login-keys/login-key-instance017.pem
 		# first get rid of .pem at the end
 		machine=${loginKeyFile%.pem}
-		# then, from the beginning/prefix (#), everything (*) up to -, replace it / with nothing.
-		machine=${machine/#*-/}		
+		# then, from the beginning/prefix (#), everything (*) up to loging-key-, replace it / with nothing.
+		machine=${machine/#*login-key-/}		
 		echo "  $(basename $0): logging you thus:"
 		echo "  ssh -i $loginKeyFile $user@$machine.$domain"
 		ssh -i $loginKeyFile $user@$machine.$domain

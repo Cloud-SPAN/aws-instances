@@ -1,4 +1,5 @@
-		AMAIS: Automatic Management of AWS AMI Instances Using Bash Scripts
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6564314.svg)](https://doi.org/10.5281/zenodo.6564314)
+AMAIS: Automatic Management of AWS AMI Instances Using Bash Scripts
 
 Overview
 Running the scripts

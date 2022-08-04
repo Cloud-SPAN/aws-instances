@@ -12,6 +12,16 @@ authors:
     family-names: Buenabad-Chavez
     email: jorge.buenabad-chavez@york.ac.uk
     affiliation: University of York
+  - family-names: "Chong"
+    given-names: "James"
+    orcid: "https://orcid.org/0000-0001-9447-7421"
+    email: james.chong@york.ac.uk
+    affiliation: University of York
+  - family-names: "Rand"
+    given-names: "Emma"
+    orcid: "https://orcid.org/0000-0002-1358-8275"
+    email: emma.rand@york.ac.uk
+    affiliation: University of York
 repository-code: 'https://github.com/Cloud-SPAN/aws-instances'
 license: CC-BY-4.0
 version: 0.1.0

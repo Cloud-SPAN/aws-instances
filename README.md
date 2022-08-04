@@ -1,50 +1,50 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6779269.svg)](https://doi.org/10.5281/zenodo.6779269) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) 
 
-AMAIS: Automatic Management of AWS AMI Instances Using Bash Scripts
+# AMAIS: Automatic Management of AWS AMI Instances Using Bash Scripts
 
 Overview
-Running the scripts
-Scripts design
-Before running the scripts - environment configuration
-Further work - improving the scripts
+-   Running the scripts
+-   Scripts design
+-   Before running the scripts - environment configuration
+-   Further work - improving the scripts
 
-*** Overview:
+## Overview:
 
 The bash scripts below invoke AWS services through the aws command line interface (CLI) to create, start, stop, and delete one or multiple instances with a single run of a script. Each instance is created to be accessed through a domain name that is mapped to an "elastic" (permanent) IP address, and once created it is run and left running.
     Domain names, elastic IP addresses, and login keys are created on demand on creating the corresponding instances, and are deleted when the corresponding instances are deleted. When resources are created, they are automatically tagged with the tags required by the IT Team of York University. This will help reduce costs and admin time, and keep the relevant AWS account tidy - yet logs of the scripts runs are held in the machine wherein the scripts were run.
     Between creating and deleting a group of instances, all or some of the instances in the group can be stopped and started as required.
 
-aws_domainNames_create.sh
-aws_domainNames_delete.sh
-aws_elasticIPs_allocate.sh
-aws_elasticIPs_associate2instance.sh
-aws_elasticIPs_deallocate.sh
-aws_elasticIPs_disassociate.sh
-aws_instances_configure.sh
-aws_instances_launch.sh
-aws_instances_terminate.sh
-aws_loginKeyPair_create.sh
-aws_loginKeyPair_delete.sh
-colours_functions.sh
-instances_create.sh
-instances_delete.sh
-instances_start.sh
-instances_stop.sh
+-   aws_domainNames_create.sh
+-   aws_domainNames_delete.sh
+-   aws_elasticIPs_allocate.sh
+-   aws_elasticIPs_associate2instance.sh
+-   aws_elasticIPs_deallocate.sh
+-   aws_elasticIPs_disassociate.sh
+-   aws_instances_configure.sh
+-   aws_instances_launch.sh
+-   aws_instances_terminate.sh
+-   aws_loginKeyPair_create.sh
+-   aws_loginKeyPair_delete.sh
+-   colours_functions.sh
+-   instances_create.sh
+-   instances_delete.sh
+-   instances_start.sh
+-   instances_stop.sh
 
 The last four scripts, instances_create.sh, instances_delete.sh instances_start.sh and instances_stop.sh are meant to be invoked by the user as described below. The scripts named "aws_...sh" are meant to be invoked by the script instances_create.sh or instances_delete.sh, but can be invoked individually for debugging or improving purposes. The script colour_functions.sh provides (is "sourced" by) the other scripts with text colouring functions for the logging output of "the other scripts" to be easier to read.
 
-***Running the scripts 
+## Running the scripts 
 
 The scripts are to be invoked thus:
-
-$ instances_create.sh  instancesNamesFile
-$ instances_stop.sh    instancesNamesFile
-$ instances_start.sh   instancesNamesFile
-$ instances_delete.sh  instancesNamesFile
-
+```
+instances_create.sh  instancesNamesFile
+instances_stop.sh    instancesNamesFile
+instances_start.sh   instancesNamesFile
+instances_delete.sh  instancesNamesFile
+```
 The scripts named "aws...sh" are invoked the same way, for example:
 
-$ aws_domainNames_create.sh   instancesNamesFile
+`aws_domainNames_create.sh   instancesNamesFile`
 
 The input file instancesNamesFile can be named differently but must contain each of the names of the instances to create (delete, start, etc.) in one line, like this:
 

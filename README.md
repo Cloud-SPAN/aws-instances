@@ -48,10 +48,9 @@ The scripts named "aws...sh" are invoked the same way, for example:
 
 The input file instancesNamesFile can be named differently but must contain each of the names of the instances to create (delete, start, etc.) in one line, like this:
 
-instance01
-
-instance02
-...
+instance01\
+instance02\
+...\
 
 ## Scripts design
 
@@ -88,7 +87,7 @@ aws-stuff $ echo $PATH
 
 The dot . at the beginning represents the current directory, which means that, when running a script in the current directory (../aws-stuff), I can run it thus "instances_create.sh .." instead of  "./instances_create.sh ..".
 
-# Inputs
+### Inputs
 
 Create the following directories to hold the data related to creating, deleting, etc., a group of instances:
 
@@ -106,54 +105,52 @@ instancesNames.txt  resourcesIDs.txt  yorkTags.txt
 
 You can use another name for the file instancesNames.txt, but you must use resourcesIDs.txt and yorkTags.txt as these names are "hardwired" in the scripts code. The contents of "instancesNames.txt" should be as described above: only an instance name in each line.
 
-instance01
-
-instance02
-...
+instance01\
+instance02\
+...\
 
 You can use whatever names you want but it is convenient to use some numeric or alphabetical pattern that will let you identify them quickly. 
 
 The contents of the file resourcesIDs.txt should be like this:
 
-imageId			ami-05be6a5ff8a9091e0
-instanceType		t2.small
-securityGroupId		sg-0771b67fde13b3899
-subnetId		subnet-00ff8cd3b7407dc83
-hostZone		cloud-span.aws.york.ac.uk  
-hostZoneId		Z012538133YPRCJ0WP3UZ
+imageId			ami-05be6a5ff8a9091e0\
+instanceType		t2.small\
+securityGroupId		sg-0771b67fde13b3899\
+subnetId		subnet-00ff8cd3b7407dc83\
+hostZone		cloud-span.aws.york.ac.uk\  
+hostZoneId		Z012538133YPRCJ0WP3UZ\
 
 You can change the values on the right column (but not on the left column). Use the characters space or tab to separate the values in each line. Based on the hostZone value (cloud-span.aws.york.ac.uk), the domain names of each instance created will be similar to (assuming the instances names used above):
 
-instance01.cloud-span.aws.york.ac.uk
-instance02.cloud-span.aws.york.ac.uk
-..
+instance01.cloud-span.aws.york.ac.uk\
+instance02.cloud-span.aws.york.ac.uk\
+..\
 
 Obviously, the source/blueprint Amazon Machine Image (AMI) must exist in, or be accessible by, your AWS account; you must have configured the securityGroupId, the subnetId and the hostZoneId.
 
-
 The contents of yorkTags.txt should be like this:
 
-name		instance
-group		BIOL
-project		cloud-span
-status		prod
-pushed_by 	manual
-defined_in	manual
+name		instance\
+group		BIOL\
+project		cloud-span\
+status		prod\
+pushed_by 	manual\
+defined_in	manual\
 
 You can change the values on the right column (but not on the left column). The value of the key "name" (instance) is overwritten with the actual name of each instance. Use the characters space or tab to separate the values in each line. 
 
-# Outputs
+### Outputs
 
 Recall that the results of creating instances, or resources for instances, are written to files such as:
 
-domain-name-create-instance01.txt
-elastic-IPaddress-for-instance01.txt
-login-key-instance01.txt
-..
-domain-name-create-instance02.txt
-elastic-IPaddress-for-instance02.txt
-login-key-instance02.txt
-..
+domain-name-create-instance01.txt\
+elastic-IPaddress-for-instance01.txt\
+login-key-instance01.txt\
+..\
+domain-name-create-instance02.txt\
+elastic-IPaddress-for-instance02.txt\
+login-key-instance02.txt\
+..\
 
 For easy access of all these (results) files, all the files about "domain-name-create-instance...txt" are placed in the same directory (defined below), all the files about "elastic-IPaddress-for-instance...txt" are placed in the same directory, and so on. 
 
@@ -161,28 +158,28 @@ These "same directory"/ies are handled automatically as follows.
 
 When you run a script, the outputs directory will be automatically created (if it doesn't exist) at the same level of the inputs directory (in our example: "..aws-stuff/gc_run02_data/outputs"). And within the outputs directory, the following directories will be created by the script in parenthesis when the script is invoked either by the script instances_create.sh or by the user manually:
 
-aws-stuff $ ls gc_run02_data/outputs/
-domain-names-creation-output	  (created by aws_domainNames_create.sh)
-instances-creation-output	  (created by aws_instances_launch.sh)
-ip-addresses-allocation-output	  (created by aws_elasticIPs_allocate.sh)
-ip-addresses-association-output	  (created by aws_elasticIPs_associate2instance.sh)
-login-keys			  (created by aws_loginKeyPair_create.sh)
-login-keys-creation-output	  (created by aws_loginKeyPair_create.sh)
+aws-stuff $ ls gc_run02_data/outputs/\
+domain-names-creation-output	  (created by aws_domainNames_create.sh)\
+instances-creation-output	  (created by aws_instances_launch.sh)\
+ip-addresses-allocation-output	  (created by aws_elasticIPs_allocate.sh)\
+ip-addresses-association-output	  (created by aws_elasticIPs_associate2instance.sh)\
+login-keys			  (created by aws_loginKeyPair_create.sh)\
+login-keys-creation-output	  (created by aws_loginKeyPair_create.sh)\
 
 Thus, the directory "../outputs/domain-names-creation-output/" contains all the files: domain-name-create-instance01.txt, domain-name-create-instance02.txt, etc. Similarly for the other  "..-output" directories in the list above, each contain all the results file of each instance regading elastic IP addresses, or login-keys, etc.
 
 The scripts, output directories, and results files just described are related to *creating* instances or resources for instances. When *deleting* instances or resources of (allocated to) instances, the relevant scripts also create output directories to store the files with the results of deleting an instance or a resource of an instance. The output directories are also created within the outputs directory (gc_run02_data/outputs/).  These are examples of output directories and the scripts that creates them when the script is invoked either by the script instances_delete.sh or by the user manually:
 
-domain-names-delete-output20211214.134348	(aws_domainNames_delete.sh)
-domain-names-delete-output20211215.092841	(aws_domainNames_delete.sh)
-instances-delete-output20211214.134328		(aws_instances_terminate.sh)
-instances-delete-output20211215.092841		(aws_instances_terminate.sh)
-ip-addresses-deallocate-output20211214.134408	(aws_elasticIPs_deallocate.sh)
-ip-addresses-deallocate-output20211215.092841	(aws_elasticIPs_deallocate.sh)
-ip-addresses-disassociate-output20211214.134358	(aws_elasticIPs_disassociate.sh)
-ip-addresses-disassociate-output20211215.092841	(aws_elasticIPs_disassociate.sh)
-login-keys-delete-output20211214.134338		(aws_loginKeyPair_delete.sh)
-login-keys-delete-output20211215.092841		(aws_loginKeyPair_delete.sh)
+domain-names-delete-output20211214.134348	(aws_domainNames_delete.sh)\
+domain-names-delete-output20211215.092841	(aws_domainNames_delete.sh)\
+instances-delete-output20211214.134328		(aws_instances_terminate.sh)\
+instances-delete-output20211215.092841		(aws_instances_terminate.sh)\
+ip-addresses-deallocate-output20211214.134408	(aws_elasticIPs_deallocate.sh)\
+ip-addresses-deallocate-output20211215.092841	(aws_elasticIPs_deallocate.sh)\
+ip-addresses-disassociate-output20211214.134358	(aws_elasticIPs_disassociate.sh)\
+ip-addresses-disassociate-output20211215.092841	(aws_elasticIPs_disassociate.sh)\
+login-keys-delete-output20211214.134338		(aws_loginKeyPair_delete.sh)\
+login-keys-delete-output20211215.092841		(aws_loginKeyPair_delete.sh)\
 
 The only difference to the creation of output directories above (for results of creating instances or other resources) is that, output directories for results of deleting instances or other resources are named with the date of creation as a suffix.
 
@@ -192,7 +189,7 @@ aws-stuff $ instances_delete.sh  gc_run02_data/inputs/instancesNamesFile-Deletes
 
 And only the instances specified in that file will be deleted. And we will keep record in our local machine of what happened when.
 
-Technical note 1:
+### Technical note 1:
 
 All scripts display in the screen and log onto the relevant file the results of creating or deleting the relevant result. All results should be "Success in creating/deleting ...", except the results of disassociating elastic IP addresses - which are nothing to worry about. The results of disassociatingIP addresses are issued by the script  aws_elasticIPs_disassociate.sh and may sometimes be:
 
@@ -200,17 +197,18 @@ All scripts display in the screen and log onto the relevant file the results of 
 
 This is because instances are deleted first and, by the time that script is run, the association of IP addresses to instances is no longer valid/existant. This is more likely to happen if instance is stopped. If it is running, then stopping it before deleting it will take longer and disassociating the IP address will most like be successful. 
 
-Technical note 2:
+### Technical note 2:
+
 The user invoking the scripts must have installed:
 - the aws cli
 - saml2aws
 - Bash shell.
 
-Technical note 3:
+### Technical note 3:
 The AWS account must have been configured with adequate limits in number of instances, elastic IP addresses, that are to be created.
 
 
-### Improvements
+## Improvements
 
 The scripts just described provide enough functionality to handle AMI instances efficiently in the context of the Genomics course, and similar contexts where each instance is to be used by a particular individual for a period of time.
 

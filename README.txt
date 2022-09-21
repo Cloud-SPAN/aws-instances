@@ -33,7 +33,7 @@ The last four scripts, instances_create.sh, instances_delete.sh instances_start.
 
 ***Running the scripts 
 
-The scripts are to be invoked thus:
+The scripts are invoked thus:
 
 $ instances_create.sh  instancesNamesFile
 $ instances_stop.sh    instancesNamesFile

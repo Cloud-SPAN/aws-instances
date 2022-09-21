@@ -81,12 +81,12 @@ case $# in
 	fi
 	logfile=logs/aws_storage_increase.sh`date '+%Y%m%d.%H%M%S'`.txt
 
-	### get the volume's size and volume-id into logfile		   --- "curl -s" is silent
-	aws ec2 describe-volumes --filters Name=attachment.instance-id,Values=$(curl -s http://169.254.169.254/latest/meta-data/instance-id) >> $logfile
+	### get the volume's size and volume-id into logfile		   --- "curl -s" is silent 
+	aws ec2 describe-volumes --filters Name=attachment.instance-id,Values=$(curl -s http://169.254.169.254/latest/meta-data/instance-id) >> $logfile								      ### .todo document IP address 169..
 
 	### get the following from the logfile:
 	### - substr gets rid off quotation marks ("") and commas in strings
-	### - !visited.. gets rid off duplicate fields as otherwise they are concatenated and cause error when passed to aws below.
+	### - !visited.. gets rid of duplicate fields as otherwise they are concatenated and cause error when passed to aws below.
 	instanceID=`awk -F " " '
 	!visited[$1]++ {
 	  if ( $1 == "\"InstanceId\":" ) {
@@ -130,7 +130,8 @@ case $# in
 	# aws ec2 modify-volume --dry-run --size "$diskSizeToBe" --volume-id "$volumeID" >> $logfile 2>&1  THIS one without dry-run
 	message "aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1" $logfile
 
-	aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1
+	echo dummy aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID ### >> $logfile 2>&1 .todo delete this line and uncomment next one
+	### aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1
 	if [ $? -eq 0 ]; then
 	    message "`colour gl Success` extending disk size but must wait for optimisation phase:" $logfile
 	else
@@ -143,9 +144,11 @@ case $# in
 	    #aws ec2 describe-volumes-modifications --volume-ids $volumeID  >> $logfile 2>&1
 	    #status=`awk -F " " '$1 == "\"ModificationState\":" {print substr($2, 2, length($2) -3)}' $logfile`
 	    # NB we cannot read the status from the $logfile as before with "!visited" within awk because the value "optimising" we
-	    # are waiting for will the last one in that file and hence will be ignored. Better with a pipe so that only the last state
-	    # is processed.
-	    status=`aws ec2 describe-volumes-modifications --volume-ids $volumeID | awk -F " " '$1 == "\"ModificationState\":" {print substr($2, 2, length($2) -3)}'`
+	    # are waiting for will be the last one in that file and hence will be ignored (deleted by "!visited"). Better with a
+	    # pipe so that only the last state is processed. .todo Perhaps i should use above  a pipe too.
+	    echo optimising dummy and breaking ##.todo delete this and next lines and uncomment the following  one
+	    break;
+	    ### status=`aws ec2 describe-volumes-modifications --volume-ids $volumeID | awk -F " " '$1 == "\"ModificationState\":" {print substr($2, 2, length($2) -3)}'`
 	    if [[ "$status" == "optimizing" ]]; then		### "optimizing" is enough see below, "completed" is DONE
 		message "Status: $status is enough, proceeding .." $logfile
 		break ;
@@ -161,7 +164,23 @@ case $# in
         # very powerful bash
 	#message "Checking new size with `lsblk /dev/xvda | awk -F " " '$1 == "xvda" {print substr($4, 1, length($4) -1)}'`" $logfile
 	### Check disk volume has been increased and if so increase partition:
-	message "Checking new size with \"lsblk /dev/xvda\":"
+	#------------- OLD Version -------------------
+#	message "Checking new size with \"lsblk /dev/xvda\":"
+#	lsblk /dev/xvda  >> $logfile 2>&1
+#	newDiskSize=`awk -F " " '$1 == "xvda" {print substr($4, 1, length($4) -1)}' $logfile`
+#	message "newDiskSize $newDiskSize" $logfile
+#	if [ $newDiskSize -le $volumeSize ]; then
+#	    message "Sorry, the disk size could not be increased. " $logfile
+#	    exit 1 ;
+#	fi
+#	   
+#	# increase partition
+#	message "Increasing partition and file system:"
+#	sudo growpart /dev/xvda 1  | tee -a $logfile		### perhaps checking again the new size (ec2 user guide p. 1563-4)
+#	sudo resize2fs /dev/xvda1  | tee -a $logfile		### perhaps checking the new file system and printing to the user. 
+#	df -h .	 | tee -a $logfile				### to show the new size of the file system
+#	#------------- OLD Version END -------------------
+	message "Checking new size with command \"lsblk\":"
 	lsblk /dev/xvda  >> $logfile 2>&1
 	newDiskSize=`awk -F " " '$1 == "xvda" {print substr($4, 1, length($4) -1)}' $logfile`
 	message "newDiskSize $newDiskSize" $logfile

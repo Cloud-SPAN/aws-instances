@@ -1,0 +1,28 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Cloud-SPAN AWS Instance Management scripts
+message: >-
+  If you use these scripts, please cite them using
+  the metadata from this file.
+type: software
+authors:
+  - given-names: Jorge
+    family-names: Buenabad-Chavez
+    email: jorge.buenabad-chavez@york.ac.uk
+    affiliation: University of York
+  - family-names: "Chong"
+    given-names: "James"
+    orcid: "https://orcid.org/0000-0001-9447-7421"
+    email: james.chong@york.ac.uk
+    affiliation: University of York
+  - family-names: "Rand"
+    given-names: "Emma"
+    orcid: "https://orcid.org/0000-0002-1358-8275"
+    email: emma.rand@york.ac.uk
+    affiliation: University of York
+repository-code: 'https://github.com/Cloud-SPAN/aws-instances'
+license: CC-BY-4.0
+version: 0.1.0
+date-released: '2022-06-10'

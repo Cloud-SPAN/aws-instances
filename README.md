@@ -1,56 +1,59 @@
-		AMAIS: Automatic Management of AWS AMI Instances Using Bash Scripts
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6779269.svg)](https://doi.org/10.5281/zenodo.6779269) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) 
+
+# AMAIS: Automatic Management of AWS AMI Instances Using Bash Scripts
 
 Overview
-Running the scripts
-Scripts design
-Before running the scripts - environment configuration
-Further work - improving the scripts
+-   Running the scripts
+-   Scripts design
+-   Before running the scripts - environment configuration
+-   Further work - improving the scripts
 
-*** Overview:
+## Overview:
 
 The bash scripts below invoke AWS services through the aws command line interface (CLI) to create, start, stop, and delete one or multiple instances with a single run of a script. Each instance is created to be accessed through a domain name that is mapped to an "elastic" (permanent) IP address, and once created it is run and left running.
     Domain names, elastic IP addresses, and login keys are created on demand on creating the corresponding instances, and are deleted when the corresponding instances are deleted. When resources are created, they are automatically tagged with the tags required by the IT Team of York University. This will help reduce costs and admin time, and keep the relevant AWS account tidy - yet logs of the scripts runs are held in the machine wherein the scripts were run.
     Between creating and deleting a group of instances, all or some of the instances in the group can be stopped and started as required.
 
-aws_domainNames_create.sh
-aws_domainNames_delete.sh
-aws_elasticIPs_allocate.sh
-aws_elasticIPs_associate2instance.sh
-aws_elasticIPs_deallocate.sh
-aws_elasticIPs_disassociate.sh
-aws_instances_configure.sh
-aws_instances_launch.sh
-aws_instances_terminate.sh
-aws_loginKeyPair_create.sh
-aws_loginKeyPair_delete.sh
-colours_functions.sh
-instances_create.sh
-instances_delete.sh
-instances_start.sh
-instances_stop.sh
+-   aws_domainNames_create.sh
+-   aws_domainNames_delete.sh
+-   aws_elasticIPs_allocate.sh
+-   aws_elasticIPs_associate2instance.sh
+-   aws_elasticIPs_deallocate.sh
+-   aws_elasticIPs_disassociate.sh
+-   aws_instances_configure.sh
+-   aws_instances_launch.sh
+-   aws_instances_terminate.sh
+-   aws_loginKeyPair_create.sh
+-   aws_loginKeyPair_delete.sh
+-   colours_functions.sh
+-   instances_create.sh
+-   instances_delete.sh
+-   instances_start.sh
+-   instances_stop.sh
 
 The last four scripts, instances_create.sh, instances_delete.sh instances_start.sh and instances_stop.sh are meant to be invoked by the user as described below. The scripts named "aws_...sh" are meant to be invoked by the script instances_create.sh or instances_delete.sh, but can be invoked individually for debugging or improving purposes. The script colour_functions.sh provides (is "sourced" by) the other scripts with text colouring functions for the logging output of "the other scripts" to be easier to read.
 
-***Running the scripts 
+## Running the scripts 
 
-The scripts are invoked thus:
-
+The scripts are to be invoked thus:
+```
 $ instances_create.sh  instancesNamesFile
 $ instances_stop.sh    instancesNamesFile
 $ instances_start.sh   instancesNamesFile
 $ instances_delete.sh  instancesNamesFile
-
+```
 The scripts named "aws...sh" are invoked the same way, for example:
 
-$ aws_domainNames_create.sh   instancesNamesFile
+`$ aws_domainNames_create.sh   instancesNamesFile`
 
 The input file instancesNamesFile can be named differently but must contain each of the names of the instances to create (delete, start, etc.) in one line, like this:
 
 instance01
+
 instance02
 ...
 
-*** Scripts design
+## Scripts design
 
 The scripts were designed and organised around the names of the instances to create, delete, etc. This is why all scripts are invoked the same way: receiving as input the file with the names of target instances.  Specifically,  when creating an instance or a resource for an instance, the result (output) of invoking the relevant AWS service (through the aws cli) is written to a file whose name has, as a substring, the name of the instance as specified in the input file in order to enable us to track related resources.  
 
@@ -68,7 +71,7 @@ login-key-instance01.pem		# placed in this file
 similarly named files for instance02 and for other instances specified in the input file.
 
 Those files contain (among other pieces of information) the resourceID of the resource (requested by the script and) allocated by the AWS service. The resourceID (e.g. key-00b392c7ddf3fd3ac) is given by the relevant AWS service and is needed to invoke further operations on the resource. Thus, when an instance and its resources are to be deleted, we can look into those files for their AWS resourceID. 
-*** Before running the scripts - environment configuration
+## Before running the scripts - environment configuration
 
 Observe the following before running the scripts. The examples below asumme a Linux machine and how I have run the scripts assuming the genomics course context. I indicate which parts can be changed for another context.
 
@@ -85,7 +88,7 @@ aws-stuff $ echo $PATH
 
 The dot . at the beginning represents the current directory, which means that, when running a script in the current directory (../aws-stuff), I can run it thus "instances_create.sh .." instead of  "./instances_create.sh ..".
 
-*Inputs
+# Inputs
 
 Create the following directories to hold the data related to creating, deleting, etc., a group of instances:
 
@@ -104,6 +107,7 @@ instancesNames.txt  resourcesIDs.txt  yorkTags.txt
 You can use another name for the file instancesNames.txt, but you must use resourcesIDs.txt and yorkTags.txt as these names are "hardwired" in the scripts code. The contents of "instancesNames.txt" should be as described above: only an instance name in each line.
 
 instance01
+
 instance02
 ...
 
@@ -138,7 +142,7 @@ defined_in	manual
 
 You can change the values on the right column (but not on the left column). The value of the key "name" (instance) is overwritten with the actual name of each instance. Use the characters space or tab to separate the values in each line. 
 
-*Outputs
+# Outputs
 
 Recall that the results of creating instances, or resources for instances, are written to files such as:
 
@@ -206,7 +210,7 @@ Technical note 3:
 The AWS account must have been configured with adequate limits in number of instances, elastic IP addresses, that are to be created.
 
 
-*** Improvements
+### Improvements
 
 The scripts just described provide enough functionality to handle AMI instances efficiently in the context of the Genomics course, and similar contexts where each instance is to be used by a particular individual for a period of time.
 

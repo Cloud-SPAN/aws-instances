@@ -50,7 +50,7 @@ The input file instancesNamesFile can be named differently but must contain each
 
 instance01\
 instance02\
-...\
+...
 
 ## Scripts design
 

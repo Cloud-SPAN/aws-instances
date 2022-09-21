@@ -62,11 +62,11 @@ $ instances_create.sh instancesNamesFile
 
 the following files will be created for each instance specified in the input file:
 
-domain-name-create-instance01.txt
-elastic-IPaddress-for-instance01.txt
-login-key-instance01.txt		# the login key must extracted from this file (.txt) and 
-login-key-instance01.pem		# placed in this file
-...
+domain-name-create-instance01.txt\
+elastic-IPaddress-for-instance01.txt\
+login-key-instance01.txt		### the login key must extracted from this file (.txt) and \
+login-key-instance01.pem		### placed in this file\
+...\
 similarly named files for instance02 and for other instances specified in the input file.
 
 Those files contain (among other pieces of information) the resourceID of the resource (requested by the script and) allocated by the AWS service. The resourceID (e.g. key-00b392c7ddf3fd3ac) is given by the relevant AWS service and is needed to invoke further operations on the resource. Thus, when an instance and its resources are to be deleted, we can look into those files for their AWS resourceID. 
@@ -101,13 +101,15 @@ aws-stuff$ mkdir -p gc_run03_data/inputs
 
 Create the following configuration files in gc_run02_data/inputs:
 
-instancesNames.txt  resourcesIDs.txt  yorkTags.txt
+instancesNames.txt\
+resourcesIDs.txt\
+yorkTags.txt
 
 You can use another name for the file instancesNames.txt, but you must use resourcesIDs.txt and yorkTags.txt as these names are "hardwired" in the scripts code. The contents of "instancesNames.txt" should be as described above: only an instance name in each line.
 
 instance01\
 instance02\
-...\
+..
 
 You can use whatever names you want but it is convenient to use some numeric or alphabetical pattern that will let you identify them quickly. 
 
@@ -117,14 +119,14 @@ imageId			ami-05be6a5ff8a9091e0\
 instanceType		t2.small\
 securityGroupId		sg-0771b67fde13b3899\
 subnetId		subnet-00ff8cd3b7407dc83\
-hostZone		cloud-span.aws.york.ac.uk\  
-hostZoneId		Z012538133YPRCJ0WP3UZ\
+hostZone		cloud-span.aws.york.ac.uk\
+hostZoneId		Z012538133YPRCJ0WP3UZ
 
 You can change the values on the right column (but not on the left column). Use the characters space or tab to separate the values in each line. Based on the hostZone value (cloud-span.aws.york.ac.uk), the domain names of each instance created will be similar to (assuming the instances names used above):
 
 instance01.cloud-span.aws.york.ac.uk\
 instance02.cloud-span.aws.york.ac.uk\
-..\
+..
 
 Obviously, the source/blueprint Amazon Machine Image (AMI) must exist in, or be accessible by, your AWS account; you must have configured the securityGroupId, the subnetId and the hostZoneId.
 
@@ -135,7 +137,7 @@ group		BIOL\
 project		cloud-span\
 status		prod\
 pushed_by 	manual\
-defined_in	manual\
+defined_in	manual
 
 You can change the values on the right column (but not on the left column). The value of the key "name" (instance) is overwritten with the actual name of each instance. Use the characters space or tab to separate the values in each line. 
 
@@ -150,7 +152,7 @@ login-key-instance01.txt\
 domain-name-create-instance02.txt\
 elastic-IPaddress-for-instance02.txt\
 login-key-instance02.txt\
-..\
+..
 
 For easy access of all these (results) files, all the files about "domain-name-create-instance...txt" are placed in the same directory (defined below), all the files about "elastic-IPaddress-for-instance...txt" are placed in the same directory, and so on. 
 
@@ -164,7 +166,7 @@ instances-creation-output	  (created by aws_instances_launch.sh)\
 ip-addresses-allocation-output	  (created by aws_elasticIPs_allocate.sh)\
 ip-addresses-association-output	  (created by aws_elasticIPs_associate2instance.sh)\
 login-keys			  (created by aws_loginKeyPair_create.sh)\
-login-keys-creation-output	  (created by aws_loginKeyPair_create.sh)\
+login-keys-creation-output	  (created by aws_loginKeyPair_create.sh)
 
 Thus, the directory "../outputs/domain-names-creation-output/" contains all the files: domain-name-create-instance01.txt, domain-name-create-instance02.txt, etc. Similarly for the other  "..-output" directories in the list above, each contain all the results file of each instance regading elastic IP addresses, or login-keys, etc.
 
@@ -179,7 +181,7 @@ ip-addresses-deallocate-output20211215.092841	(aws_elasticIPs_deallocate.sh)\
 ip-addresses-disassociate-output20211214.134358	(aws_elasticIPs_disassociate.sh)\
 ip-addresses-disassociate-output20211215.092841	(aws_elasticIPs_disassociate.sh)\
 login-keys-delete-output20211214.134338		(aws_loginKeyPair_delete.sh)\
-login-keys-delete-output20211215.092841		(aws_loginKeyPair_delete.sh)\
+login-keys-delete-output20211215.092841		(aws_loginKeyPair_delete.sh)
 
 The only difference to the creation of output directories above (for results of creating instances or other resources) is that, output directories for results of deleting instances or other resources are named with the date of creation as a suffix.
 
@@ -195,7 +197,7 @@ All scripts display in the screen and log onto the relevant file the results of 
 
 "Error disassociating elasticIP, instance: instance11-gc; ...".
 
-This is because instances are deleted first and, by the time that script is run, the association of IP addresses to instances is no longer valid/existant. This is more likely to happen if instance is stopped. If it is running, then stopping it before deleting it will take longer and disassociating the IP address will most like be successful. 
+This is because instances are deleted first and, by the time that script is run, the association of IP addresses to instances is no longer valid/existant. This is more likely to happen when an instance is stopped. If it is running, then stopping it before deleting it will take longer and disassociating the IP address will most like be successful. 
 
 ### Technical note 2:
 

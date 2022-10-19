@@ -130,8 +130,8 @@ case $# in
 	# aws ec2 modify-volume --dry-run --size "$diskSizeToBe" --volume-id "$volumeID" >> $logfile 2>&1  THIS one without dry-run
 	message "aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1" $logfile
 
-	echo dummy aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID ### >> $logfile 2>&1 .todo delete this line and uncomment next one
-	### aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1
+	#echo dummy aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID ### >> $logfile 2>&1 .todo delete this line and uncomment next one - DONE 
+	aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1
 	if [ $? -eq 0 ]; then
 	    message "`colour gl Success` extending disk size but must wait for optimisation phase:" $logfile
 	else
@@ -146,9 +146,9 @@ case $# in
 	    # NB we cannot read the status from the $logfile as before with "!visited" within awk because the value "optimising" we
 	    # are waiting for will be the last one in that file and hence will be ignored (deleted by "!visited"). Better with a
 	    # pipe so that only the last state is processed. .todo Perhaps i should use above  a pipe too.
-	    echo optimising dummy and breaking ##.todo delete this and next lines and uncomment the following  one
-	    break;
-	    ### status=`aws ec2 describe-volumes-modifications --volume-ids $volumeID | awk -F " " '$1 == "\"ModificationState\":" {print substr($2, 2, length($2) -3)}'`
+	    #echo optimising dummy and breaking ##.todo delete this and next line and uncomment the following  one - DONE
+	    #break;
+	    status=`aws ec2 describe-volumes-modifications --volume-ids $volumeID | awk -F " " '$1 == "\"ModificationState\":" {print substr($2, 2, length($2) -3)}'`
 	    if [[ "$status" == "optimizing" ]]; then		### "optimizing" is enough see below, "completed" is DONE
 		message "Status: $status is enough, proceeding .." $logfile
 		break ;
@@ -164,7 +164,7 @@ case $# in
         # very powerful bash
 	#message "Checking new size with `lsblk /dev/xvda | awk -F " " '$1 == "xvda" {print substr($4, 1, length($4) -1)}'`" $logfile
 	### Check disk volume has been increased and if so increase partition:
-	#------------- OLD Version -------------------
+	#------------- OLD Version for t2. instances disk partition and file system named xdva and xvda1 -------------------
 #	message "Checking new size with \"lsblk /dev/xvda\":"
 #	lsblk /dev/xvda  >> $logfile 2>&1
 #	newDiskSize=`awk -F " " '$1 == "xvda" {print substr($4, 1, length($4) -1)}' $logfile`
@@ -180,9 +180,10 @@ case $# in
 #	sudo resize2fs /dev/xvda1  | tee -a $logfile		### perhaps checking the new file system and printing to the user. 
 #	df -h .	 | tee -a $logfile				### to show the new size of the file system
 #	#------------- OLD Version END -------------------
-	message "Checking new size with command \"lsblk\":"
-	lsblk /dev/xvda  >> $logfile 2>&1
-	newDiskSize=`awk -F " " '$1 == "xvda" {print substr($4, 1, length($4) -1)}' $logfile`
+	# NEW VERSION for t3. instances disk partition and file system named nvme0n1 and nvme0n1p1
+	message "Checking new size with command \"/dev/nvme0n1\":"
+	lsblk /dev/nvme0n1  >> $logfile 2>&1
+	newDiskSize=`awk -F " " '$1 == "nvme0n1" {print substr($4, 1, length($4) -1)}' $logfile`
 	message "newDiskSize $newDiskSize" $logfile
 	if [ $newDiskSize -le $volumeSize ]; then
 	    message "Sorry, the disk size could not be increased. " $logfile
@@ -191,8 +192,8 @@ case $# in
 	   
 	# increase partition
 	message "Increasing partition and file system:"
-	sudo growpart /dev/xvda 1  | tee -a $logfile		### perhaps checking again the new size (ec2 user guide p. 1563-4)
-	sudo resize2fs /dev/xvda1  | tee -a $logfile		### perhaps checking the new file system and printing to the user. 
+	sudo growpart /dev/nvme0n1 1  | tee -a $logfile		### perhaps checking again the new size (ec2 user guide p. 1563-4)
+	sudo resize2fs /dev/nvme0n1p1  | tee -a $logfile	### perhaps checking the new file system and printing to the user. 
 	df -h .	 | tee -a $logfile				### to show the new size of the file system
 	exit 0
 	;;

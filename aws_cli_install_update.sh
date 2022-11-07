@@ -20,11 +20,11 @@ then
 fi
 
 echo
-echo Downloading from "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip"
+echo Downloading from "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip"
 echo
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip		# creates directory ~/software/others/aws/   which has some instructions
-sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update  #sudo ./aws/instal # first time only
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update  
 
 echo Cleaning: deleting awscliv2.zip and aws tmp directory for download.
 rm awscliv2.zip

@@ -541,11 +541,11 @@ install_kraken2 $logfile		### ok 2 (11) is installed and database is too (not in
 # install_krakenTools $logfile		### NO -
 # install_canu $logfile			### NO -
 update_bwa $logfile			### ok 3 (06) installed into the main conda (with this script)
-# install_minimap2 $logfile		### NO -
+install_minimap2 $logfile		### ok - required by medaka
 install_flye $logfile			### ok 4 (04) installed into main conda (NOT TRUE: with this script - not in conda)
 install_htslib $logfile			### ok 5 (07) needed by samtools
 install_samtools $logfile		### ok 5 (07) installed into the main conda (NOT TRUE: with this script - not in conda)
-# install_bcftools $logfile		### NO -
+install_bcftools $logfile		### ok - required by medaka
 install_fastqc $logfile			### ok 6 (01) installed in main conda (with this script in conda main)
 install_kraken_biom $logfile		### ok 7 (12) installed on the instance (as it is).
 #---------------------------------------DONE
@@ -556,8 +556,8 @@ install_kraken_biom $logfile		### ok 7 (12) installed on the instance (as it is)
 # install_qiime2 $logfile		### NO -
 install_metabat2 $logfile		### ok 8 (13) DONE-MANUAL ** managed to install into the main conda (this script intalled it with docker - to reinstall, installed version 2:2.15 -- I could install  version 2:2.15 too with conda install -c bioconda metabat2 -- https://anaconda.org/bioconda/metabat2
 check_hmmer $logfile			### ok 9 - checkm assumes these to be installed, installed by metagenomics sript ubuntu2v.sh
-# install_prodigal $logfile		### NO -
-# install_pplacer $logfile		### NO -
+install_prodigal $logfile		### ok 9 - checkm assumes these to be installed
+install_pplacer $logfile		### NO 9 - 
 install_checkm $logfile			### ok 9 (14) DONE-MANUAL ** installed incorrectly - installed in conda but needs reinstall into conda main (version is CheckM v1.2.1 in conda,  version i installed with pin CheckM v1.2.1 )
 install_prokka $logfile			### ok 10 (15) DONE-MANUAL with "sudo apt install prokka" in ubuntu script ** docker install wrong - currently in conda but needs reinstall into conda main (I installed it with docker - need to reinstall in conda in the main or from compilation but NOT with DOCKER - it can be with apt install prokka.)
 #================= NEW PROGRAMS ==========================

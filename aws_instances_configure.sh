@@ -51,14 +51,14 @@ do
     ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$instance.$hostZone"
 
     echo -e "`colour bl "Please wait for SSH server (you may see some 'Connection timed out/Connection refused' messages)"`";
-    ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hola. Bye.\"; exit "
+    ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "
     sshON=$?
     
     while [[ sshON -ne 0 ]]
     do
 	echo -n "."
 	sleep 3
-	ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hola. Bye.\"; exit "
+	ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "
 	sshON=$?
 	if [[ $sshON -eq 0 ]]; then
 	    echo -e "`colour greenlight "SSH server is ready"`";
@@ -87,6 +87,6 @@ do
     ssh -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "sudo hostnamectl set-hostname $instance.$hostZone"
 
     echo Logging as csuser
-    ssh -i $loginKeysDir/login-key-$keyfile.pem csuser@$instance.$hostZone "echo \"Hi. Bye from $instance\"; ls; exit "
+    ssh -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem csuser@$instance.$hostZone "echo \"Hi from CSUSER at $instance\"; ls; echo \"Bye.\";  exit "
 done
 

@@ -19,7 +19,7 @@ function message() {
 function message_use() {
     printf "%b\n" \
 	   "`colour lb $(basename $0)` installs or updates the AWS CLI and the AWS completer locally."\
-	   " " \
+	   " "
 }
 
 message_use

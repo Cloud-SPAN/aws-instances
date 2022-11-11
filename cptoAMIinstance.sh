@@ -83,8 +83,9 @@ case $# in
 		#	 gc_run02_data/outputs/login-keys/login-key-instance017.pem
 		# get rid of .pem at the end
 		machine=${loginKeyFile%.pem}    
-		# from the beginning/prefix (#), get rid of anything  (*) up to - (replace it with nothing /}) to get instantance017
-		machine=${machine/#*-/}
+		# then from the beginning/prefix (#), get rid of anything  (*) up to login-key- (replace it with nothing /})
+		# to get instantance017
+		machine=${machine/#*login-key-/}
 		# What kind of copy is it gonna be: file or directory
 		if [ -d $localFileDir ]; then   ### DIRECTORY
 		    # check whether remote directory exists

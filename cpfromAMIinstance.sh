@@ -74,10 +74,12 @@ case $# in
 	machine="to define"
 	# Check the login key file specified exists. WE ARE ASSUMING IS a .pem file below. It will fail if not.
 	if [ -f $loginKeyFile ]; then
-	    ### login key file is an existing regular file (-f); now get the machine name from that file name delete .pem extension
+	    ### login key file is an existing regular file (-f); now get the machine name from that file name delete:
+	    # get rid of .pem at the end
 	    machine=${loginKeyFile%.pem}    
-	    # from the beginning/prefix (#), get rid of anything  (*) up to - (replace it with nothing /}) to get instantance017
-	    machine=${machine/#*-/}
+	    # then from the beginning/prefix (#), get rid of anything  (*) up to login-key- (replace it with nothing /})
+	    # to get instantance017    
+	    machine=${machine/#*login-key-/}
 	    if ssh -i "$loginKeyFile" "$user@$machine.$domain" "test -e $remoteFileDir" ; then # no [] because it is a cmd
 		# remote file or directory exists
 		if ssh -i "$loginKeyFile" "$user@$machine.$domain" "test -f $remoteFileDir" ; then # idem

@@ -32,18 +32,23 @@ elif [ "$option" == "n" -o "$option" == "N" ]; then
     exit 1;
 fi
 
-message "\nInstalling/updating `colour lb aws` (CLI)"
+message "\nInstalling/updating `colour lb aws` (CLI):\n"
 
+cd	## do it in home directory
 mkdir ___tmpaws
 cd  ___tmpaws
+
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip		# creates directory aws in current directory
-./aws/install --bin-dir $HOME/.local/binaws --install-dir $HOME/.local/aws-cli --update
+./aws/install --bin-dir $HOME/.local/bincsaws --install-dir $HOME/.local/aws-cli --update
 
-message "Cleaning: deleting awscliv2.zip and aws tmp directory for download."
-rm awscliv2.zip
-rm -fr aws
+message "\nCleaning: deleting temporary download directory."
+#rm awscliv2.zip
+#rm -fr aws
+cd
+rm -fr  ___tmpaws
 
-message "Installed version of aws:"
+message "\nInstalled version of aws:\n"
 aws --version
+
 cd				### back home directory

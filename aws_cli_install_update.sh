@@ -39,16 +39,15 @@ mkdir ___tmpaws
 cd  ___tmpaws
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip		# creates directory aws in current directory
-./aws/install --bin-dir $HOME/.local/bincsaws --install-dir $HOME/.local/aws-cli --update
+unzip awscliv2.zip	      # creates directory aws in current directory
+
+./aws/install --bin-dir $HOME/.local/bincsaws --install-dir $HOME/.local/aws-cli2 --update
+echo "complete -C '/home/csuser/.local/bincsaws/aws_completer' aws" >> ~/.bashrc
 
 message "\nCleaning: deleting temporary download directory."
-#rm awscliv2.zip
-#rm -fr aws
-cd
+cd  			### back home directory to clean download directory
 rm -fr  ___tmpaws
 
 message "\nInstalled version of aws:\n"
 aws --version
 
-cd				### back home directory

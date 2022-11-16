@@ -57,7 +57,6 @@ do
     
     while [[ sshON -ne 0 ]]
     do
-	echo  "Trying with  ConnectTimeout=10"
 	sleep 3
 	###ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "
 	ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "

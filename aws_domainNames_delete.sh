@@ -21,8 +21,10 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 
 # directory for the results of deallocating addresses labelled with the date and time
 outputsDirThisRun=${outputsDir}/domain-names-delete-output`date '+%Y%m%d.%H%M%S'`
-hostZone=cloud-span.aws.york.ac.uk	# from the AWS Console - Route 53 - Host Zone
-hostZoneID=Z012538133YPRCJ0WP3UZ	# idem
+#hostZone=cloud-span.aws.york.ac.uk	# from the AWS Console - Route 53 - Host Zone
+#hostZoneID=Z012538133YPRCJ0WP3UZ	# idem
+hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
+hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
 
 echo -e "`colour cyan "Deleting domain names:"`"
 

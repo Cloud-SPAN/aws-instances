@@ -26,21 +26,21 @@ The bash scripts below invoke AWS services through the aws command line interfac
 -   aws_loginKeyPair_create.sh
 -   aws_loginKeyPair_delete.sh
 -   colours_functions.sh
--   instances_create.sh
--   instances_delete.sh
--   instances_start.sh
--   instances_stop.sh
+-   csinstances_create.sh
+-   csinstances_delete.sh
+-   csinstances_start.sh
+-   csinstances_stop.sh
 
-The last four scripts, instances_create.sh, instances_delete.sh instances_start.sh and instances_stop.sh are meant to be invoked by the user as described below. The scripts named "aws_...sh" are meant to be invoked by the script instances_create.sh or instances_delete.sh, but can be invoked individually for debugging or improving purposes. The script colour_functions.sh provides (is "sourced" by) the other scripts with text colouring functions for the logging output of "the other scripts" to be easier to read.
+The last four scripts, csinstances_create.sh, csinstances_delete.sh csinstances_start.sh and csinstances_stop.sh are meant to be invoked by the user as described below. The scripts named "aws_...sh" are meant to be invoked by the script csinstances_create.sh or csinstances_delete.sh, but can be invoked individually for debugging or improving purposes. The script colour_functions.sh provides (is "sourced" by) the other scripts with text colouring functions for the logging output of "the other scripts" to be easier to read.
 
 ## Running the scripts 
 
 The scripts are to be invoked thus:
 ```
-$ instances_create.sh  instancesNamesFile
-$ instances_stop.sh    instancesNamesFile
-$ instances_start.sh   instancesNamesFile
-$ instances_delete.sh  instancesNamesFile
+$ csinstances_create.sh  instancesNamesFile
+$ csinstances_stop.sh    instancesNamesFile
+$ csinstances_start.sh   instancesNamesFile
+$ csinstances_delete.sh  instancesNamesFile
 ```
 The scripts named "aws...sh" are invoked the same way, for example:
 
@@ -58,7 +58,7 @@ The scripts were designed and organised around the names of the instances to cre
 
 For example, after running:
 
-$ instances_create.sh instancesNamesFile
+$ csinstances_create.sh instancesNamesFile
 
 the following files will be created for each instance specified in the input file:
 
@@ -85,7 +85,7 @@ The scripts can be stored in your current directory (aws-stuff) or in your local
 aws-stuff $ echo $PATH
 .:/home/jorge/bin:/home/jorge/.local/bin:.... other bin directories
 
-The dot . at the beginning represents the current directory, which means that, when running a script in the current directory (../aws-stuff), I can run it thus "instances_create.sh .." instead of  "./instances_create.sh ..".
+The dot . at the beginning represents the current directory, which means that, when running a script in the current directory (../aws-stuff), I can run it thus "csinstances_create.sh .." instead of  "./csinstances_create.sh ..".
 
 ### Inputs
 
@@ -158,7 +158,7 @@ For easy access of all these (results) files, all the files about "domain-name-c
 
 These "same directory"/ies are handled automatically as follows. 
 
-When you run a script, the outputs directory will be automatically created (if it doesn't exist) at the same level of the inputs directory (in our example: "..aws-stuff/gc_run02_data/outputs"). And within the outputs directory, the following directories will be created by the script in parenthesis when the script is invoked either by the script instances_create.sh or by the user manually:
+When you run a script, the outputs directory will be automatically created (if it doesn't exist) at the same level of the inputs directory (in our example: "..aws-stuff/gc_run02_data/outputs"). And within the outputs directory, the following directories will be created by the script in parenthesis when the script is invoked either by the script csinstances_create.sh or by the user manually:
 
 aws-stuff $ ls gc_run02_data/outputs/\
 domain-names-creation-output	  (created by aws_domainNames_create.sh)\
@@ -170,7 +170,7 @@ login-keys-creation-output	  (created by aws_loginKeyPair_create.sh)
 
 Thus, the directory "../outputs/domain-names-creation-output/" contains all the files: domain-name-create-instance01.txt, domain-name-create-instance02.txt, etc. Similarly for the other  "..-output" directories in the list above, each contain all the results file of each instance regading elastic IP addresses, or login-keys, etc.
 
-The scripts, output directories, and results files just described are related to *creating* instances or resources for instances. When *deleting* instances or resources of (allocated to) instances, the relevant scripts also create output directories to store the files with the results of deleting an instance or a resource of an instance. The output directories are also created within the outputs directory (gc_run02_data/outputs/).  These are examples of output directories and the scripts that creates them when the script is invoked either by the script instances_delete.sh or by the user manually:
+The scripts, output directories, and results files just described are related to *creating* instances or resources for instances. When *deleting* instances or resources of (allocated to) instances, the relevant scripts also create output directories to store the files with the results of deleting an instance or a resource of an instance. The output directories are also created within the outputs directory (gc_run02_data/outputs/).  These are examples of output directories and the scripts that creates them when the script is invoked either by the script csinstances_delete.sh or by the user manually:
 
 domain-names-delete-output20211214.134348	(aws_domainNames_delete.sh)\
 domain-names-delete-output20211215.092841	(aws_domainNames_delete.sh)\
@@ -187,7 +187,7 @@ The only difference to the creation of output directories above (for results of 
 
 Handling such a suffix allows us to better keep track of what was deleted and when. For example, we may want to delete only a number of instances and their resources in the middle of the course because of cancellations. To do so, we only need to create another instancesNames.txt file, say instancesNamesFile-Deletes20220321.txt, and use it thus:
 
-aws-stuff $ instances_delete.sh  gc_run02_data/inputs/instancesNamesFile-Deletes20220321.txt
+aws-stuff $ csinstances_delete.sh  gc_run02_data/inputs/instancesNamesFile-Deletes20220321.txt
 
 And only the instances specified in that file will be deleted. And we will keep record in our local machine of what happened when.
 

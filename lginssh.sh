@@ -17,8 +17,8 @@ function error_in_use() {
     echo "- the name of the instance to log you in is extracted from the name of the .pem file provided.";
     echo " ";    
     echo "- Examples:";
-    echo "  $(basename $0) gc_run02_data/outputs/login-keys/login-key-instance017.pem  csuser";
-    echo "  $(basename $0) gc_run02_data/outputs/login-keys/login-key-instance017.pem  ubuntu";
+    echo "  $(basename $0) courses/genomics01/outputs/login-keys/login-key-instance017.pem  csuser";
+    echo "  $(basename $0) courses/genomics01/outputs/login-keys/login-key-instance017.pem  ubuntu";
     echo " ";
     echo "- NB: \".cloud-span.aws.york.ac.uk\" is assumed as the domain name suffix, hence the logging is thus:";
     echo "  csuser@instance017.cloud-span.aws.york.ac.uk   or";
@@ -30,7 +30,11 @@ case $# in
     2) # two parameters given as expected. Check the login key file specified exists.
 	loginKeyFile=$1
 	user=$2
-	domain="cloud-span.aws.york.ac.uk"
+	### .todo handle domain name from inputs/resourcesID.txt file
+	### domain="cloud-span.aws.york.ac.uk"
+	### domain="cloud-span.link"
+	inputsDir=${1%/outputs*}/inputs
+	domain=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 	machine="to define below"
 	if [ -f $loginKeyFile ]; then
 	    # file exists. Check the user given is csuser or ubuntu

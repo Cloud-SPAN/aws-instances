@@ -52,6 +52,7 @@ do
 
     echo -e "`colour bl "Please wait for SSH server (you may see a few 'Connection timed out/Connection refused' messages)"`";
     ### ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "
+    echo ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "
     ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "
     sshON=$?
     

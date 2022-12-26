@@ -38,7 +38,7 @@ if [ ! -d $outputsDir/login-keys ]; then
     mkdir -p $outputsDir/login-keys
 fi
 
-tags=( `cat $inputsDir/yorkTags.txt` )   # mapfile tags < $workdir/inputs/yorkTags.txt more difficult: two items per element
+tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $workdir/inputs/tags.txt more difficult: two items per element
 # we just need values: 1, 3, 5, .. (not the key names: 0, 2, 6 ..) 
 tag_name_value=${tags[1]}	# redefined below but better to read them as the others
 tag_group_value=${tags[3]}

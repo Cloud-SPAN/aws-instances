@@ -25,7 +25,7 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-tags=( `cat $inputsDir/yorkTags.txt` )   # mapfile tags < $inputsDir/yorkTags.txt is more difficult: two items per element
+tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $inputsDir/tags.txt is more difficult: two items per element
 # we just need the tag values: 1, 3, 5, .. (not the tag key names: 0, 2, 6 ..) 
 tag_name_value=${tags[1]}	  # redefined below but better to read them as the others
 tag_group_value=${tags[3]}

@@ -16,13 +16,12 @@ function error_in_use() {
     echo " ";    
     echo "- the name of the instance to log you in is extracted from the name of the .pem file provided.";
     echo " ";    
+    echo "- the domain name is extracted from the inputs/resourcesIDs.txt file.";
+    echo " ";    
     echo "- Examples:";
     echo "  $(basename $0) courses/genomics01/outputs/login-keys/login-key-instance017.pem  csuser";
     echo "  $(basename $0) courses/genomics01/outputs/login-keys/login-key-instance017.pem  ubuntu";
     echo " ";
-    echo "- NB: \".cloud-span.aws.york.ac.uk\" is assumed as the domain name suffix, hence the logging is thus:";
-    echo "  csuser@instance017.cloud-span.aws.york.ac.uk   or";
-    echo "  ubuntu@instance017.cloud-span.aws.york.ac.uk";
 }
 
 ### start:
@@ -30,9 +29,7 @@ case $# in
     2) # two parameters given as expected. Check the login key file specified exists.
 	loginKeyFile=$1
 	user=$2
-	### .todo handle domain name from inputs/resourcesID.txt file
-	### domain="cloud-span.aws.york.ac.uk"
-	### domain="cloud-span.link"
+	### get domain from inputs/resourcesID.txt file
 	inputsDir=${1%/outputs*}/inputs
 	domain=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 	machine="to define below"

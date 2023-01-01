@@ -4,7 +4,7 @@
 source colours_functions.sh	 # to add colour to some messages
 
 case $# in
-    1) echo -e "`colour greenlight ${basename $0}` is starting instances specified in input file `colour brownlight $1`";;
+    1) echo -e "`colour greenlight $(basename $0)` is starting instances specified in input file `colour brownlight $1`";;
     0|*) echo -e "`colour gl $(basename $0)` starts instances previously created."
 	 echo " "
 	 echo -e "`colour bl "Usage:   $(basename $0)  instancesNamesFile"`"

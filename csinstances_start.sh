@@ -4,13 +4,13 @@
 source colours_functions.sh	 # to add colour to some messages
 
 case $# in
-    1) echo -e "`colour greenlight ${0##./}` is starting instances specified in input file `colour brownlight $1`";;
-    0|*) echo -e "`colour gl ${0##./}` starts instances previously created."
+    1) echo -e "`colour greenlight ${basename $0}` is starting instances specified in input file `colour brownlight $1`";;
+    0|*) echo -e "`colour gl $(basename $0)` starts instances previously created."
 	 echo " "
-	 echo -e "`colour bl "Usage:   ${0##./}   instancesNamesFile"`"
+	 echo -e "`colour bl "Usage:   $(basename $0)  instancesNamesFile"`"
 	 echo ""
 	 echo "  - provide the full or relative path to the file containing the names of the instances to start."
-	 echo -e "  - for example:  `colour bl "${0##./}  instances_data/inputs/instancesNames.txt"`"
+	 echo -e "  - for example:  `colour bl "$(basename $0)  instances_data/inputs/instancesNames.txt"`"
 	 echo "  - an outputs directory will be created at same level of the inputs directory."
 	 echo "    where the results of invoked aws commands will be stored."
 	 exit 2;;

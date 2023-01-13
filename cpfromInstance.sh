@@ -16,7 +16,7 @@ function message() {
 
 function message_use() {
     printf "%b\n" \
-	   "`colour lb $(basename $0)` copies a file/directory from `colour lb csuser` in an Amazon Machine Image instance to the local machine." \
+	   "`colour lb $(basename $0)` copies a file/directory from `colour lb csuser` account in an AWS instance to the local machine." \
 	   " " \
 	   "usage: " \
 	   " " \

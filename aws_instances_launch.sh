@@ -88,6 +88,7 @@ done
 ec2-54-216-187-245.eu-west-1.compute.amazonaws.com
 
 - ref
+  https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
   https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
 - parameters, all of them are after the examples
 - examples:

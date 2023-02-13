@@ -31,12 +31,14 @@ do
     domainNameChangeID=`awk -F " " '$1 == "\"Id\":" {print substr($2, 2, length($2) -3)}' $domainNameCreationFile`
     
     echo -n "Checking $instance.$hostZone is reachable: "
-    tmpfile="/tmp/domainName${instance%-src*}-status.txt"
+    ### tmpfile="/tmp/domainName${instance%-src*}-status.txt"
     while true 
     do
 	echo -n "."
-	aws route53  get-change --id $domainNameChangeID > $tmpfile	# domainNameChangeID = /change/C3QYC83OA0KX5K
-	domainStatus=`awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}' $tmpfile`
+	### worked fine but better withoug /tmpfile because in windows users it will not work.
+	### aws route53  get-change --id $domainNameChangeID > $tmpfile	# domainNameChangeID = /change/C3QYC83OA0KX5K
+	### domainStatus=`awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}' $tmpfile`
+	domainStatus=`aws route53  get-change --id $domainNameChangeID | awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}'`
 	if [[ $domainStatus == "INSYNC" ]]; then
 	    #INSYNC is reachable: https://aws.amazon.com/premiumsupport/knowledge-center/simple-resource-record-route53-cli/
 	    echo " : status $domainStatus (reachable)";

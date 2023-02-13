@@ -44,12 +44,14 @@ do
     echo -e "`colour bl "eip:"` $eip ; `colour brown eipAllocationId:` $eipAllocID; `colour b iid:` $instanceID"
 
     echo -n "Checking ${instance%-src*} is running: "
-    tmpfile="/tmp/${instance%-src*}.txt"
+    ### tmpfile="/tmp/${instance%-src*}.txt"
     while true 
     do
 	echo -n "."
-	aws ec2 describe-instance-status --instance-id $instanceID > $tmpfile
-	instanceState=`awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}' $tmpfile`
+	### worked fine but better withoug /tmpfile because in windows users it will not work.
+	### aws ec2 describe-instance-status --instance-id $instanceID > $tmpfile
+	### instanceState=`awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}' $tmpfile`
+	instanceState=`aws ec2 describe-instance-status --instance-id $instanceID | awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}'`
 	if [[ $instanceState == "16" ]]; then
 	    #16 is running: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-instance-status.html
 	    echo " - instanceState $instanceState (running)"; break ;

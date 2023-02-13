@@ -34,7 +34,7 @@ tag_status_value=${tags[7]}
 tag_pushedby_value=${tags[9]}
 tag_definedin_value=${tags[11]}
 
-mapfile instancesNames < $instancesNamesFile
+instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do

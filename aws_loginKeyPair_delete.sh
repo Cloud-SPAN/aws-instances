@@ -27,7 +27,7 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-mapfile instancesNames < $instancesNamesFile
+instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do

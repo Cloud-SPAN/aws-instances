@@ -1,18 +1,6 @@
 #!/bin/bash
-# create (run!?) AMI instances
-# NB minimum parameters to specify are:
-# --key-name		a must: the specified key is injected into the ubuntu user ~/.ssh/authorized_keys
-# --image-id		a must: this is the virtual machine: CSGC-AMI-04-UsrKeyMng-NoAuthKeys (ami-id ami-05be6a5ff8a9091e0)
-# --instance-type	a must: this is the hardware t2.small
-# --security-group
-# --subnet-ids
-#
-# and for cloud-span instances (like Data Carpentry's)
-# --security-group-ids <value>			CSGC Security Group, id Security group ID sg-0771b67fde13b3899
-#
-# NB ResourceType=instance could instead be 
-#    ResourceType=volume			# do the dry run
-# vpc-01e55c4a61cab7cd1
+# create (run!?) AWS instances based on specified configuration and files and the following reference
+# https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
 #------------------------------------------------
 source colours_functions.sh	 # to add colour to some messages
 
@@ -53,7 +41,8 @@ resource_instance_type=${resources[3]}
 resource_security_group_ids=${resources[5]}
 resource_subnet_id=${resources[7]}
 
-mapfile instancesNames < $instancesNamesFile
+#mapfile instancesNamesMapfile < $instancesNamesFile   ### does not work in macOS
+instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do
@@ -82,71 +71,3 @@ do
 	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
     fi
 done
-
-# the following is just comments:
-: <<'END_OF_COMMENTS'
-ec2-54-216-187-245.eu-west-1.compute.amazonaws.com
-
-- ref
-  https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
-  https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
-- parameters, all of them are after the examples
-- examples:
-1)  
-aws ec2 run-instances --image-id ami-0abcdef1234567890  --instance-type t2.micro \
-    --key-name MyKeyPair
-
-Example 4: To launch an instance and add tags on creation
-aws ec2 run-instances \
-    --image-id ami-0abcdef1234567890 \
-    --instance-type t2.micro \
-    --count 1 \
-    --subnet-id subnet-08fc749671b2d077c \
-    --key-name MyKeyPair \
-    --security-group-ids sg-0b0384b66d7d692f9 \
-    --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]'
-
-- PARAMETERS:
-run-instances
-[--block-device-mappings <value>]
-[--image-id <value>]
-[--instance-type <value>]
-[--ipv6-address-count <value>]
-[--ipv6-addresses <value>]
-[--kernel-id <value>]
-[--key-name <value>]
-[--monitoring <value>]
-[--placement <value>]
-[--ramdisk-id <value>]
-[--security-group-ids <value>]
-[--security-groups <value>]
-[--subnet-id <value>]
-[--user-data <value>]
-[--additional-info <value>]
-[--client-token <value>]
-[--disable-api-termination | --enable-api-termination]
-[--dry-run | --no-dry-run]
-[--ebs-optimized | --no-ebs-optimized]
-[--iam-instance-profile <value>]
-[--instance-initiated-shutdown-behavior <value>]
-[--network-interfaces <value>]
-[--private-ip-address <value>]
-[--elastic-gpu-specification <value>]
-[--elastic-inference-accelerators <value>]
-[--tag-specifications <value>]
-[--launch-template <value>]
-[--instance-market-options <value>]
-[--credit-specification <value>]
-[--cpu-options <value>]
-[--capacity-reservation-specification <value>]
-[--hibernation-options <value>]
-[--license-specifications <value>]
-[--metadata-options <value>]
-[--enclave-options <value>]
-[--count <value>]
-[--secondary-private-ip-addresses <value>]
-[--secondary-private-ip-address-count <value>]
-[--associate-public-ip-address | --no-associate-public-ip-address]
-[--cli-input-json <value>]
-[--generate-cli-skeleton <value>]
-END_OF_COMMENTS

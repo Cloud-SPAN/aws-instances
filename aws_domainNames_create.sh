@@ -30,7 +30,7 @@ hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
 echo -e "`colour cyanlight "Using hostZone"`: $hostZone (hostZoneID: $hostZoneID)"
 
-mapfile instancesNames < $instancesNamesFile
+instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do

@@ -34,9 +34,9 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-mapfile instancesIDs < $instancesNamesFile
+instancesNames=( `cat $instancesNamesFile` )
 
-for instance in ${instancesIDs[@]}
+for instance in ${instancesNames[@]}
 do
     # get the elastic ip out of the instance id.
     subDomainName=${instance%-src*}		# get rid of suffix

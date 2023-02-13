@@ -17,7 +17,7 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 loginKeysDir=$outputsDir/login-keys
 
-mapfile instancesNames < $instancesNamesFile
+instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do

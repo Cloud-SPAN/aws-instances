@@ -1,18 +1,5 @@
 #!/bin/bash
-# create (run!?) AMI instances
-# NB minimum parameters to specify are:
-# --key-name		a must: the specified key is injected into the ubuntu user ~/.ssh/authorized_keys
-# --image-id		a must: this is the virtual machine: CSGC-AMI-04-UsrKeyMng-NoAuthKeys (ami-id ami-05be6a5ff8a9091e0)
-# --instance-type	a must: this is the hardware t2.small
-# --security-group
-# --subnet-ids
-#
-# and for cloud-span instances (like Data Carpentry's)
-# --security-group-ids <value>			CSGC Security Group, id Security group ID sg-0771b67fde13b3899
-#
-# NB ResourceType=instance could instead be 
-#    ResourceType=volume			# do the dry run
-# vpc-01e55c4a61cab7cd1
+# delete/terminate (run!?) AWS instances
 #------------------------------------------------
 source colours_functions.sh	 # to add colour to some messages
 
@@ -37,7 +24,7 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-mapfile instancesNames < $instancesNamesFile
+instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do

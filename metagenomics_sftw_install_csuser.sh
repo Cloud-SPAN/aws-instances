@@ -574,7 +574,7 @@ fi
 message "All metagenomics software (25 applications) is about to be installed."
 message "This script should only be run once before creating the metagenomics AMI."
 message "Deletes all software previously installed in ~/software and installs the new versions as at 20220930."
-read -N 1 -p "Do you want to continue (y/n)?: " option
+read -n 1 -p "Do you want to continue (y/n)?: " option
 
 if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
     message "\nWrong option $option. Script cancelled."

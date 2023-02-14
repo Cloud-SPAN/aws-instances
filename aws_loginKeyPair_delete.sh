@@ -44,34 +44,3 @@ do
     fi
 done
 exit 0
-
-: <<COMMENTS
-- ref
-  https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-key-pair.html
-
-- example:
-  aws ec2 delete-key-pair --key-name MyKeyPair
-
-- Synopsis:
-  delete-key-pair
---key-name <value>
-[--dry-run | --no-dry-run]
-[--key-type <value>]
-[--tag-specifications <value>]
-[--cli-input-json <value>]
-[--generate-cli-skeleton <value>]
-
-echo tag_name_key=${tags[0]}		# 
-echo tag_name_value=${tags[1]}	# redefined below but better to read them as the others
-echo tag_group_key=${tags[2]}
-echo tag_group_value=${tags[3]}
-echo tag_project_key=${tags[4]}
-echo tag_project_value=${tags[5]}
-echo tag_status_key=${tags[6]}
-echo tag_status_value=${tags[7]}
-echo tag_pushedby_key=${tags[8]}
-echo tag_pushedby_value=${tags[9]}
-echo tag_definedin_key=${tags[10]}
-echo tag_definedin_value=${tags[11]}
-
-COMMENTS

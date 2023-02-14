@@ -23,7 +23,7 @@ function message_use() {
 }
 
 message_use
-read -N 1 -p "Do you want to continue (y/n)?: " option
+read -n 1 -p "Do you want to continue (y/n)?: " option
 if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
     message "\nWrong option $option. Script cancelled." $logfile
     exit 1;

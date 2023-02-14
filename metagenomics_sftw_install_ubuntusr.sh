@@ -20,7 +20,7 @@ logfile=logs/metagenomics_sftwre_install_ubuntuuser.sh`date '+%Y%m%d.%H%M%S'`.tx
 message "System is about to be configured and upgraded for csuser to install metagenomics software."
 message "This script and the software install by csuser is prior to creating the metagenomics AMI."
 message "`colour red "*** NB"`: the `colour lb aws` cli must have been configured already - cancel installation if not."
-read -N 1 -p "Do you want to continue (y/n)?: " option
+read -n 1 -p "Do you want to continue (y/n)?: " option
 
 if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
     message "\nWrong option $option. Script cancelled." $logfile

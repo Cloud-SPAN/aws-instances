@@ -22,7 +22,7 @@ message "System is about to be upgraded and configured for csuser to install met
 message "This script and the software install by csuser is prior to creating the metagenomics AMI."
 message "`colour red "*** NB"`: the `colour lb aws` cli must have been configured already - cancel installation if not."
 message "`colour red "*** NB"`: you must have increased the size of storage with `colour brown aws_storageEBS_increase.sh`."
-read -N 1 -p "Do you want to continue (y/n)?: " option
+read -n 1 -p "Do you want to continue (y/n)?: " option
 
 if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
     message "\nWrong option $option. Script cancelled." $logfile

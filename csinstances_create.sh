@@ -15,37 +15,57 @@
 #
 source colours_functions.sh
 
+function message() {
+    printf "%b\n" "$1"		### %b: print the argument while expanding backslash escape sequences.
+    if [ -n "$2" ]; then	### if $2 is specified, it is log file where the call wants store the message in $1
+	printf "%b\n" "$1" >> "$2"	
+    fi
+}
+
+function message_use() {
+    printf "%b\n" \
+	   "`colour gl $(basename $0)` creates instances, IP addresses and domain names and associates them."\
+	   " " \
+	   "`colour bl "Usage:  $(basename $0) instancesNamesFile"`"\
+	   " " \
+	   "  - provide the full or relative path to the file containing the names of the instances to create."\
+	   "  - for example:  `colour bl "$(basename $0)  instances_data/inputs/instancesNames.txt"`"\
+	   "  - an outputs directory will be created (if it doesn't exist) at same level of the inputs directory."\
+	   "    where the results of the aws commands will be stored."\
+	   " "
+}
+
 case $# in
-    1) echo -e "`colour greenlight $(basename $0)` is creating and launching instances specified in input file `colour brownlight $1`";;
-    0|*) echo -e "`colour gl $(basename $0)` creates instances, IP addresses and domain names and associates them."
-	 echo " "
-	 echo -e "`colour bl "Usage:  $(basename $0) instancesNamesFile"`"
-	 echo ""
-	 echo "  - provide the full or relative path to the file containing the names of the instances to create."
-	 echo -e "  - for example:  `colour bl "$(basename $0)  instances_data/inputs/instancesNames.txt"`"
-	 echo "  - an outputs directory will be created (if it doesn't exist) at same level of the inputs directory."
-	 echo "    where the results of the aws commands will be stored."
-	 exit 2;;
+    1) message "`colour greenlight $(basename $0)` is creating and launching instances specified in input file `colour brownlight $1`";;
+    0|*) message "`colour gl $(basename $0)` creates instances, IP addresses and domain names and associates them.\
+\n
+`colour bl "Usage:  $(basename $0) instancesNamesFile"`\
+\n
+  - provide the full or relative path to the file containing the names of the instances to create.\n\
+  - for example:  `colour bl "$(basename $0)  instances_data/inputs/instancesNames.txt"`\n\
+  - an outputs directory will be created (if it doesn't exist) at same level of the inputs directory.\n\
+    where the results of the aws commands will be stored.\n"
+     	 exit 2;;
 esac
 
 # should check file with instance names to create exists
 
-echo "Creating login key pairs:"
+message "Creating login key pairs:"
 aws_loginKeyPair_create.sh $1		
 
-echo "Creating instances:"
+message "Creating instances:"
 aws_instances_launch.sh    $1		
 
-echo "Creating (allocating) elastic IPs:"  # use of parenthesis without ".." causes an error
+message "Creating (allocating) elastic IPs:"  # use of parenthesis without ".." causes an error
 aws_elasticIPs_allocate.sh $1		
 
-echo "Creating domain names:"		
+message "Creating domain names:"		
 aws_domainNames_create.sh $1
 
-echo "Associating IPs to instances:"	
+message "Associating IPs to instances:"	
 aws_elasticIPs_associate2instance.sh $1 
 
-echo "Configuring instances (login key and hostname):"
+message "Configuring instances (login key and hostname):"
 aws_instances_configure.sh $1		 # configures up login keys and hostname based on domain name, and logs in to csuser
 
 exit 0

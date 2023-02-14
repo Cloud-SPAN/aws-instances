@@ -115,7 +115,7 @@ case $# in
 	fi
 	### New size is OK, confirming whether to continue
 	message "Disk current size is $volumeSize and is going to be increased to $diskSizeToBe."
-	read -N 1 -p "Do you want to continue (y/n)?: " option
+	read -n 1 -p "Do you want to continue (y/n)?: " option
 	if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
 	    message "\nWrong option $option. Script cancelled." $logfile
 	    exit 1;

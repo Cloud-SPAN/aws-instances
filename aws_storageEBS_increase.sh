@@ -18,31 +18,20 @@
 # This script can be run on its own or through/by the script instances_create.sh. 
 #-------------------------------------
 # helper functions
-source colours_functions.sh	 # to add colour to some messages
-
-function message() {
-    printf "%b\n" "$1"		### %b: print the argument while expanding backslash escape sequences.
-    if [ -n "$2" ]; then	### if $2 is specified, it is log file where the call wants store the message in $1
-	printf "%b\n" "$1" >> "$2"	
-    fi
-}
+source colours_msg_functions.sh	 # to add colour to some messages
 
 function message_use() {
-    printf "%b\n" \
-	   "`colour lb $(basename $0)` increases the size of the instance disk (EBS storage and the file system)"\
-	   "`colour lb "up to"` the given number of GigaBytes (GB) if such number is larger than the current size of the disk."\
-	   " " \
-	   "usage: " \
-	   " " \
-	   "  `colour lb "$(basename $0)"` newSizeOfDiskInGBs" \
-	   " " \
-	   " `colour lb Example`:       $(basename $0) 120 "\
-	   " " \
-	   "  - increases the size of the disk and file system to be of 120 GB. "\
-	   "  - the current disk size must be smaller than 120 GB." \
-	   "  - note that the file system size may be shown as slightly smaller than disk space:"\
-	   "    try command: \"df -h .\""\
-	   " "
+    printf "%b\n" "\n$(colour lg $(basename $0)) increases the size of the instance disk (EBS storage) and the file system
+$(colour lb "up to") the given number of GigaBytes (GB) if such number is larger than the current size of the disk.
+
+usage:     $(colour lb "$(basename $0)")  newSizeOfDiskInGBs
+
+  $(colour lb Example):       $(basename $0) 120
+
+ - increases the size of the disk and file system to be of 120 GB.
+ - the current disk size must be smaller than 120 GB.
+ - note that the file system size may be shown as slightly smaller than disk space:
+   try command: \"df -h .\""
 }
 ### Default values for options
 linksCopyFlag=FALSE
@@ -130,7 +119,6 @@ case $# in
 	# aws ec2 modify-volume --dry-run --size "$diskSizeToBe" --volume-id "$volumeID" >> $logfile 2>&1  THIS one without dry-run
 	message "aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1" $logfile
 
-	#echo dummy aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID ### >> $logfile 2>&1 .todo delete this line and uncomment next one - DONE 
 	aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1
 	if [ $? -eq 0 ]; then
 	    message "`colour gl Success` extending disk size but must wait for optimisation phase:" $logfile
@@ -146,8 +134,7 @@ case $# in
 	    # NB we cannot read the status from the $logfile as before with "!visited" within awk because the value "optimising" we
 	    # are waiting for will be the last one in that file and hence will be ignored (deleted by "!visited"). Better with a
 	    # pipe so that only the last state is processed. .todo Perhaps i should use above  a pipe too.
-	    #echo optimising dummy and breaking ##.todo delete this and next line and uncomment the following  one - DONE
-	    #break;
+
 	    status=`aws ec2 describe-volumes-modifications --volume-ids $volumeID | awk -F " " '$1 == "\"ModificationState\":" {print substr($2, 2, length($2) -3)}'`
 	    if [[ "$status" == "optimizing" ]]; then		### "optimizing" is enough see below, "completed" is DONE
 		message "Status: $status is enough, proceeding .." $logfile

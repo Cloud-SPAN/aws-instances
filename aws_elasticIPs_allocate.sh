@@ -2,7 +2,23 @@
 # allocates static, elastic IP addresses
 #
 #--------------------------------
-source colours_functions.sh	 # to add colour to some messages
+source colours_msg_functions.sh	 # to add colour to some messages
+
+case $# in
+    1) ;; ### message "$(colour gl $(basename $0)) is login keys for instances specified in input file $(colour bl $1)";;
+    0|*) ### display message on use
+	message "\n$(colour gl $(basename $0)) creates/allocates IP addresses for the instances specified as below.
+
+$(colour bl "Usage:                $(basename $0)   instancesNamesFile")
+
+ - provide the full or relative path to the file containing the names of the instances to allocate 
+   IP addresses.
+ - example:  $(colour bl "$(basename $0)  courses/genomics01/")$(colour r inputs)$(colour bl /instancesNames.txt)
+ - the $(colour bl inputs) directory must be specified as such and inside one or more directories of your choice.
+ - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
+   of the aws commands will be stored.\n"
+	exit 2;; 
+esac
 
 # instancesNamesFile=${1##*/}	 #; delete everything (*) up to last / and return the rest = (`basename $1`) but more efficient
 instancesNamesFile=${1}		 #; actually need the full path ; echo instancesNameFile: $instancesNamesFile
@@ -17,11 +33,11 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/ip-addresses-allocation-output   	# we may add the date later `date '+%Y%m%d.%H%M%S'`
 
-echo -e "`colour cyan "Allocating IP addresses:"`"
+message "$(colour cyan "Allocating IP addresses:")"
 
 if [ ! -d $outputsDirThisRun ]; then
-    echo -e "$(colour brown "Creating directory to hold the results of allocation elastic IP adresses:")"
-    echo $outputsDirThisRun
+    message "$(colour brown "Creating directory to hold the results of allocation elastic IP adresses:")"
+    message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
 
@@ -40,7 +56,7 @@ for instance in ${instancesNames[@]}
 do
     #aws ec2 allocate-address  --dry-run --domain vpc --tag-specifications \\
     eipResultsFileName="elastic-IPaddress-for-${instance%-src*}"
-    #echo Allocating $eip
+    #message Allocating $eip
     #continue
     aws ec2 allocate-address --domain vpc --tag-specifications \
     "ResourceType=elastic-ip,Tags=[ {Key=Name,		Value=$eipResultsFileName}, \
@@ -53,10 +69,8 @@ do
 				  ]" > $outputsDirThisRun/$eipResultsFileName.txt
     ## above in "Value=${eipResultsFileName,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-src*}"
-	echo -e "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-src*}" >> $outputsDirThisRun/$eipResultsFileName.txt
+	message "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-src*}"  $outputsDirThisRun/$eipResultsFileName.txt
     else
-	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-src*}"
-	echo -e "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-src*}" >> $outputsDirThisRun/$eipResultsFileName.txt
+	message "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-src*}"  $outputsDirThisRun/$eipResultsFileName.txt
     fi
 done

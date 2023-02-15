@@ -7,23 +7,12 @@
 #  Options	: [-l][-u][-v]  -- description below
 #-------------------------------------
 # helper functions
-source colours_functions.sh	 # to add colour to some messages
+source colours_msg_functions.sh	 # to add colour to some messages
 
-function message() {
-    printf "%b\n" "$1"		### %b: print the argument while expanding backslash escape sequences.
-    if [ -n "$2" ]; then	### if $2 is specified, it is log file where the call wants store the message in $1
-	printf "%b\n" "$1" >> "$2"	
-    fi
-}
+message "\n$(colour lb $(basename $0))  installs or updates the AWS CLI and the AWS completer locally.\n"
 
-function message_use() {
-    printf "%b\n" \
-	   "`colour lb $(basename $0)` installs or updates the AWS CLI and the AWS completer locally."\
-	   " "
-}
-
-message_use
 read -n 1 -p "Do you want to continue (y/n)?: " option
+
 if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
     message "\nWrong option $option. Script cancelled." $logfile
     exit 1;

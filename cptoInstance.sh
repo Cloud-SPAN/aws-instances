@@ -5,40 +5,33 @@
 #  Version	: 1.0
 #  Description	: copies a file or directory from the local machine to the csuser account in a Cloud-SPAN AWS instance.
 #  Options	: [-l][-u][-v]  -- description below
-# 
-#
-# helper functions
-source colours_functions.sh	 # to add colour to some messages
-
-function message() {
-    printf "%b\n" "$1"
-}
+#--------------------------------------------
+source colours_msg_functions.sh	 # to add colour to some messages
 
 function message_use() {
-    printf "%b\n" \
-	   "`colour lb $(basename $0)` copies a local file/directory to the `colour lb csuser` account of an AWS instance." \
-	   " " \
-	   "usage: " \
-	   " " \
-	   "  `colour lb "$(basename $0) [-l][-u][-v] login-key-instanceName.pem  localFile/DirName  [remoteFile/DirName]"`" \
-	   " " \
-	   "- `colour lb NB`: copying an individual file or link overwrites remote ones if they exist; remote directories are"\
-	   "  not overwritten if they exist but the copy is suffixed thus: remoteDirName`colour lb -CopyYYYYMMDD.HHMMSS`." \
-	   "- use -l to copy links within directories as links (otherwise files pointed to by links are copied)." \
-	   "- use -u to copy to the 'ubuntu' account instead (of the 'csuser' account)." \
-	   "- use -v (verbose) to see what's going on and the copy command used." \
-	   "- `colour lb login-key-instanceName.pem` is the name (path) of the file containing the RSA login key to access"\
-	   "  the instance. The `colour lb "name of the instance"` to copy to is extracted from this name."\
-	   "- if `colour lb remoteFile/DirName` is not specified, the copy will be named as the localFile/DirName and copied"\
-	   "  at the home directory in the instance." \
-	   "- `colour lb Examples`:" \
-	   "  $(basename $0) gc_data/outputs/login-keys/login-key-instance017.pem  data/shell_data"\
-	   "  - copies (file/dir) data/shell_data to instance017`colour lb .cloud-span.aws.york.ac.uk`:/home/csuser/shell_data "\
-	   " " \
-	   "  $(basename $0) -u gc_data/outputs/login-keys/login-key-instance017.pem  shell_data  shell_data2"\
-	   "  - copies  data/shell_data to instance017.cloud-span.aws.york.ac.uk:/home/`colour lb ubuntu`/shell_data2"\
-	   " "
+    printf "%b\n" "\n$(colour lb $(basename $0)) copies a local file/directory to the $(colour lb csuser) account of an AWS instance.
+
+usage:
+
+  $(colour lb "$(basename $0) [-l][-u][-v] login-key-instanceName.pem  localFile/DirName  [remoteFile/DirName]")
+
+- $(colour lb NB): copying an individual file or link overwrites remote ones if they exist; remote directories are
+  not overwritten if they exist but the copy is suffixed thus: remoteDirName$(colour lb -CopyYYYYMMDD.HHMMSS).
+- use -l to copy links within directories as links (otherwise files pointed to by links are copied).
+- use -u to copy to the 'ubuntu' account instead (of the 'csuser' account).
+- use -v (verbose) to see what's going on and the copy command used.
+- $(colour lb login-key-instanceName.pem) is the name (path) of the file containing the RSA login key to access
+  the instance. The $(colour lb "name of the instance") to copy to is extracted from this name.
+- if $(colour lb remoteFile/DirName) is not specified, the copy will be named as the localFile/DirName and copied
+  at the home directory in the instance.
+- $(colour lg Examples):
+  $(colour lb $(basename $0)) gc_data/outputs/login-keys/login-key-instance017.pem  data/shell_data
+  - copies (file/dir) data/shell_data to instance017$(colour lb .cloud-span.aws.york.ac.uk):/home/csuser/shell_data
+
+  $(colour lb $(basename $0)) -u gc_data/outputs/login-keys/login-key-instance017.pem  shell_data  shell_data2
+  - copies  data/shell_data to instance017.cloud-span.aws.york.ac.uk:/home/$(colour lb ubuntu)/shell_data2\n"
 }
+
 ### Default values for options
 linksCopyFlag=FALSE
 user=csuser

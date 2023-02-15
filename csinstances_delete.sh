@@ -11,35 +11,36 @@
 # Date:		20211207
 # Version:	1
 #-----------------------------------------------------
-#
-source colours_functions.sh
+source colours_msg_functions.sh	 # to add colour to some messages
 
 case $# in
-    1) echo -e "`colour greenlight $(basename $0)` is terminating instances specified in input file `colour brownlight $1`";;
-    0|*) echo -e "`colour gl $(basename $0)` terminates instances, IP addresses and domain names."
-	 echo " "
-	 echo -e "`colour bl "Usage:   $(basename $0)  instancesNamesFile"`"
-	 echo ""
-	 echo "  - provide the full or relative path to the file containing the names of the instances to terminate."
-	 echo -e "  - for example:  `colour bl "$(basename $0)  instances_data/inputs/instancesNames.txt"`"
-	 echo "  - an outputs directory will be created (if it doesn't exist) at same level of the inputs directory."
-	 echo "    where the results of invoked aws commands will be stored."
-	 exit 2;;
+    1) message "$(colour gl $(basename $0)) is terminating instances specified in input file $(colour bl $1)";;
+    0|*) ### display message on use
+	message "\n`colour gl $(basename $0)` deletes instances and related login keys, IP addresses and domain names.
+
+$(colour bl "Usage:                $(basename $0) instancesNamesFile")
+
+ - provide the full or relative path to the file containing the names of the instances to delete.
+ - example:  $(colour bl "$(basename $0)  courses/genomics01/")$(colour r inputs)$(colour bl /instancesNames.txt)
+ - the $(colour bl inputs) directory must be specified as such and inside one or more directories of your choice.
+ - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
+   of the aws commands will be stored.\n"
+	exit 2;;
 esac
 
-echo "Terminating instances:"
+message "Terminating instances:"
 aws_instances_terminate.sh	$1	
 
-echo "Deleting login key pairs:"
+message "Deleting login key pairs:"
 aws_loginKeyPair_delete.sh $1	
 
-echo "Deleting domain names:"
+message "Deleting domain names:"
 aws_domainNames_delete.sh $1
 
-echo "Disassociating IPs from instances:"
+message "Disassociating IPs from instances:"
 aws_elasticIPs_disassociate.sh $1	  
 
-echo "Deallocating (deleting) elastic IPs:"
+message "Deallocating (deleting) elastic IPs:"
 aws_elasticIPs_deallocate.sh $1
 
 exit 0

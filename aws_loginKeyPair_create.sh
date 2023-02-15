@@ -8,7 +8,23 @@
 # instance id suffix to use: srcCSGC-AMI04: CSGC-AMI-04-UsrKeyMng-NoAuthKeys
 # Output:  in directorty $outputsDirThisRun
 #------------------------------------------------
-source colours_functions.sh	 # to add colour to some messages
+source colours_msg_functions.sh	 # to add colour to some messages
+
+case $# in
+    1) ;; ### message "$(colour gl $(basename $0)) is login keys for instances specified in input file $(colour bl $1)";;
+    0|*) ### display message on use
+	message "\n$(colour gl $(basename $0)) creates the login keys for the instances specified as below.
+
+$(colour bl "Usage:                $(basename $0) instancesNamesFile")
+
+ - provide the full or relative path to the file containing the names of the instances to which 
+   to create login keys.
+ - example:  $(colour bl "$(basename $0)  courses/genomics01/")$(colour r inputs)$(colour bl /instancesNames.txt)
+ - the $(colour bl inputs) directory must be specified as such and inside one or more directories of your choice.
+ - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
+   of the aws commands will be stored.\n"
+	exit 2;; 
+esac
 
 # instancesNamesFile=${1##*/}	 #; delete everything (*) up to last / and return the rest = (`basename $1`) but more efficient
 instancesNamesFile=${1}		 #; actually need the full path ; echo instancesNameFile: $instancesNamesFile
@@ -23,18 +39,18 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating login keys (pairs) labelled with the date and time
 outputsDirThisRun=${outputsDir}/login-keys-creation-output		# to add later perhaps `date '+%Y%m%d.%H%M%S'`
 
-echo -e "`colour cyan "Creating login keys:"`"
+message "`colour cyan "Creating login keys:"`"
 
 if [ ! -d $outputsDirThisRun ]; then
-    echo -e "$(colour brown "Creating directory to hold the results of creating the login keys:")"
-    echo $outputsDirThisRun
+    message "$(colour brown "Creating directory to hold the results of creating the login keys:")"
+    message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
 
 
 if [ ! -d $outputsDir/login-keys ]; then
-    echo -e "$(colour brown "Creating directory to hold the login keys:")"
-    echo $outputsDir/login-keys
+    message "$(colour brown "Creating directory to hold the login keys:")"
+    message $outputsDir/login-keys
     mkdir -p $outputsDir/login-keys
 fi
 
@@ -53,7 +69,7 @@ for instance in ${instancesNames[@]}
 do
     loginkey=${instance%-src*}
     loginkey="login-key-${loginkey%-gc}"
-    echo Creating $loginkey
+    message "Creating $loginkey"
     #continue
     #aws ec2 create-key-pair --dry-run --key-name $loginkey --key-type rsa  --tag-specifications
     aws ec2 create-key-pair --key-name $loginkey --key-type rsa  --tag-specifications \
@@ -66,9 +82,10 @@ do
 				  ]" > $outputsDirThisRun/$loginkey.json
     ## above in "Value=${loginkey,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"
-	echo -e "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" >> $outputsDirThisRun/$loginkey.json
-	#awk -f loginKey_extract.awk $outputsDirThisRun/$loginkey.json > $outputsDir/login-keys/$loginkey.pem
+	message "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" $outputsDirThisRun/$loginkey.json
+	# format the key as expected by macOS machines
+	# was this way: awk -f loginKey_extract.awk $outputsDirThisRun/$loginkey.json > $outputsDir/login-keys/$loginkey.pem
+	# but better her:
 	awk '
 	BEGIN {
 	    # three \\\ just to escape \n
@@ -91,8 +108,7 @@ do
 	chmod 700 $outputsDir/login-keys/$loginkey.pem
 
     else
-	echo -e "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}"
-	echo -e "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}" >> $outputsDirThisRun/$loginkey.json
+	message "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}" $outputsDirThisRun/$loginkey.json
     fi
 done
 exit 0
@@ -112,18 +128,4 @@ exit 0
 [--tag-specifications <value>]
 [--cli-input-json <value>]
 [--generate-cli-skeleton <value>]
-
-echo tag_name_key=${tags[0]}		# 
-echo tag_name_value=${tags[1]}	# redefined below but better to read them as the others
-echo tag_group_key=${tags[2]}
-echo tag_group_value=${tags[3]}
-echo tag_project_key=${tags[4]}
-echo tag_project_value=${tags[5]}
-echo tag_status_key=${tags[6]}
-echo tag_status_value=${tags[7]}
-echo tag_pushedby_key=${tags[8]}
-echo tag_pushedby_value=${tags[9]}
-echo tag_definedin_key=${tags[10]}
-echo tag_definedin_value=${tags[11]}
-
 COMMENTS

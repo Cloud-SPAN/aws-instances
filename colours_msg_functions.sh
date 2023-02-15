@@ -88,3 +88,9 @@ newline() {
     printf "\n"
 }
 
+function message() {
+    printf "%b\n" "$1"		### %b: print the argument while expanding backslash escape sequences.
+    if [ -n "$2" ]; then	### if $2 is specified, it is the log file where the call wants store the message in $1
+	printf "%b\n" "$1" >> "$2"	
+    fi
+}

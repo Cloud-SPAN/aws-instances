@@ -2,7 +2,22 @@
 # create (run!?) AWS instances based on specified configuration and files and the following reference
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
 #------------------------------------------------
-source colours_functions.sh	 # to add colour to some messages
+source colours_msg_functions.sh	 # to add colour to some messages
+
+case $# in
+    1) ;; ##message "$(colour gl $(basename $0)) is creating and launching instances specified in input file $(colour bl $1)";;
+    0|*) ### display message on use
+	message "\n$(colour gl $(basename $0)) creates the instances specified as below.
+
+$(colour bl "Usage:                $(basename $0) instancesNamesFile")
+
+ - provide the full or relative path to the file containing the names of the instances to create.
+ - example:  $(colour bl "$(basename $0)  courses/genomics01/")$(colour r inputs)$(colour bl /instancesNames.txt)
+ - the $(colour bl inputs) directory must be specified as such and inside one or more directories of your choice.
+ - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
+   of the aws commands will be stored.\n"
+	exit 2;;	
+esac
 
 # instancesNamesFile=${1##*/}	 #; delete everything (*) up to last / and return the rest = (`basename $1`) but more efficient
 instancesNamesFile=${1}		 #; actually need the full path ; echo instancesNameFile: $instancesNamesFile
@@ -17,11 +32,11 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/instances-creation-output	# we may add the date later `date '+%Y%m%d.%H%M%S'`
 
-echo -e "`colour cyan "Creating instances:"`"
+message "$(colour cyan "Creating instances:")"
 
 if [ ! -d $outputsDirThisRun ]; then
-    echo -e "$(colour brown "Creating directory to hold the results of creating instances:")"
-    echo $outputsDirThisRun
+    message "$(colour brown "Creating directory to hold the results of creating instances:")"
+    message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
 
@@ -48,7 +63,7 @@ for instance in ${instancesNames[@]}
 do
     logkeyend=${instance%-src*}
     logkeyend=${logkeyend%-gc}
-    #echo "$instance  login-key-$logkeyend"
+    #message "$instance  login-key-$logkeyend"
     #continue
     aws ec2 run-instances --image-id  $resource_image_id   --instance-type  $resource_instance_type \
 	--key-name "login-key-${logkeyend}"  \
@@ -64,10 +79,8 @@ do
 				  ]" >  $outputsDirThisRun/$instance.txt 2>&1
     ## above in "Value=${instance,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` creating `colour bl instance:` ${instance%-src*}"
-	echo -e "`colour gl Success` creating `colour bl instance:` ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
+	message "`colour gl Success` creating `colour bl instance:` ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     else
-	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}"
-	echo -e "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
+	message "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     fi
 done

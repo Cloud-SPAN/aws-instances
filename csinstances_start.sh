@@ -1,18 +1,20 @@
 #!/bin/bash
 # starts instances
 #------------------------------------------------
-source colours_functions.sh	 # to add colour to some messages
+source colours_msg_functions.sh	 # to add colour to some messages
 
 case $# in
-    1) echo -e "`colour greenlight $(basename $0)` is starting instances specified in input file `colour brownlight $1`";;
-    0|*) echo -e "`colour gl $(basename $0)` starts instances previously created."
-	 echo " "
-	 echo -e "`colour bl "Usage:   $(basename $0)  instancesNamesFile"`"
-	 echo ""
-	 echo "  - provide the full or relative path to the file containing the names of the instances to start."
-	 echo -e "  - for example:  `colour bl "$(basename $0)  instances_data/inputs/instancesNames.txt"`"
-	 echo "  - an outputs directory will be created at same level of the inputs directory."
-	 echo "    where the results of invoked aws commands will be stored."
+    1) message  "$(colour gl $(basename $0)) is starting instances specified in input file $(colour bl $1)";;
+    0|*) ### display message on use
+	message  "\n$(colour gl $(basename $0)) starts instances previously created and stopped.
+
+$(colour bl "Usage:                $(basename $0) instancesNamesFile")
+
+ - provide the full or relative path to the file containing the names of the instances to start.
+ - example:  $(colour bl "$(basename $0)  courses/genomics01/")$(colour r inputs)$(colour bl /instancesNames.txt)
+ - the $(colour bl inputs) directory must be specified as such and inside one or more directories of your choice.
+ - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
+   of the aws commands will be stored.\n"
 	 exit 2;;
 esac
 

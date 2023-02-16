@@ -7,7 +7,8 @@ case $# in
 	echo "example:   ${0##./} \"-srcCSGC-AMI04\" \"-src*\""
 	echo 
 	echo "           replaces  -srcCSGC-AMI04  with  -src\*    NB: you must double quote the strings"
-	echo 
+	echo
+	echo THIS SCRIPT NEEDS FIXING - DO NOT USE.
 	echo These are the files to process:
 	for file in $files
 	do

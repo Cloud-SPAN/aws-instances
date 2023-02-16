@@ -42,7 +42,7 @@ curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
 #  ${HOME/#*\//}  is the user name
 # sed "s/myusername/${HOME/#*\//}/" $HOME/.local/bincsaws/the-Scripts/aws_cli_install_update_macOS.sh.xml > macosConfOptions.xml
 #  but better to use the following to ensure the actual $HOME dir is used --- NOTE the different sed separator : instead of /
-sed "s:/Users/myusername:${HOME}\/.local/bincsaws:" the-Scripts/aws_cli_install_update_macOS.sh.xml > macosConfOptions.xml
+sed "s:/Users/myusername:${HOME}\/.local/bincsaws:" $HOME/.local/bincsaws/aws_cli_install_update_macOS.sh.xml > macosConfOptions.xml
 
 message "macosConfOptions.xml  content:"
 cat macosConfOptions.xml
@@ -58,6 +58,7 @@ sudo ln -s $HOME/.local/bincsaws/aws-cli/aws_completer $HOME/.local/bincsaws/aws
 
 # --- same as in linux
 echo "complete -C $HOME/.local/bincsaws/aws_completer aws" >> ~/.bash_profile
+echo "complete -C $HOME/.local/bincsaws/aws_completer aws" >> ~/.bashrc
 
 message "\nInstalled version of aws:\n"
 which aws

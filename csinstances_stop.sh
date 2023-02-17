@@ -19,23 +19,23 @@ $(colour bl "Usage:                $(basename $0) instancesNamesFile")
 esac
 
 # instancesNamesFile=${1##*/}	 #; delete everything (*) up to last / and return the rest = (`basename $1`) but more efficient
-instancesNamesFile=${1}		 #; actually need the full path ; echo instancesNameFile: $instancesNamesFile
+instancesNamesFile=${1}		 #; actually need the full path ; message "instancesNameFile: $instancesNamesFile"ss
 
 # general inputs directory	 # return what is left after eliminating the last / and any character following it
-inputsDir=${1%/*}		 # echo inputsdir: $inputsDir
+inputsDir=${1%/*}		 # message "inputsdir: $inputsDir"
 				 
 # general outputs directory	 # note that some data in the outpus directory (from creating instances) is needed as input
 outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the second to last / and "inputs" and any character
-				 # following "inputs", then adds "/outputs" # echo outputsdir: $outputsDir
+				 # following "inputs", then adds "/outputs" # message "outputsdir: $outputsDir"
 
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/instances-stop-output`date '+%Y%m%d.%H%M%S'`
 
-echo -e "`colour cyan "Stopping instances:"`"
+message "`colour cyan "Stopping instances:"`"
 
 if [ ! -d $outputsDirThisRun ]; then
-    echo -e "$(colour brown "Creating directory to hold the results of stopping instances:")"
-    echo $outputsDirThisRun
+    message "$(colour brown "Creating directory to hold the results of stopping instances:")"
+    message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
 
@@ -47,10 +47,8 @@ do
     aws  ec2  stop-instances  --instance-ids $instanceID  > $outputsDirThisRun/$instance.txt 2>&1
 
     if [ $? -eq 0 ]; then
-	echo -e "`colour gl Success` stopping instance: ${instance%-src*}"
-	echo -e "`colour gl Success` stopping instance: ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
+	message "`colour gl Success` stopping instance: ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     else
-	echo -e "`colour red Error` ($?) stopping instance: ${instance%-src*}"
-	echo -e "`colour red Error` ($?) stopping instance: ${instance%-src*}" >> $outputsDirThisRun/$instance.txt
+	message "`colour red Error` ($?) stopping instance: ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     fi
 done

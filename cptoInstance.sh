@@ -86,7 +86,7 @@ case $# in
 			# check whether there is a trailing / in the remote file name to copy within instead of renaming
 			(( remoteFileDirLength = ${#remoteFileDir} - 1 ))
 			if [ ${remoteFileDir:$remoteFileDirLength:1} == "/" ]; then
-			    #echo "Yes, $remoteFileDir has trailing /"
+			    # message "Yes, $remoteFileDir has trailing /"
 			    remoteFileDir="${remoteFileDir}$(basename $localFileDir)"
 			    if ssh -i "$loginKeyFile" "$user@$machine.$domain" "test -e $remoteFileDir" ; then
 				if [ $verboseFlag == TRUE ]; then
@@ -127,13 +127,13 @@ case $# in
 			################ We are using option 2)
 			if [ $verboseFlag == TRUE ]; then
 			    message "`colour lg "Copying directory"` with rsync:"
-			    echo rsync -av --delete -e "ssh -i $loginKeyFile" $localFileDir/ "$user@$machine.$domain":./$remoteFileDir;
+			    message "rsync -av --delete -e \"ssh -i $loginKeyFile\" $localFileDir/ \"$user@$machine.$domain\":./$remoteFileDir;"
 			fi
 			rsync -av --delete -e "ssh -i $loginKeyFile" $localFileDir/ "$user@$machine.$domain":./$remoteFileDir;
 		    else
 			if [ $verboseFlag == TRUE ]; then
 			    message "`colour lg "Copying directory"` with scp:"
-			    echo scp -r -i  $loginKeyFile $localFileDir/ "$user@$machine.$domain":./$remoteFileDir;
+			    message "scp -r -i  $loginKeyFile $localFileDir \"$user@$machine.$domain\":./$remoteFileDir;"
 			fi
 			scp -r -i  $loginKeyFile $localFileDir/ "$user@$machine.$domain":./$remoteFileDir;
 		    fi   
@@ -143,14 +143,14 @@ case $# in
 		    # a soft link also tests true as a regular file
 		    if [ $verboseFlag == TRUE ]; then
 			message "`colour lg Copying` link $localFileDir to remote ./$remoteFileDir"
-			echo rsync -av --delete -e "ssh -i $loginKeyFile" $localFileDir "$user@$machine.$domain":./$remoteFileDir;
+			message "rsync -av --delete -e \"ssh -i $loginKeyFile\" $localFileDir \"$user@$machine.$domain\":./$remoteFileDir;"
 		    fi
 		    rsync -av --delete -e "ssh -i $loginKeyFile" $localFileDir "$user@$machine.$domain":./$remoteFileDir;
-		    exit 1
+		    exit 1	### why 1 and not 0
 		elif [ -f $localFileDir ]; then   ### REGULAR FILE
 		    if [ $verboseFlag == TRUE ]; then
 			message "`colour lg Copying` file $localFileDir to remote ./$remoteFileDir"
-			echo scp -i  $loginKeyFile $localFileDir "$user@$machine.$domain":./$remoteFileDir;
+			message "scp -i  $loginKeyFile $localFileDir \"$user@$machine.$domain\":./$remoteFileDir;"
 		    fi
 		    scp -i  $loginKeyFile $localFileDir "$user@$machine.$domain":./$remoteFileDir;
 		    exit 0

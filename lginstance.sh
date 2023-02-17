@@ -1,27 +1,24 @@
 #!/usr/bin/env bash
 #  Login To Instance x with SSH 
 #
-# helper functions
+#------------------------------ 
+source colours_msg_functions.sh	 # to add colour to some messages
 function error_in_use() {
-    #echo "from error-function echoing parameter 1 \"$(basename $1)\""
-    echo "----------------------------------------------"
-    echo "$(basename $0) logs you in to an (AWS) instance using ssh."
-    echo " ";
-    echo "usage: "
-    echo " ";
-    echo "    $(basename $0)  login-key-instanceName.pem  csuser/ubuntu" ;
-    echo " ";
-    echo "- login-key-instanceName.pem is the name (path) of the file containing the RSA login key"
-    echo "  to access the instance."
-    echo " ";    
-    echo "- the name of the instance to log you in is extracted from the name of the .pem file provided.";
-    echo " ";    
-    echo "- the domain name is extracted from the inputs/resourcesIDs.txt file.";
-    echo " ";    
-    echo "- Examples:";
-    echo "  $(basename $0) courses/genomics01/outputs/login-keys/login-key-instance017.pem  csuser";
-    echo "  $(basename $0) courses/genomics01/outputs/login-keys/login-key-instance017.pem  ubuntu";
-    echo " ";
+    #### message "from error-function messageing parameter 1 \"$(basename $1)\""
+    message "----------------------------------------------
+$(colour lb $(basename $0)) logs you in to an (AWS) instance using ssh.
+
+usage: 
+
+    $(colour lb $(basename $0))  login-key-instanceName.pem  csuser/ubuntu
+
+- login-key-instanceName.pem is the name (path) of the file containing the RSA login key
+  to access the instance.
+- the name of the instance to log you in is extracted from the name of the .pem file provided.
+- the domain name is extracted from the inputs/resourcesIDs.txt file.
+- Examples:
+  $(colour lb $(basename $0)) courses/genomics01/outputs/login-keys/login-key-instance017.pem  csuser
+  $(colour lb $(basename $0)) courses/genomics01/outputs/login-keys/login-key-instance017.pem  ubuntu\n";
 }
 
 ### start:
@@ -42,19 +39,17 @@ case $# in
 		machine=${loginKeyFile%.pem}
 		# then, from the beginning/prefix (#), everything (*) up to loging-key-, replace it / with nothing.
 		machine=${machine/#*login-key-/}		
-		echo "  $(basename $0): logging you thus:"
-		echo "  ssh -i $loginKeyFile $user@$machine.$domain"
+		message "  $(basename $0): logging you thus:"
+		message "  ssh -i $loginKeyFile $user@$machine.$domain"
 		ssh -i $loginKeyFile $user@$machine.$domain
 		exit 0
 	    else
-		echo 
-		echo "Error: user must be \"csuser\"  or \"ubuntu\" (with no quotes)."
+		message "\nError: user must be \"csuser\"  or \"ubuntu\" (with no quotes)."
 		error_in_use
 		exit 2 
 	    fi
 	else
-	    echo 
-	    echo "Error: login key file $loginKeyFile DOES NOT EXIST."
+	    message "\nError: login key file $loginKeyFile DOES NOT EXIST."
 	    error_in_use
 	    exit 2
 	fi
@@ -62,3 +57,4 @@ case $# in
     *) error_in_use "$1"
        exit 2;;
 esac
+

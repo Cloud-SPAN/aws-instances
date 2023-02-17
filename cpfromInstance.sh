@@ -80,7 +80,7 @@ case $# in
 		    # it is regular a file to copy with scp
 		    if [ $verboseFlag == TRUE ]; then
 			message "`colour lg Copying` remote file ./$remoteFileDir to local file $localFileDir"
-			echo scp -i  $loginKeyFile "$user@$machine.$domain":./$remoteFileDir  $localFileDir;
+			message "scp -i  $loginKeyFile $user@$machine.$domain:./$remoteFileDir  $localFileDir;"
 		    fi
 		    scp -i  $loginKeyFile "$user@$machine.$domain":./$remoteFileDir  $localFileDir;
 		    exit 0
@@ -103,16 +103,16 @@ case $# in
 			.*|..*|~/*) # copy the remote directory entry / not only the files within
 			    if [ $verboseFlag == TRUE ]; then
 				message "`colour lg "Copying directory"` with rsync:"
-				echo "local dir was . o .. or ~/*: $localFileDir"
-				echo rsync -av --delete -e "ssh -i $loginKeyFile" "$user@$machine.$domain":./$remoteFileDir  $localFileDir/ ;
+				message "local dir was . or .. or ~/*: $localFileDir"
+				message "rsync -av --delete -e \"ssh -i $loginKeyFile\" \"$user@$machine.$domain\":./$remoteFileDir  $localFileDir/ ;" 
 			    fi
 			    rsync -av --delete -e "ssh -i $loginKeyFile" "$user@$machine.$domain":./$remoteFileDir  $localFileDir/ ;
 			    ;;
 			*) ### copy only the files within remote directory, creating a local directory only if it doesn't exist.
 			    if [ $verboseFlag == TRUE ]; then
 				message "`colour lg "Copying directory"` with rsync:"
-				echo "local dir was NOT . o .. or ~/\*: $localFileDir"
-				echo rsync -av --delete -e "ssh -i $loginKeyFile" "$user@$machine.$domain":./$remoteFileDir/  $localFileDir/ ;
+				message "local dir was NOT . or .. or ~/\*: $localFileDir"
+				message "rsync -av --delete -e \"ssh -i $loginKeyFile\" \"$user@$machine.$domain\":./$remoteFileDir/  $localFileDir/ ;"
 			    fi
 			    rsync -av --delete -e "ssh -i $loginKeyFile" "$user@$machine.$domain":./$remoteFileDir/  $localFileDir/ ;
 			    ;;

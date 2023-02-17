@@ -63,7 +63,7 @@ do
     ### tmpfile="/tmp/${instance%-src*}.txt"
     while true 
     do
-	echo "."
+	echo -n "."
 	### worked fine but better withoug /tmpfile because in windows users it will not work.
 	### aws ec2 describe-instance-status --instance-id $instanceID > $tmpfile
 	### instanceState=`awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}' $tmpfile`

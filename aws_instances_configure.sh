@@ -19,7 +19,7 @@ $(colour bl "Usage:                $(basename $0) instancesNamesFile")
 esac
 
 # instancesNamesFile=${1##*/}	 #; delete everything (*) up to last / and return the rest = (`basename $1`) but more efficient
-instancesNamesFile=${1}		 #; actually need the full path ; echo instancesNameFile: $instancesNamesFile
+instancesNamesFile=${1}		 #; actually need the full path ; message "instancesNameFile: $instancesNamesFile"
 
 # general inputs directory	 # return what is left after eliminating the last / and any character following it
 inputsDir=${1%/*}		 
@@ -47,7 +47,7 @@ do
     ### tmpfile="/tmp/domainName${instance%-src*}-status.txt"
     while true 
     do
-	echo "."
+	echo -n "."
 	### worked fine but better withoug /tmpfile because in windows users it will not work.
 	### aws route53  get-change --id $domainNameChangeID > $tmpfile	# domainNameChangeID = /change/C3QYC83OA0KX5K
 	### domainStatus=`awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}' $tmpfile`

@@ -21,14 +21,14 @@ $(colour bl "Usage:                $(basename $0)   instancesNamesFile")
 esac
 
 # instancesNamesFile=${1##*/}	 #; delete everything (*) up to last / and return the rest = (`basename $1`) but more efficient
-instancesNamesFile=${1}		 #; actually need the full path ; echo instancesNameFile: $instancesNamesFile
+instancesNamesFile=${1}		 #; actually need the full path ; message "instancesNameFile: $instancesNamesFile"
 
 # general inputs directory	 # return what is left after eliminating the last / and any character following it
-inputsDir=${1%/*}		 # echo inputsdir: $inputsDir
+inputsDir=${1%/*}		 # message "inputsdir: $inputsDir"
 				 
 # general outputs directory	 # note that some data in the outpus directory (from creating instances) is needed as input
 outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the second to last / and "inputs" and any character
-				 # following "inputs", then adds "/outputs" # echo outputsdir: $outputsDir
+				 # following "inputs", then adds "/outputs" # message "outputsdir: $outputsDir"
 
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/ip-addresses-allocation-output   	# we may add the date later `date '+%Y%m%d.%H%M%S'`

@@ -26,7 +26,7 @@ esac
 instancesNamesFile=${1}		 #; actually need the full path ; message "instancesNameFile: $instancesNamesFile"
 
 # general inputs directory	 # return what is left after eliminating the last / and any character following it
-inputsDir=${1%/*}		 # echo "inputsdir: $inputsDir"
+inputsDir=${1%/*}		 # message "inputsdir: $inputsDir"
 				 
 # general outputs directory	 # note that some data in the outpus directory (from creating instances) is needed as input
 outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the second to last / and "inputs" and any character

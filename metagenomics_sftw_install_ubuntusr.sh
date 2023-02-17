@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # system-wide configuration and upgrade needed for csuser to install metagenomics software.
 # must be run prior to creating the metagenomicsxs AWS AMI
 source ~/bin/colours_functions.sh	 # to add colour to some messages

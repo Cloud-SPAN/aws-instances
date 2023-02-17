@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # create (run!?) AWS instances based on specified configuration and files and the following reference
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
 #------------------------------------------------

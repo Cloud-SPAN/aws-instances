@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # deallocates (releases/delete) elastic ip addresses
 # NB:
 # - if the eip address to deallocate is associated to a dns record/domain,

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # creates login key pairs to use when creating instances
 # NB minimum parameters to specify are:
 # --key-name		a must: the specified key is injected into the ubuntu user ~/.ssh/authorized_keys

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #  Title	: cptoAWSinstance.sh
 #  Date		: 20220310
 #  Author	: "Jorge Buenabad-Chavez" <jorge.buenabad-chavez@york.ac.uk>

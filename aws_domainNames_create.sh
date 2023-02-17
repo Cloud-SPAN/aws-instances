@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # creates the domain names for instances
 #
 # Output:  in directorty $outputsDirThisRun

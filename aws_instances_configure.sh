@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # configures each instance so that users other than sudo user can login using the private key of sudo user 
 #-------------------------------------
 source colours_msg_functions.sh	 # to add colour to some messages

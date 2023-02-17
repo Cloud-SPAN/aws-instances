@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 files=`ls *.sh`
 case $# in
 0) 	echo "$(basename $0) copies all the scripts in the current dir, `pwd`, to \"bin\" directory (in the execution path)."

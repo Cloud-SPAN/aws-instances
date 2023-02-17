@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # delete/terminate (run!?) AWS instances
 #------------------------------------------------
 source colours_msg_functions.sh	 # to add colour to some messages

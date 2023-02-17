@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #  Title	: aws_cli_install_update-linux.sh
 #  Date		: 20221109
 #  Author	: "Jorge Buenabad-Chavez" <jorge.buenabad-chavez@york.ac.uk>

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # deletes login key pairs
 #
 # instance id suffix to use: srcCSGC-AMI04: CSGC-AMI-04-UsrKeyMng-NoAuthKeys

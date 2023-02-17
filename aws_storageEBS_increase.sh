@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #  Title	: aws_storageEBS_increase.sh
 #  Date		: 20220504
 #  Author	: "Jorge Buenabad-Chavez" <jorge.buenabad-chavez@york.ac.uk>

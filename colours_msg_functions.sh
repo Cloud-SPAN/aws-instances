@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Welcome to the csguide
 # Author:	Jorge Buenabad-Chavez
 # Date:		20210917

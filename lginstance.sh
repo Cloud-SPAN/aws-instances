@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #  Login To Instance x with SSH 
 #
 # helper functions

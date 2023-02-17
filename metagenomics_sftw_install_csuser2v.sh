@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # helper functions
 #------------------
 source ~/bin/colours_functions.sh	 # to add colour to some messages

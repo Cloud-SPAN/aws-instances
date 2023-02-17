@@ -47,7 +47,7 @@ do
     ### tmpfile="/tmp/domainName${instance%-src*}-status.txt"
     while true 
     do
-	message "."
+	echo "."
 	### worked fine but better withoug /tmpfile because in windows users it will not work.
 	### aws route53  get-change --id $domainNameChangeID > $tmpfile	# domainNameChangeID = /change/C3QYC83OA0KX5K
 	### domainStatus=`awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}' $tmpfile`

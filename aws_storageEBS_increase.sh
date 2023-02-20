@@ -113,10 +113,6 @@ case $# in
 	    exit 1;
 	fi
 	message "\nIncreasing disk size from $volumeSize to $diskSizeToBe GBs. Please wait:" $logfile
-	# aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID | tee -a "$logfile" ### if aws fails, tee may succeed
-	# - and the test below $? will be misleading
-	# aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1 ## doesn't work without quoting variables
-	# aws ec2 modify-volume --dry-run --size "$diskSizeToBe" --volume-id "$volumeID" >> $logfile 2>&1  THIS one without dry-run
 	message "aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1" $logfile
 
 	aws ec2 modify-volume --size $diskSizeToBe --volume-id $volumeID >> $logfile 2>&1
@@ -168,7 +164,7 @@ case $# in
 #	df -h .	 | tee -a $logfile				### to show the new size of the file system
 #	#------------- OLD Version END -------------------
 	# NEW VERSION for t3. instances disk partition and file system named nvme0n1 and nvme0n1p1
-	message "Checking new size with command \"/dev/nvme0n1\":"
+	message "Checking new size with command \"/dev/nvme0n1\":" $logfile
 	lsblk /dev/nvme0n1  >> $logfile 2>&1
 	newDiskSize=`awk -F " " '$1 == "nvme0n1" {print substr($4, 1, length($4) -1)}' $logfile`
 	message "newDiskSize $newDiskSize" $logfile
@@ -178,7 +174,7 @@ case $# in
 	fi
 	   
 	# increase partition
-	message "Increasing partition and file system:"
+	message "Increasing partition and file system:" $logfile
 	sudo growpart /dev/nvme0n1 1  | tee -a $logfile		### perhaps checking again the new size (ec2 user guide p. 1563-4)
 	sudo resize2fs /dev/nvme0n1p1  | tee -a $logfile	### perhaps checking the new file system and printing to the user. 
 	df -h .	 | tee -a $logfile				### to show the new size of the file system

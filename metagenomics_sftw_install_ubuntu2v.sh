@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 # system-wide configuration and upgrade needed for csuser to install metagenomics software.
 # must be run prior to creating the metagenomicsxs AWS AMI
-source ~/bin/colours_functions.sh	 # to add colour to some messages
-
-function message() {
-    printf "%b\n" "$1"		### %b: print the argument while expanding backslash escape sequences.
-    if [ -n "$2" ]; then	### if $2 is specified, it is log file where the call wants store the message in $1
-	printf "%b\n" "$1" >> "$2"	
-    fi
-}
+source ~/bin/colours_msg_functions.sh		# to add colour to some messages
 
 #------------ script START 
 cd

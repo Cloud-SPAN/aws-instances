@@ -88,8 +88,8 @@ do
     aws route53 change-resource-record-sets --hosted-zone-id $hostZoneID --change-batch file://${dnDeleteFile%.txt}Request.json > $dnDeleteFile 2>&1
 
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` deleting `colour bl "domain:"` $subDomainName.$hostZone; `colour bl ip:` $eip" >> $dnDeleteFile
+	message "`colour gl Success` deleting `colour bl "domain:"` $subDomainName.$hostZone; `colour bl ip:` $eip"  $dnDeleteFile
     else
-	message "`colour red Error` deleting `colour bl "domain:"` $subDomainName.$hostZone; `colour bl ip:` $eip" >> $dnDeleteFile
+	message "`colour red Error` deleting `colour bl "domain:"` $subDomainName.$hostZone; `colour bl ip:` $eip"  $dnDeleteFile
     fi
 done

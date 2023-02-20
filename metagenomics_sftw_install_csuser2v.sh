@@ -1,17 +1,9 @@
 #!/usr/bin/env bash
 # helper functions
 #------------------
-source ~/bin/colours_functions.sh	 # to add colour to some messages
+source ~/bin/colours_msg_functions.sh		# to add colour to some messages
 shopt -s expand_aliases			### sets on expand_aliases otherwise docker aliases don't work
 source ~/.bash_aliases
-
-function message() {
-    printf "%b\n" "$1"		### %b: print the argument expanding backslash escape sequences.
-    if [ -n "$2" ]; then	### if $2 is specified, it's a log file to also store message $1
-	printf "%b\n" "$1" >> "$2"	
-    fi
-}
-
 
 function remove_samtools() {
     message "`colour lg "removing conda samtools"` otherwise we cannot update python" $1

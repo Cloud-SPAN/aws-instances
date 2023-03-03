@@ -4,7 +4,7 @@
 # instance id suffix to use: srcCSGC-AMI04: CSGC-AMI-04-UsrKeyMng-NoAuthKeys
 # Output:  in directorty $outputsDirThisRun
 #------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### continue below
@@ -37,6 +37,8 @@ outputsDirThisRun=${outputsDir}/login-keys-delete-output`date '+%Y%m%d.%H%M%S'`
 
 message "$(colour cyan "Deleting login key pairs:")"
 
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting the login keys:")"
     message $outputsDirThisRun
@@ -50,7 +52,7 @@ do
     loginkey=${instance%-src*}
     loginkey="login-key-${loginkey%-gc}"
     #continue
-    aws ec2 delete-key-pair --key-name $loginkey  >  $outputsDirThisRun/$loginkey.txt	     
+    aws ec2 delete-key-pair --key-name $loginkey  >  $outputsDirThisRun/$loginkey.txt 2>&1	     
     if [ $? -eq 0 ]; then
 	message "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"  $outputsDirThisRun/$loginkey.txt
     else

@@ -5,14 +5,17 @@
 # Creates AWS Machine Image (AMI) instances, createing login key pair/s, intance/s, etc. see steps below
 #
 # Usage:	main_instances_create.sh  fullOrRelativePathToInstancesNamesFile
-#		# not yet: -s stop instances after creating and launching them
 #
 # Author:	Jorge Buenabad-Chavez
 # Date:		20211130
 # Version:	2nd - adding the automation of domain names creation through aws_domainNames_create.sh
 #		      and tuning the handling of inputs and outputs in all the scripts invoked by this one.
+# Assumptions:
+# 1) AWS Resources Limits:
+#    the AWS account running this script has the proper "limits" as to the number of instances, elastic ip addresses, etc.
+# 2) AWS Machine Image specified exists
 #-----------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) message "$(colour gl $(basename $0)) is creating and launching instances specified in input file $(colour bl $1)";;
@@ -29,33 +32,10 @@ $(colour bl "Usage:                $(basename $0) instancesNamesFile")
 	exit 2;;	
 esac
 
-# should check file with instance names to create exists
-
-message "Creating login key pairs:"
-aws_loginKeyPair_create.sh $1		
-
-message "Creating instances:"
-aws_instances_launch.sh    $1		
-
-message "Creating (allocating) elastic IPs:"  # use of parenthesis without ".." causes an error
-aws_elasticIPs_allocate.sh $1		
-
-message "Creating domain names:"		
-aws_domainNames_create.sh $1
-
-message "Associating IPs to instances:"	
-aws_elasticIPs_associate2instance.sh $1 
-
-message "Configuring instances (login key and hostname):"
-aws_instances_configure.sh $1		 # configures up login keys and hostname based on domain name, and logs in to csuser
-
+aws_loginKeyPair_create.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_instances_launch.sh		"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_elasticIPs_allocate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_domainNames_create.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_elasticIPs_associate2ins.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_instances_configure.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
 exit 0
-
-: <<COMMENTS
-Assumptions:
-1) AWS Resources Limits. 
-   
-   The AWS account running this script has the proper "limits" as to the number of instances, elastic ip addresses,
-   etc.
-2) AWS Machine Image specified exists
-COMMENTS

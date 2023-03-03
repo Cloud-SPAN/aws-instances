@@ -2,7 +2,7 @@
 # allocates static, elastic IP addresses
 #
 #--------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### message "$(colour gl $(basename $0)) is login keys for instances specified in input file $(colour bl $1)";;
@@ -33,13 +33,17 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/ip-addresses-allocation-output   	# we may add the date later `date '+%Y%m%d.%H%M%S'`
 
-message "$(colour cyan "Allocating IP addresses:")"
+message "\n$(colour cyan "Allocating IP addresses:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of allocation elastic IP adresses:")"
     message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
+
+check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
 
 tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $inputsDir/tags.txt is more difficult: two items per element
 # we just need the tag values: 1, 3, 5, .. (not the tag key names: 0, 2, 6 ..) 
@@ -54,10 +58,7 @@ instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do
-    #aws ec2 allocate-address  --dry-run --domain vpc --tag-specifications \\
     eipResultsFileName="elastic-IPaddress-for-${instance%-src*}"
-    #message Allocating $eip
-    #continue
     aws ec2 allocate-address --domain vpc --tag-specifications \
     "ResourceType=elastic-ip,Tags=[ {Key=Name,		Value=$eipResultsFileName}, \
     				    {Key=name,		Value=${eipResultsFileName,,}}, \
@@ -66,7 +67,7 @@ do
     				    {Key=status,	Value=$tag_status_value}, \
     				    {Key=pushed_by,	Value=$tag_pushedby_value}, \
 				    {Key=defined_in,	Value=$tag_definedin_value},  \
-				  ]" > $outputsDirThisRun/$eipResultsFileName.txt
+				  ]" > $outputsDirThisRun/$eipResultsFileName.txt 2>&1
     ## above in "Value=${eipResultsFileName,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
 	message "`colour gl Success` allocating `colour bl "elastic IP address for instance:"` ${instance%-src*}"  $outputsDirThisRun/$eipResultsFileName.txt
@@ -74,3 +75,4 @@ do
 	message "`colour red Error` ($?) creating `colour bl "elastic IP address for instance:"` ${instance%-src*}"  $outputsDirThisRun/$eipResultsFileName.txt
     fi
 done
+exit 0

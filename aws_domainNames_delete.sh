@@ -6,7 +6,7 @@
 #
 # Output:  in directorty $outputsDirThisRun
 ###################
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### continue below
@@ -43,6 +43,8 @@ hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
 
 message "$(colour cyan "Deleting domain names:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting domain names:")"

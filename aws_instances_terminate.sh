@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # delete/terminate (run!?) AWS instances
 #------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### continue below 
@@ -33,6 +33,8 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 outputsDirThisRun=${outputsDir}/instances-delete-output`date '+%Y%m%d.%H%M%S'`
 
 message "$(colour cyan "Terminating instances:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting instances:")"

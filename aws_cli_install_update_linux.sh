@@ -7,7 +7,7 @@
 #  Options	: [-l][-u][-v]  -- description below
 #-------------------------------------
 # helper functions
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 message "\n$(colour lb $(basename $0))  installs or updates the AWS CLI and the AWS completer locally.\n"
 

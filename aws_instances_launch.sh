@@ -2,7 +2,7 @@
 # create (run!?) AWS instances based on specified configuration and files and the following reference
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
 #------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages and more
 
 case $# in
     1) ;; ##message "$(colour gl $(basename $0)) is creating and launching instances specified in input file $(colour bl $1)";;
@@ -32,13 +32,17 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/instances-creation-output	# we may add the date later `date '+%Y%m%d.%H%M%S'`
 
-message "$(colour cyan "Creating instances:")"
+message "\n$(colour cyan "Creating instances:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of creating instances:")"
-    message $outputsDirThisRun
+    message "$outputsDirThisRun"
     mkdir -p $outputsDirThisRun
 fi
+
+check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
 
 tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $inputsDir/tags.txt is more difficult: two items per element
 # we just need the tag values: 1, 3, 5, .. (not the tag key names: 0, 2, 6 ..) 
@@ -56,17 +60,17 @@ resource_instance_type=${resources[3]}
 resource_security_group_ids=${resources[5]}
 resource_subnet_id=${resources[7]}
 
-#mapfile instancesNamesMapfile < $instancesNamesFile   ### does not work in macOS
-instancesNames=( `cat $instancesNamesFile` )
+instancesNames=( `cat $instancesNamesFile` )	### mapfile instancesNamesMapfile < $instancesNamesFile   # does not work in macOS
 
 for instance in ${instancesNames[@]}
 do
-    logkeyend=${instance%-src*}
-    logkeyend=${logkeyend%-gc}
-    #message "$instance  login-key-$logkeyend"
+    #logkeyend=${instance%-src*}
+    #logkeyend=${logkeyend%-gc}
+    loginkey="login-key-${instance%-src*}"
+
     #continue
     aws ec2 run-instances --image-id  $resource_image_id   --instance-type  $resource_instance_type \
-	--key-name "login-key-${logkeyend}"  \
+	--key-name $loginkey  \
 	--security-group-ids $resource_security_group_ids \
 	--subnet-id $resource_subnet_id --tag-specifications \
 	"ResourceType=instance, Tags=[{Key=Name,	Value=$instance}, \
@@ -84,3 +88,4 @@ do
 	message "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     fi
 done
+exit 0

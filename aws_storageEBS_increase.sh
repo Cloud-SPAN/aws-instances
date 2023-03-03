@@ -18,7 +18,7 @@
 # This script can be run on its own or through/by the script instances_create.sh. 
 #-------------------------------------
 # helper functions
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 function message_use() {
     printf "%b\n" "\n$(colour lg $(basename $0)) increases the size of the instance disk (EBS storage) and the file system

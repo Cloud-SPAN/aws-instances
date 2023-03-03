@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # stops  AMI instances
 #------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) message  "$(colour gl $(basename $0)) is stopping instances specified in input file $(colour bl $1)";;
@@ -31,7 +31,9 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating instances, labelled with the date and time
 outputsDirThisRun=${outputsDir}/instances-stop-output`date '+%Y%m%d.%H%M%S'`
 
-message "`colour cyan "Stopping instances:"`"
+message "$(colour cyan "Stopping instances:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of stopping instances:")"

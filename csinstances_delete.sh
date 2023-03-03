@@ -11,7 +11,7 @@
 # Date:		20211207
 # Version:	1
 #-----------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) message "$(colour gl $(basename $0)) is terminating instances specified in input file $(colour bl $1)";;
@@ -28,20 +28,11 @@ $(colour bl "Usage:                $(basename $0) instancesNamesFile")
 	exit 2;;
 esac
 
-message "Terminating instances:"
-aws_instances_terminate.sh	$1	
-
-message "Deleting login key pairs:"
-aws_loginKeyPair_delete.sh $1	
-
-message "Deleting domain names:"
-aws_domainNames_delete.sh $1
-
-message "Disassociating IPs from instances:"
-aws_elasticIPs_disassociate.sh $1	  
-
-message "Deallocating (deleting) elastic IPs:"
-aws_elasticIPs_deallocate.sh $1
+aws_instances_terminate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_loginKeyPair_delete.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_domainNames_delete.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_elasticIPs_disassociate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+aws_elasticIPs_deallocate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
 
 exit 0
 

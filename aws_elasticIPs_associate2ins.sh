@@ -2,7 +2,7 @@
 # associates ip addresses to instances
 #
 #--------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### just continue below
@@ -34,13 +34,17 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of associating ip addresses to instances
 outputsDirThisRun=${outputsDir}/ip-addresses-association-output			# may be later `date '+%Y%m%d.%H%M%S'`
 
-message "$(colour cyan "Associating elastic IPs to instances:")"
+message "\n$(colour cyan "Associating elastic IPs to instances:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of associating IP addresses to instances:")"
     message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
+
+check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
 
 instancesNames=( `cat $instancesNamesFile` )
 
@@ -57,8 +61,8 @@ do
     instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $instanceCreationFile`
      
     eipAssociationFile="$outputsDirThisRun/${instance%-src*}-ip-associationID.txt"
+    
     message "`colour bl "eip:"` $eip ; `colour brown eipAllocationId:` $eipAllocID; `colour b iid:` $instanceID"
-
     message "Checking ${instance%-src*} is running: "
     ### tmpfile="/tmp/${instance%-src*}.txt"
     while true 
@@ -76,7 +80,7 @@ do
 	fi
     done
 
-    aws ec2 associate-address  --instance-id $instanceID  --allocation-id $eipAllocID > $eipAssociationFile 2>&1
+    aws ec2 associate-address --instance-id $instanceID --allocation-id $eipAllocID > $eipAssociationFile 2>&1
     
     if [ $? -eq 0 ]; then
 	message "`colour gl Success` associating `colour bl "eip:"` $eip; `colour bl "instance:"` $instance; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
@@ -84,5 +88,4 @@ do
 	message "`colour red Error` ($?) associating `colour bl "eip:"` $eip; `colour bl "instance:"` $instance; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
     fi
 done
-
-
+exit 0

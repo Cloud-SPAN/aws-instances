@@ -6,7 +6,7 @@
 #  Description	: copies a file or directory from a Cloud-SPAN AWS instance to the local machine.
 #  Options	: [-l][-u][-v]  -- description below
 #--------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 
 function message_use() {

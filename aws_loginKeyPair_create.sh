@@ -8,7 +8,7 @@
 # instance id suffix to use: srcCSGC-AMI04: CSGC-AMI-04-UsrKeyMng-NoAuthKeys
 # Output:  in directorty $outputsDirThisRun
 #------------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### message "$(colour gl $(basename $0)) is login keys for instances specified in input file $(colour bl $1)";;
@@ -39,24 +39,24 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 # directory for the results of creating login keys (pairs) labelled with the date and time
 outputsDirThisRun=${outputsDir}/login-keys-creation-output		# to add later perhaps `date '+%Y%m%d.%H%M%S'`
 
-message "`colour cyan "Creating login keys:"`"
+message "\n$(colour cyan "Creating login keys:")"
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of creating the login keys:")"
-    message $outputsDirThisRun
+    message "$outputsDirThisRun"
     mkdir -p $outputsDirThisRun
 fi
-
-
 if [ ! -d $outputsDir/login-keys ]; then
     message "$(colour brown "Creating directory to hold the login keys:")"
-    message $outputsDir/login-keys
+    message "$outputsDir/login-keys"
     mkdir -p $outputsDir/login-keys
 fi
 
-tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $workdir/inputs/tags.txt more difficult: two items per element
-# we just need values: 1, 3, 5, .. (not the key names: 0, 2, 6 ..) 
-tag_name_value=${tags[1]}	# redefined below but better to read them as the others
+check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+
+tags=( `cat $inputsDir/tags.txt` )	# we just need values, entries: 1, 3, 5, .. (not the key names: 0, 2, 6 ..) 
+tag_name_value=${tags[1]}		# redefined below but better to read them as the others
 tag_group_value=${tags[3]}
 tag_project_value=${tags[5]}
 tag_status_value=${tags[7]}
@@ -67,11 +67,9 @@ instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do
-    loginkey=${instance%-src*}
-    loginkey="login-key-${loginkey%-gc}"
+    loginkey="login-key-${instance%-src*}"		### gets rid of the suffix "-src" and anything * that follows
     message "Creating $loginkey"
-    #continue
-    #aws ec2 create-key-pair --dry-run --key-name $loginkey --key-type rsa  --tag-specifications
+    ### aws ec2 create-key-pair --dry-run --key-name ..
     aws ec2 create-key-pair --key-name $loginkey --key-type rsa  --tag-specifications \
 	"ResourceType=key-pair, Tags=[{Key=Name, Value=$loginkey}, {Key=name, Value=${loginkey,,}}, \
     				    {Key=group, Value=$tag_group_value}, \
@@ -79,13 +77,11 @@ do
     				    {Key=status, Value=$tag_status_value}, \
     				    {Key=pushed_by, Value=$tag_pushedby_value}, \
 				    {Key=defined_in, Value=$tag_definedin_value},  \
-				  ]" > $outputsDirThisRun/$loginkey.json
-    ## above in "Value=${loginkey,,}}", ${var,,} converts everything to lowercase as required by York tagging
+				  ]" > $outputsDirThisRun/$loginkey.json 2>&1
+    ### above, in "Value=${loginkey,,}}", ${var,,} converts everything to lowercase as required by York tagging
     if [ $? -eq 0 ]; then
 	message "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" $outputsDirThisRun/$loginkey.json
 	# format the key as expected by macOS machines
-	# was this way: awk -f loginKey_extract.awk $outputsDirThisRun/$loginkey.json > $outputsDir/login-keys/$loginkey.pem
-	# but better her:
 	awk '
 	BEGIN {
 	    # three \\\ just to escape \n

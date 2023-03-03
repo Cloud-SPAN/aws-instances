@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source colours_msg_functions.sh	  # to add colour to some messages
+source colour_utils_functions.sh	  # to add colour to some messages
 files=`ls *.sh`
 case $# in
 0|1) 	message "$(colour lb $(basename $0)) replaces a string with other string in all scripts (*.sh) in current directory."

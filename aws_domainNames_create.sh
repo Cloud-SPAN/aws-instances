@@ -3,7 +3,7 @@
 #
 # Output:  in directorty $outputsDirThisRun
 ###################
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; ### message "$(colour gl $(basename $0)) is login keys for instances specified in input file $(colour bl $1)";;
@@ -32,7 +32,9 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 				 # following "inputs", then adds "/outputs"
 				 # message "outputsdir: $outputsDir"
 
-message "$(colour cyan "Creating domain names:")"
+message "\n$(colour cyan "Creating domain names:")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 
 # directory for the results of creating domain names
 outputsDirThisRun=${outputsDir}/domain-names-creation-output		# may be later add `date '+%Y%m%d.%H%M%S'`
@@ -41,6 +43,8 @@ if [ ! -d $outputsDirThisRun ]; then
     message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
+
+check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
 
 hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
@@ -53,7 +57,7 @@ do
     subDomainName=${instance%-src*}
     eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
     dnCreateFile="$outputsDirThisRun/domain-name-create-${instance%-src*}.txt"
-    
+
     # get the IP within the file eipAllocationFile with awk, where:
     # - -F is the field separator (single space " ") within each line
     # - /"PublicIp"/ is the field we are looking for, which precedes the actual eipAllocID.
@@ -89,3 +93,5 @@ do
 	message "`colour red Error` creating `colour b "domain:"` $subDomainName.$hostZone; `colour b ip:` $eip"  $dnCreateFile
     fi
 done
+exit 0
+aws_cli_install_update_linux.sh

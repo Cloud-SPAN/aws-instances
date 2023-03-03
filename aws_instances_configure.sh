@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # configures each instance so that users other than sudo user can login using the private key of sudo user 
 #-------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 case $# in
     1) ;; # message "$(colour gl $(basename $0)) is configuring the instances specified in input file $(colour bl $1)";;
@@ -31,13 +31,17 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 loginKeysDir=$outputsDir/login-keys
 
+message "\n$(colour cyan "Configuring instances (login keys and hostnames):")"
+
+check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+
 instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do
     instance=${instance%-src*}
     keyfile=${instance%-gc}
-    message "\n$(colour cyan "Configuring    $instance:")"
+    message "$(colour lb "Configuring  $instance:")"
 
     # we need to ensure the domain is available before issuing any ssh; otherwise will get Connection refused port 22 or similar
     domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${instance%-src*}.txt"
@@ -92,6 +96,7 @@ do
 
     message "Logging as $(colour lg csuser)"
     ssh -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem csuser@$instance.$hostZone "echo \"Hi from CSUSER at $instance\"; ls; echo \"Bye.\";  exit "
+    message " "
     ###ssh -i $loginKeysDir/login-key-$keyfile.pem csuser@$instance.$hostZone "echo \"Hi from CSUSER at $instance\"; ls; echo \"Bye.\";  exit "
 done
-
+exit 0

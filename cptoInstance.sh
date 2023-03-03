@@ -6,7 +6,7 @@
 #  Description	: copies a file or directory from the local machine to the csuser account in a Cloud-SPAN AWS instance.
 #  Options	: [-l][-u][-v]  -- description below
 #--------------------------------------------
-source colours_msg_functions.sh	 # to add colour to some messages
+source colour_utils_functions.sh	 # to add colour to some messages
 
 function message_use() {
     printf "%b\n" "\n$(colour lb $(basename $0)) copies a local file/directory to the $(colour lb csuser) account of an AWS instance.

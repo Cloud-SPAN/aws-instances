@@ -28,12 +28,11 @@ $(colour bl "Usage:                $(basename $0) instancesNamesFile")
 	exit 2;;
 esac
 
-aws_instances_terminate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
-aws_loginKeyPair_delete.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
-aws_domainNames_delete.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
-aws_elasticIPs_disassociate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
-aws_elasticIPs_deallocate.sh	"$1" || { message "\n$(colour lg $(basename $0)): aborting creating instances and related resources!\n"; exit 1;}
+error_message="\n$(colour lg $(basename $0)): $(colour redTextWhitekBackground "aborting") deleting instances and related resources!\n"
 
+aws_instances_terminate.sh	"$1" || { message "$error_message"; exit 1; }
+aws_loginKeyPair_delete.sh	"$1" || { message "$error_message"; exit 1; }
+aws_domainNames_delete.sh	"$1" || { message "$error_message"; exit 1; }
+aws_elasticIPs_disassociate.sh	"$1" || { message "$error_message"; exit 1; }
+aws_elasticIPs_deallocate.sh	"$1" || { message "$error_message"; exit 1; }
 exit 0
-
-

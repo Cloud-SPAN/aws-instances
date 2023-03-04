@@ -33,8 +33,9 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 outputsDirThisRun=${outputsDir}/instances-delete-output`date '+%Y%m%d.%H%M%S'`
 
 message "$(colour cyan "Terminating instances:")"
-
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/instances-creation-output" "$instancesNamesFile" || exit 1
+### tests exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting instances:")"

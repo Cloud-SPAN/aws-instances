@@ -41,6 +41,8 @@ outputsDirThisRun=${outputsDir}/ip-addresses-deallocate-output`date '+%Y%m%d.%H%
 message "$(colour cyan "Deallocating elastic IP addresses:")"
 
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/ip-addresses-allocation-output" "$instancesNamesFile" || exit 1
+### tests exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deallocating IP addresses:")"

@@ -53,6 +53,10 @@ colour() {
 	    echo "`tput setaf 0``tput setab 2`$2`tput sgr0`";;
 	redTextBoldBlackBackground|rtbbb|textRedBoldBackgroundBlack|trbbb)
 	    echo "`tput setaf 1``tput setab 0``tput bold`$2`tput sgr0`";;
+	redTextWhitekBackground)
+	    echo "`tput setaf 1``tput setab 7`$2`tput sgr0`";;
+	redTextBoldWhitekBackground)
+	    echo "`tput setaf 1``tput setab 7``tput bold`$2`tput sgr0`";;
 	greenTextBoldWhiteBackground|gtwb|textGreenBoldBackgroundWhite|tgbw)
 	    echo "`tput setaf 2``tput setab 7``tput bold`$2`tput sgr0`";;
 	blackTextBoldWhiteBackground|btwb|textBlackBoldBackgroundWhite|tbbw)
@@ -128,41 +132,81 @@ function message_error_awsResourceFiles_exist() {
     # $3 instancesNamesFile.txt used to create instances and/or related resources
 
     message "$(colour red "Environment condition ERROR"):
-$(colour lg ${1}): the following file/s already exist and $(colour lb "WILL NOT") be overwritten:"
-    #message "$(colour lb "$2")"
-    message "\n$2"
+$(colour lg ${1}) $(colour redTextWhitekBackground aborting): the following file/s already exist and $(colour lb "WILL NOT") be overwritten:"
+    message "\n$2"			###     # did not work without double quotes: message "$(colour lb $2)"
     message "- You are trying to create instances and related resources using $(colour lb "previously used") instances names. 
 - The file/s contain AWS resource ID/s that are needed to delete the related resource/s from your 
-  AWS account. Delete the resources (before creating them again) running this command:
+  AWS account. $(colour lb Delete) the resources (before creating them again) running this command:
 
   $(colour lb "csinstances_delete.sh") \"instancesNamesFile-you-used-to-create-the-resource/s\" 
 
 - If you have already deleted the instances and related resource/s, then either: 
-  - rename or delete the \"../$(colour lb outputs)/..\" parent directory of $(colour lb "the file/s") before creating the instances OR
-  - check for typing errors in the $(colour lb "names") of the instances your are trying to create."
+  - rename or delete the \"../$(colour lb outputs)/..\" parent directory of $(colour lb "the file/s") before creating the instances
+  - or check for typing errors in the $(colour lb "names") of the instances your are trying to create."
     return 0
 }
 
-function check_resourcesResultsFiles_dont_exist() {
+
+function message_error_awsResourceFiles_DONT_exist() {
     # $1 is the script checking the Scripts configuration files, any of these: aws_domainNames_create.sh, aws_elasticIPs_allocate.sh,
     #	 aws_elasticIPs_associate2instance.sh, aws_instances_launch.sh, aws_loginKeyPair_create.sh
-    # $2 outputsResourceDir within outuputs dir
+    # $2 is the list of resource files to be created which SHOULD NOT EXIST
     # $3 instancesNamesFile.txt used to create instances and/or related resources
-    local instances_names=( `cat $3` ); local files_list=""; local instance=""; local resource_filename=""
+
+    message "Environment condition $(colour brown "WARNING"):
+$(colour lg "${1}") $(colour redTextWhitekBackground aborting): the following file/s DO NOT exist:"
+    message "\n$2"
+    message "- Check you are using the same $(colour lb "instances names") you used to create the instances or resources.
+- RECALL that instances and related resouces (IP, login keys, etc.) are created, configured, deleted, 
+  etc., using the $(colour lb "instance-names") you specify in an \"instancesNamesFile\".
+- Check for typing errors in the $(colour lb "instances-names") in the \"instancesNamesFile\" you are using."
+    return 0
+}
+
+function check_created_resources_results_files() {
+    # $1 either "DO-EXIST" or "DO-NOT-EXIST"
+    # $2 the script checking: aws_*.sh (but not: aws_cli_install_update_linux.sh - aws_storageEBS_increase.sh - aws_instances_configure.sh)
+    # $3 outputsResourceDir within outuputs dir
+    # $4 instancesNamesFile.txt used to create instances and/or related resources
+    local instances_names=( `cat $4` ); local files_list=""; local instance=""; local resource_filename=""
     
     for instance in ${instances_names[@]}		## $4 WAS instancesNames but  for instance in ${4}[@] or ${4[@]}   DOES NOT WORK
     do
-	case $1 in
-	    "aws_loginKeyPair_create.sh")	resource_filename="$2/login-key-${instance%-src*}.json" ;;
-	    "aws_instances_launch.sh")		resource_filename="$2/${instance}.txt" ;;
-	    "aws_elasticIPs_allocate.sh")	resource_filename="$2/elastic-IPaddress-for-${instance%-src*}.txt" ;;
-	    "aws_domainNames_create.sh")	resource_filename="$2/domain-name-create-${instance%-src*}.txt" ;;
-	    "aws_elasticIPs_associate2ins.sh")	resource_filename="$2/${instance%-src*}-ip-associationID.txt" ;;
-	    *) message "$(colour lg "check_resourcesResultsFiles_dont_exist"): something went wrong no valid option passed: $1" ; return 1;;
+	case "$2" in
+	    "aws_instances_launch.sh" |"aws_instances_terminate.sh" | "aws_instances_configure.sh" | "csinstances_start.sh" |\
+		"csinstances_stop.sh" )
+		resource_filename="$3/${instance}.txt" ;;
+	    
+	    "aws_elasticIPs_allocate.sh" | "aws_elasticIPs_deallocate.sh" | "aws_domainNames_delete.sh" )
+		# strange this case: domain names need to check for the existence of the file containing the relevant IP address
+		resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
+
+	    "aws_loginKeyPair_create.sh" | "aws_loginKeyPair_delete.sh" )
+		resource_filename="$3/login-key-${instance%-src*}.json" ;;
+	    
+	    "aws_elasticIPs_associate2ins.sh" | "aws_elasticIPs_disassociate.sh" )
+		resource_filename="$3/${instance%-src*}-ip-associationID.txt";;
+
+	    "aws_domainNames_create.sh" )
+		resource_filename="$3/domain-name-create-${instance%-src*}.txt" ;;
+	    *) message "$(colour lg "check_cloud_created_resources_results_files $1 $2.."): invalid option: $2" ; return 1;;
 	esac
-	[ -f "$resource_filename" ] && files_list="${files_list}$(colour cyan "--->") $outputs_resources_dir/$resource_filename   $hyphen2 related $(colour lb "instance name"):     ${instance%-src*}\n"
+	case "$1" in
+	    "DO-NOT-EXIST")
+		### first case developed for creating instances or related resources.
+		[ -f "$resource_filename" ] && files_list="${files_list}$(colour brown "--->") $resource_filename   $hyphen2 related $(colour lb "instance name"):     ${instance%-src*}\n" ;;
+	    "DO-EXIST")
+		### second case developed for DELETING instances or related resources or to STOP/START instances.
+		[ ! -f "$resource_filename" ] && files_list="${files_list}$(colour brown "--->") $resource_filename   $hyphen2 related $(colour lb "instance name"):     ${instance%-src*}\n" ;;
+	esac
     done
-    [ -n "$files_list" ] && message_error_awsResourceFiles_exist "$1" "$files_list" "$3" && return 2
+    case "$1" in
+	"DO-NOT-EXIST")
+	    [ -n "$files_list" ] && message_error_awsResourceFiles_exist "$2" "$files_list" "$4" && return 2 ;;
+ 	"DO-EXIST")
+	    ### as files SHOULD exist, the error message is about the files NOT existing
+	    [ -n "$files_list" ] && message_error_awsResourceFiles_DONT_exist "$2" "$files_list" "$4" && return 2 ;;
+    esac
     return 0
 }
 

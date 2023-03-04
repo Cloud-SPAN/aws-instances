@@ -53,7 +53,8 @@ if [ ! -d $outputsDir/login-keys ]; then
     mkdir -p $outputsDir/login-keys
 fi
 
-check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-NOT-EXIST" "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+### tests exit 1
 
 tags=( `cat $inputsDir/tags.txt` )	# we just need values, entries: 1, 3, 5, .. (not the key names: 0, 2, 6 ..) 
 tag_name_value=${tags[1]}		# redefined below but better to read them as the others

@@ -34,21 +34,24 @@ loginKeysDir=$outputsDir/login-keys
 message "\n$(colour cyan "Configuring instances (login keys and hostnames):")"
 
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/instances-creation-output" "$instancesNamesFile" || exit 1
+### tests exit 1
 
 instancesNames=( `cat $instancesNamesFile` )
 
 for instance in ${instancesNames[@]}
 do
     instance=${instance%-src*}
-    keyfile=${instance%-gc}
+    keyfile=${instance}
     message "$(colour lb "Configuring  $instance:")"
 
     # we need to ensure the domain is available before issuing any ssh; otherwise will get Connection refused port 22 or similar
-    domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${instance%-src*}.txt"
+    domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${instance}.txt"
     domainNameChangeID=`awk -F " " '$1 == "\"Id\":" {print substr($2, 2, length($2) -3)}' $domainNameCreationFile`
     
     message "Checking $instance.$hostZone is reachable: "
-    ### tmpfile="/tmp/domainName${instance%-src*}-status.txt"
+
+    ### tmpfile="/tmp/domainName${instance}-status.txt"
     while true 
     do
 	echo -n "."

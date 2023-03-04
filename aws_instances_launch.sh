@@ -42,7 +42,8 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-NOT-EXIST" "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+### tests exit 1
 
 tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $inputsDir/tags.txt is more difficult: two items per element
 # we just need the tag values: 1, 3, 5, .. (not the tag key names: 0, 2, 6 ..) 

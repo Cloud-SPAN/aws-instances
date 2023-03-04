@@ -44,7 +44,8 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-check_resourcesResultsFiles_dont_exist "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-NOT-EXIST" "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+### tests exit 1
 
 hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
 hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`

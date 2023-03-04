@@ -45,6 +45,9 @@ hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.t
 message "$(colour cyan "Deleting domain names:")"
 
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/ip-addresses-allocation-output" "$instancesNamesFile" || exit 1
+### deleting domain names requires checking for the IP address results file not the domain
+### tests exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting domain names:")"

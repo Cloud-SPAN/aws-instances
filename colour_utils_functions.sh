@@ -140,7 +140,7 @@ $(colour lg ${1}) $(colour redTextWhitekBackground aborting): the following file
 
   $(colour lb "csinstances_delete.sh") \"instancesNamesFile-you-used-to-create-the-resource/s\" 
 
-- If you have already deleted the instances and related resource/s, then either: 
+- If you have already deleted the instances and related resource/s, try the following: 
   - rename or delete the \"../$(colour lb outputs)/..\" parent directory of $(colour lb "the file/s") before creating the instances
   - or check for typing errors in the $(colour lb "names") of the instances your are trying to create."
     return 0

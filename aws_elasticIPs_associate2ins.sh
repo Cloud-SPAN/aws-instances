@@ -84,9 +84,9 @@ do
     aws ec2 associate-address --instance-id $instanceID --allocation-id $eipAllocID > $eipAssociationFile 2>&1
     
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` associating `colour bl "eip:"` $eip; `colour bl "instance:"` $instance; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
+	message "`colour gl Success` associating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
     else
-	message "`colour red Error` ($?) associating `colour bl "eip:"` $eip; `colour bl "instance:"` $instance; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
+	message "`colour red Error` ($?) associating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
     fi
 done
 exit 0

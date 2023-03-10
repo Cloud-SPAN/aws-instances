@@ -70,8 +70,8 @@ do
 
     aws ec2 release-address --allocation-id $eipAllocID > $eipDeallocationFile  2>&1
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` deallocating `colour bl "eip:"` $eip; `colour bl "instance:"` $instance; `colour bl eipAllocationId:` $eipAllocID"  $eipDeallocationFile
+	message "`colour gl Success` deallocating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}; `colour bl eipAllocationId:` $eipAllocID"  $eipDeallocationFile
     else
-	message "`colour red Error` ($?) deallocating `colour bl "eip:"` $eip; `colour bl "instance:"` $instance; `colour bl eipAllocationId:` $eipAllocID"  $eipDeallocationFile
+	message "`colour red Error` ($?) deallocating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}; `colour bl eipAllocationId:` $eipAllocID"  $eipDeallocationFile
     fi
 done

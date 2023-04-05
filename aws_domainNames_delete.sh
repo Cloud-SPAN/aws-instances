@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-# deallocates (releases/delete) elastic ip addresses
-# NB:
-# - if the eip address to deallocate is associated to a dns record/domain,
-# - the eip address must first disassociated running elastic_IPs_reset_domain_name.sh
-#
-# Output:  in directorty $outputsDirThisRun
+# deletes domain names
 ###################
 source colour_utils_functions.sh	 # to add colour to some messages
 

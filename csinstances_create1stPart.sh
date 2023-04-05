@@ -1,15 +1,4 @@
 #!/usr/bin/env bash
-#-----------------------------------------------------
-# Name:		main_instances_create.sh
-#
-# Creates AWS Machine Image (AMI) instances, createing login key pair/s, intance/s, etc. see steps below
-#
-# Usage:	main_instances_create.sh  fullOrRelativePathToInstancesNamesFile
-#
-# Author:	Jorge Buenabad-Chavez
-# Date:		20211130
-# Version:	2nd - adding the automation of domain names creation through aws_domainNames_create.sh
-#		      and tuning the handling of inputs and outputs in all the scripts invoked by this one.
 # Assumptions:
 # 1) AWS Resources Limits:
 #    the AWS account running this script has the proper "limits" as to the number of instances, elastic ip addresses, etc.

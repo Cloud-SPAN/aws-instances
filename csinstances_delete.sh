@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #-----------------------------------------------------
-# Name:		main_instances_delete.sh
+# Name:		csinstances_delete.sh
 #
 # Deletes AWS Machine Image (AMI) instances, deleteing/deallocating login key pair/s, ip addresses, intances, etc. see steps below
 #
-# Usage:	main_instances_delete.sh  fullOrRelativePathToInstancesNamesFile
+# Usage:	csinstances_delete.sh  fullOrRelativePathToInstancesNamesFile
 #
 # Author:	Jorge Buenabad-Chavez
 #		Cloud-SPAN Team

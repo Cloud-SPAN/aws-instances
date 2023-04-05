@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 # creates login key pairs to use when creating instances
-# NB minimum parameters to specify are:
-# --key-name		a must: the specified key is injected into the ubuntu user ~/.ssh/authorized_keys
-# --image-id		a must: this is the virtual machine: CSGC-AMI-04-UsrKeyMng-NoAuthKeys (ami-id ami-05be6a5ff8a9091e0)
-# --instance-type	a must: this is the hardware t2.small
-#
-# instance id suffix to use: srcCSGC-AMI04: CSGC-AMI-04-UsrKeyMng-NoAuthKeys
-# Output:  in directorty $outputsDirThisRun
 #------------------------------------------------
 source colour_utils_functions.sh	 # to add colour to some messages
 

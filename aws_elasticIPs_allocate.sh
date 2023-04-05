@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # allocates static, elastic IP addresses
-#
 #--------------------------------
 source colour_utils_functions.sh	 # to add colour to some messages
 

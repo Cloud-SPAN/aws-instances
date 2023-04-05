@@ -5,17 +5,6 @@
 #  Version	: 1.0
 #  Description	: increases the size of EBS storage to the given number of GigaBytes for the instance running this script
 #  Options	: [-l][-u][-v]  -- description below
-# 
-# Main steps:
-# Original main steps:
-# 1. Stop instance
-# 2. Take snapshot
-# 3. Increase EBS either in AWS Console or AWS cli - asks for which one
-# 4. Runs instance - to login
-# 5. Login to instance
-# 6. Increase file system (FS) to the new size of EBS storage - see aws ec2 guide for Linux commands
-# 7. Check FS size has been increased
-# This script can be run on its own or through/by the script instances_create.sh. 
 #-------------------------------------
 # helper functions
 source colour_utils_functions.sh	 # to add colour to some messages

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #-----------------------------------------------------
-# Name:		main_instances_create.sh
+# Name:		csinstances_create.sh
 #
 # Creates AWS Machine Image (AMI) instances, createing login key pair/s, intance/s, etc. see steps below
 #
-# Usage:	main_instances_create.sh  fullOrRelativePathToInstancesNamesFile
+# Usage:	csinstances_create.sh  fullOrRelativePathToInstancesNamesFile
 #
 # Author:	Jorge Buenabad-Chavez
 # Date:		20211130

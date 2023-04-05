@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # helper functions
 #------------------
-source ~/bin/colours_msg_functions.sh		# to add colour to some messages
-shopt -s expand_aliases			### sets on expand_aliases otherwise docker aliases don't work
+source ~/bin/colour_utils_functions.sh		# to add colour to some messages and more
+shopt -s expand_aliases				### sets on expand_aliases otherwise docker aliases don't work
 source ~/.bash_aliases
 
 function remove_samtools() {

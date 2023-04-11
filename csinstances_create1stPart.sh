@@ -11,7 +11,7 @@ case $# in
     0|*) ### display message on use
 	message "
 $(colour gl $(basename $0)) creates login keys, IP addresses and domain names for $(colour bl instances) that 
-$(colour bl "will be created later") (with csinstances_2ndPart_create.sh).
+$(colour bl "will be created later") (with csinstances_create2ndPart.sh).
 
 $(colour bl "Usage:                $(basename $0)  instancesNamesFile")
 

@@ -10,7 +10,7 @@ case $# in
     1) message "$(colour gl $(basename $0)) is creating and launching instances specified in input file $(colour bl $1)";;
     0|*) ### display message on use
 	message "
-$(colour gl $(basename $0)) creates, associates and configures instances ${hyphen2} instances are associated to $(colour bl "IP addresses previously created") (with csinstances_1stPart_create.sh).
+$(colour gl $(basename $0)) creates, associates and configures instances ${hyphen2} instances are associated to $(colour bl "IP addresses previously created") (with csinstances_create1stPart.sh).
 
 
 $(colour bl "Usage:                $(basename $0)  instancesNamesFile")

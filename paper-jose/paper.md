@@ -10,8 +10,10 @@ authors:
     orcid: 0009-0003-1751-653X
     affiliation: 1             # "1, 2" # (Multiple affiliations must be quoted)
   - name: Emma Rand
+    orcid: 0000-0002-1358-8275
     affiliation: 1
   - name: James Chong
+    orcid: 0000-0001-9447-7421
     affiliation: 1
 affiliations:
  - name: Biology Department, University of York
@@ -26,25 +28,25 @@ bibliography: paper.bib
 
 # Summary
 
-We present a set of Bash scripts that automatically manage Amazon Web Services ([AWS](https://aws.amazon.com/)) instances which are Linux virtual machines. We use the scripts to manage multiple instances for training. Instances are created before a workshop with ‘omics data and software analysis tools required for the workshop. Each student is granted exclusive access to an instance through the use of an encrypted login key with the ``ssh`` program:
+We present a set of Bash scripts that make it quick and easy to manage [AWS](https://aws.amazon.com/) instances for training delivery. We use the scripts to automate the creation of instances (which are Linux virtual machines) for genomics and metagenomics workshops. Instances are created before a workshop with ‘omics data and software analysis tools required for the workshop. Each student is granted exclusive access to an instance through the use of an encrypted login key with the ``ssh`` program:
 
 ```  
    ssh -i login-key-instance01.pem  csuser@instance01.cloud-span.aws.york.ac.uk
 ```
 
-Running the scripts requires only the path of the file that contains the names of the instances to create, stop, start or delete — login keys, IP addresses and domain names used by the instances are created or deleted automatically, see the screenshot below. Creating over 30 instances takes 10-15 minutes. 
+Running the scripts requires only the path of the file that contains the names of the instances to create, stop, start or delete — login keys, IP addresses and domain names used by the instances are created or deleted automatically, see the screenshot below which shows the script `csinstance_create.sh` being run in a Linux *terminal* to create three instances whose names are specfied in the inputs file `courses/instances-management/inputs/instancesNames.txt`.  Creating over 30 instances takes 10-15 minutes. 
 
-![Output of running the script **csinstances_create.sh** — first part. The input file (path) "**courses/instances-management/inputs/instancesNames.txt**" contains three instances names: **instance01**, **instance02**, **instance03**. Login keys are created first as their AWS resource-id’s must be passed as parameters to create the corresponding instances, which are created second. IP addresses are then allocated. The last part of the output (not shown) corresponds to: creating the instance domain names as mapped to the relevant IP addresses, associating IP addresses to instances, accessing each instance with **ssh** as shown above but with the **ubuntu** user (AWS default) to configure the csuser to being accessed with the same login key, and accessing each instance with the csuser (as above) to validate such configuration was successful. Running the script **csinstances_delete.sh** with the same input file will delete those instances and related login keys, IP addresses, and domain names from the AWS account.](fig01-csinstances_create-output-first-part.png)
+![Output of running the script **csinstances_create.sh** — first part. The output last part (not shown) includes these steps: (**4**) creating the instance domain names as mapped to the relevant IP addresses, (**5**) associating IP addresses to instances, (**6**) accessing each instance with **ssh** as shown above but with the **ubuntu** user (AWS default) to configure the csuser as to being accessed with the same login key, and (**7**) accessing each instance with the csuser (as above) to validate such configuration was successful. Running the script **csinstances_delete.sh** with the same input file will delete those instances and related login keys, IP addresses, and domain names from the AWS account.](fig01-csinstances_create-output-first-part.png)
 
 # Statement of need
-Using cloud resources for training is rather efficient and most convenient as there is no need to buy nor manage hardware resources.  Typically, a Linux instance is configured with the required data and software tools and then replicated so that each student can be provided with an individual, real training environment — and instances can be scaled according to the storage and compute requirements of a workshop material. Once a workshop is finished the replicated instances are deleted to stop incurring any further cost.
+Genomics and metagenomics typically require analyzing gigabyte to terabyte sized data sets with packages that have multiple dependencies. This creates a steep learning curve that can be off putting for biologists. 'Omics training can be made more accessible if participants do not need to manage complex software installation or large datasets by following the Data Carpentries approach to using cloud resources to provide each participant with a properly configured AWS instance.
 
-On the other hand, starting using cloud resources is not trivial for the many technologies involved, and **managing multiple** instances through a graphical user interface (GUI), such as the AWS Console, **is cumbersome** and **error-prone**. 
+However, managing multiple instances through a graphical user interface (GUI), such as the AWS Console, is cumbersome and error-prone especially as the number of participants increases. Our scripts automate the creation and deletion of AWS instances and related resources to access them: login keys, IP addresses and domain names. 
 
-One of the goals of the [Cloud-SPAN](https://cloud-span.york.ac.uk/) project was to facilitate the use of cloud resources for training as outlined above. The scripts [@buenabad22] and the accompanying online course [Automated Management of AWS Instances](https://cloud-span.github.io/cloud-admin-guide-0-overview/) [@buenabad23] (introduced below) are the outcome of this goal.
+The scripts are supported by an accompanying online course: [Automated Management of AWS Instances](https://cloud-span.github.io/cloud-admin-guide-0-overview/) [@buenabad23].
 
 # The scripts 
-The scripts are shown below. The scripts "`csinstances_*.sh`" are to be run by the user of the scripts, the person in charge of managing instances for workshops. 
+The scripts are listed below. The scripts "`csinstances_*.sh`" are to be run by the user of the scripts, the person in charge of managing instances for workshops. 
 
 ```
 aws_domainNames_create.sh        aws_instances_configure.sh  csinstances_create.sh
@@ -73,7 +75,7 @@ How to configure and use the scripts is described in detail in the online course
 
 - how to configure a *terminal* environment with the scripts and the AWS CLI — in Linux, Mac, Windows (Git Bash), or the AWS CloudShell.
 
-- how to configure and run the scripts, manage late registrations and cancellations, and some troubleshooting.
+- how to configure and run the scripts to manage instances for a workshop, manage late registrations and cancellations, and some troubleshooting.
 
 - how to create and manage Amazon Machine Images (AMIs) which serve as templates to create AWS instances.
 
@@ -105,10 +107,12 @@ courses                       ### you can omit this directory or use other name
 # Conclusions
 Using the scripts is rather easy and most convenient once the scripts environment has been configured. We have saved a lot of time in managing the instances for our workshops for over a year. Most of the time we only need to configure the file "*instancesNames.txt*" with the names of the instances to manage for a workshop. The file **tags.txt** has to be configured only once and we copy it to manage instances for other workshops. Similary, the file **resourcesIDs.txt** needs to be configured only once for workshops that use a different instance type (t3.small, t3.medium, etc.) or a different AMI template. We handle only two `resourcesIDs.txt` files, one for our genomics workshops and the other for our metagenomics workshops. They differ on both the instance type and the AMI template id, but are the same in all other entries: subnet-id, base domatin name, etc.  
 
-While configuring the scripts environment is somewhat involved, it has to be made only once and the online course covers all the details. It should take 2 to 4 hours depending on experience to cover the course along with configuring the scripts environment. 
+Configuring the scripts environment is somewhat involved but it has to be made only once and the online course covers all the details. It should take 2 to 4 hours depending on experience to cover the course along with configuring the scripts environment. 
+
+We used the scripts to support delivery of 'omics training, but the scripts will work equally well for Linux instances configured for other purposes.
 
 # Acknowledgements
 
-We acknowledge contributions from ...
+We acknowledge funding from the UKRI innovation scholars award, project reference: MR/V038680/1 and the Natural Environment Research Council, project reference: NE/X006999/1.
 
 # References

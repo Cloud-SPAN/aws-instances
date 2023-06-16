@@ -12,7 +12,7 @@ authors:
   - name: Emma Rand
     orcid: 0000-0002-1358-8275
     affiliation: 1
-  - name: James Chong
+  - name: James P.J. Chong
     orcid: 0000-0001-9447-7421
     affiliation: 1
 affiliations:

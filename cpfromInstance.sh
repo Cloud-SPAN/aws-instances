@@ -16,14 +16,14 @@ usage:
  
   $(colour lb "$(basename $0) [-u][-v] login-key-instanceName.pem  remoteFileOrDirName  [localFileOrDirName]")
  
-- $(colour lb NB): copying an individual file or directory overwrites the local ones if they exist; $(colour lb rsync) is
-  used to copy directories so that links are included.
+- if $(colour lb localFileDirName) is not specified, the copy will be named as the remoteFileDirName and copied 
+  to the local current directory.
+- $(colour lb NB): copying an individual file or directory overwrites the local ones if they exist. 
+- $(colour lb rsync) is used to copy directories so that links are copied as links.
 - use -u to copy from the 'ubuntu' account instead (of the 'csuser' account).
 - use -v (verbose) to see what's going on and the copy command used.
 - $(colour lb login-key-instanceName.pem) is the name (path) of the file containing the RSA login key to access
-  the instance. The $(colour lb "name of the instance") to copy to is extracted from this name.
-- if $(colour lb localFileDirName) is not specified, the copy will be named as the remoteFileDirName and copied to the
-  local current directory.
+  the instance. The $(colour lb "name of the instance") to copy to is extracted from this file name.
 - $(colour lg Examples):
   $(colour lb $(basename $0)) gc_data/outputs/login-keys/login-key-instance017.pem  shell_data
   - copies (file/dir) instance017$(colour lb .cloud-span.aws.york.ac.uk):/home/csuser/shell_data to ./shell_data

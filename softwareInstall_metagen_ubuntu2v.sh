@@ -84,7 +84,7 @@ sudo apt-get update -y  | tee -a $logfile
 message "`colour lg "sudo apt-get upgrade"`" $logfile
 sudo apt-get upgrade -y | tee -a $logfile		
 
-#
+### 
 message "`colour lg "----------------------"`."  $logfile
 message "`colour lb "DONE system-wide setting and upgrade"` for csuser to install metagenomics software."  $logfile
 message "CHECK the log file $logfile." $logfile

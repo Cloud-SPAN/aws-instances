@@ -560,4 +560,4 @@ install_metaquast $logfile		### ok 14 (10) DONE MANUAL with "pip install quast" 
 #-------------------------------------- ### ok 15 (09) nano - done
 
 message "`colour lg DONE ` installing metagenomics software." $logfile
-message " Log out and login again for docker aliases to take effect." $logfile
+message " Logout and login again for any environment changes to take effect." $logfile

@@ -10,9 +10,9 @@ current directory in the specified \"bin\" directory. The current directory is:
   $(colour lb usage):    $(basename $0)  \"bin_directory\"
   $(colour lb example):  $(basename $0)  ~/.local/bincsaws   (Jorge's location - specify yours)
 
-  $(colour lb $(basename $0)) $(colour lr "must be run") in the directory where the scripts source files (to link) 
-reside. Creating such links makes it possible (1) to run the scripts from any location in the system 
-and (2) to git-manage the scripts separately from other scripts in the target bin directory.
+  This script $(colour lr "must be run") in the directory where the scripts source files to link reside. 
+Creating such links makes it possible (1) to run the scripts from any location in the system (typical) 
+but also (2) to git-manage the scripts separately from other scripts in the target bin directory.
   The target $(colour cyan bin) directory $(colour lr "must exist") and be specified in the execution PATH. 
 
   $(colour lb "Files to link (NB: files or links with same names in target bin directory will be deleted)"):"
@@ -36,15 +36,7 @@ message "\nworking in directory $(colour cyan `pwd`):"
 
 for file in $files
 do
-    if [ -f "$file" ]; then
-	echo "removing  $file  before creating link"
-	rm  "$file"
-    else
-	echo "$file does not exist"
-    fi
-    message "creating link: ln -s $source_directory/$file $file"  
-    ln -s $source_directory/$file $file
+    message "creating link: ln -sf $source_directory/$file $file"  
+    ln -sf $source_directory/$file $file	### -sf create link deleting first if it exists
 done
 message "FINISHED creating links"
-
-

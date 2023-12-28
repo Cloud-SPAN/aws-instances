@@ -63,7 +63,6 @@ do
      
     eipAssociationFile="$outputsDirThisRun/${instance%-src*}-ip-associationID.txt"
     
-    message "`colour bl "eip:"` $eip ; `colour brown eipAllocationId:` $eipAllocID; `colour b iid:` $instanceID"
     message "Checking ${instance%-src*} is running: "
     ### tmpfile="/tmp/${instance%-src*}.txt"
     while true 

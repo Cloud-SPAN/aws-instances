@@ -62,7 +62,6 @@ instancesNames=( `cat $instancesNamesFile` )
 for instance in ${instancesNames[@]}
 do
     loginkey="login-key-${instance%-src*}"		### gets rid of the suffix "-src" and anything * that follows
-    message "Creating $loginkey"
     ### aws ec2 create-key-pair --dry-run --key-name ..
     aws ec2 create-key-pair --key-name $loginkey --key-type rsa  --tag-specifications \
 	"ResourceType=key-pair, Tags=[{Key=Name, Value=$loginkey}, {Key=name, Value=${loginkey,,}}, \

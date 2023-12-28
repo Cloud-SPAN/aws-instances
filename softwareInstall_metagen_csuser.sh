@@ -616,4 +616,4 @@ install_prokka $logfile
 install_kraken_biom $logfile
 
 message "`colour lg DONE ` installing metagenomics software." $logfile
-message " Log out and login again for docker aliases to take effect." $logfile
+message " Logout and login again for any environment changes to take effect." $logfile

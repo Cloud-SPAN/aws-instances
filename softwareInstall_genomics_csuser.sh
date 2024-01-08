@@ -328,6 +328,6 @@ Please logout and login again for environment changes to take effect.\n
 The installation logs of steps 1 and 2 are in this file:
 $logfile\n" $logfile
     rm .genomics_sftw_logs/continue_install
-    $(basename $0) versions
+    ### $(basename $0) versions				### logout and login again is needed otherwise it may print errors.
     exit 0
 fi

@@ -1,4 +1,4 @@
-imageId			ami-00c0ea23e53f48472
+imageId			ami-07172f26233528178
 instanceType		t3.small
 securityGroupId		sg-0771b67fde13b3899
 subnetId		subnet-00ff8cd3b7407dc83

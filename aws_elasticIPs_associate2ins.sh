@@ -76,16 +76,16 @@ do
 	    #16 is running: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-instance-status.html
 	    message " - instanceState $instanceState (running)"; break ;
 	else
-	    sleep 2
+	    sleep 4
 	fi
     done
 
     aws ec2 associate-address --instance-id $instanceID --allocation-id $eipAllocID > $eipAssociationFile 2>&1
     
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` associating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
+	message "`colour gl Success` associating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}"  $eipAssociationFile
     else
-	message "`colour red Error` ($?) associating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}; `colour bl eipAllocationId:` $eipAllocID"  $eipAssociationFile
+	message "`colour red Error` ($?) associating `colour bl "eip:"` $eip; `colour bl "instance:"` ${instance%-src*}"  $eipAssociationFile
     fi
 done
 exit 0

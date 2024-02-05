@@ -3,7 +3,7 @@
 #  Date		: 20240231
 #  Author	: "Jorge Buenabad-Chavez" <jorge.buenabad-chavez@york.ac.uk>
 #  Version	: 1.0
-#  Description	: copies a file or directory from the local machine to an account in a Cloud-SPAN AWS instance.
+#  Description	: copies a file or directory from the local machine to an account on multiple AWS instances.
 #  Options	: [-l][-u][-v]  -- description below
 #--------------------------------------------
 source colour_utils_functions.sh	 # to add colour to some messages
@@ -27,11 +27,11 @@ usage:
 - if $(colour lb remoteFile/DirName) is not specified, the copy will be named as the localFile/DirName and copied
   at the home directory in each instance.
 - $(colour lg Examples):
-  $(colour lb $(basename $0)) genomics/inputs/instancesNamesFile.txt  data/shell_data
-  - copies data/shell_data to all instances $(colour lb .cloud-span.aws.york.ac.uk):/home/csuser/shell_data
+  $(colour lb $(basename $0)) genomics/inputs/instancesNames.txt  data/file1
+  - copies data/file1 to /home/csuser/file1 on each instance specified in ../instancesNames.txt
 
-  $(colour lb $(basename $0)) -u gc_data/outputs/login-keys/login-key-instance017.pem  shell_data  shell_data2
-  - copies  data/shell_data to instance017.cloud-span.aws.york.ac.uk:/home/$(colour lb ubuntu)/shell_data2"
+  $(colour lb $(basename $0)) -u genomics/inputs/instancesNamesFile.txt  file2  file3
+  - copies file2 to /home/$(colour lb ubuntu)/file3 on each instance specified in ../instancesNames.txt"
 }
 
 ### Default values for options
@@ -63,7 +63,7 @@ shift "$(( $OPTIND - 1 ))"
 ### start:
 case $# in
     2|3) #message "linksCopyFlag $linksCopyFlag; user $user; verboseFlag $verboseFlag; $1 $2 $3 $4"; #exit 1;
-	instancesNamesFile=${1}		#; actually need the full path ; message "instancesNameFile: $instancesNamesFile"
+	instancesNamesFile=${1}
 	inputsDir=${1%/*}		# return what is left after eliminating the last / and any character following it
 					# message "inputsdir: $inputsDir"
 	loginKeysDir=${1%/inputs*}/outputs/login-keys  # return what is left after eliminating the second to last "/" and

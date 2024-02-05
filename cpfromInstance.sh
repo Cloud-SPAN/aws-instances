@@ -64,8 +64,11 @@ case $# in
 	else
 	    localFileDir=$(basename $remoteFileDir)  ### to copy at the current directory
 	fi
-	domain="cloud-span.aws.york.ac.uk"
-	machine="to define"
+	### get domain from inputs/resourcesID.txt file
+	inputsDir=${1%/outputs*}/inputs
+	domain=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
+	### was this domain="cloud-span.aws.york.ac.uk" but is unusable outside Cloud-SPAN
+	machine="to define below"
 	# Check the login key file specified exists. WE ARE ASSUMING IS a .pem file below. It will fail if not.
 	if [ -f $loginKeyFile ]; then
 	    ### login key file is an existing regular file (-f); now get the machine name from that file name delete:

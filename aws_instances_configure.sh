@@ -70,7 +70,8 @@ do
 
     message "Cleaning any previous keys associated with the instance $instance.$hostZone"
     message "ssh-keygen -f $HOME/.ssh/known_hosts -R $instance.$hostZone"
-    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$instance.$hostZone"
+    ### ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$instance.$hostZone"   ### doesn't work if instance names has capital letters
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${instance,,}.${hostZone,,}"   ### works w all lowercase: ${var,,}
 
     message "`colour bl "Please wait for SSH server (you may see a few 'Connection timed out/Connection refused' messages)"`";
     ### ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$keyfile.pem ubuntu@$instance.$hostZone "echo \"Hi from Ubuntu user. Bye.\"; exit "

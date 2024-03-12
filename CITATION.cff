@@ -10,6 +10,7 @@ type: software
 authors:
   - given-names: Jorge
     family-names: Buenabad-Chavez
+    orcid: 'https://orcid.org/0009-0003-1751-653X'
     email: jorge.buenabad-chavez@york.ac.uk
     affiliation: University of York
   - family-names: Chong

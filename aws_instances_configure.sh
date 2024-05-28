@@ -55,7 +55,7 @@ do
     while true 
     do
 	echo -n "."
-	### worked fine but better withoug /tmpfile because in windows users it will not work.
+	### worked fine but better without /tmpfile because for windows users it will not work.
 	### aws route53  get-change --id $domainNameChangeID > $tmpfile	# domainNameChangeID = /change/C3QYC83OA0KX5K
 	### domainStatus=`awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}' $tmpfile`
 	domainStatus=`aws route53  get-change --id $domainNameChangeID | awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}'`

@@ -95,4 +95,4 @@ do
     fi
 done
 exit 0
-aws_cli_install_update_linux.sh
+

@@ -68,7 +68,7 @@ do
     while true 
     do
 	echo -n "."
-	### worked fine but better withoug /tmpfile because in windows users it will not work.
+	### worked fine but better without /tmpfile because for windows users it will not work.
 	### aws ec2 describe-instance-status --instance-id $instanceID > $tmpfile
 	### instanceState=`awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}' $tmpfile`
 	instanceState=`aws ec2 describe-instance-status --instance-id $instanceID | awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}'`

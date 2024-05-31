@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Author:	Jorge Buenabad-Chavez
 # Date:		20210917
+#		20240528 scripts v2: handling domain names optionally, added
 #
 # basic colors and styles (underlined, bold, etc)
 NO_COLOR="\e[0m"		# is default/white --  \e replaced \033
@@ -52,9 +53,9 @@ colour() {
 	    echo "`tput setaf 0``tput setab 2`$2`tput sgr0`";;
 	redTextBoldBlackBackground|rtbbb|textRedBoldBackgroundBlack|trbbb)
 	    echo "`tput setaf 1``tput setab 0``tput bold`$2`tput sgr0`";;
-	redTextWhitekBackground)
+	redTextWhiteBackground)
 	    echo "`tput setaf 1``tput setab 7`$2`tput sgr0`";;
-	redTextBoldWhitekBackground)
+	redTextBoldWhiteBackground)
 	    echo "`tput setaf 1``tput setab 7``tput bold`$2`tput sgr0`";;
 	greenTextBoldWhiteBackground|gtwb|textGreenBoldBackgroundWhite|tgbw)
 	    echo "`tput setaf 2``tput setab 7``tput bold`$2`tput sgr0`";;
@@ -86,24 +87,27 @@ enter="$GREEN↵$NO_COLOR"		# ${enter}
 prompthome="`colour lightgray csuser``colour lb @``colour lightgreen instance01cloud-span`:`colour lc \~` $"
 promptinshell_data="`colour lightgray csuser``colour lb @``colour lightgreen instance01cloud-span`:`colour lc \~/shell_data` $"
 promptinsoftware="`colour lightgray csuser``colour lb @``colour lightgreen instance01cloud-span`:`colour lc \~/software` $"
-#`colour topiccolour "Overview of CSEnv: structure and software tools available"`
+
+#__________
 newline() {
     printf "\n"
 }
 
+#___________________
 function message() {
-    printf "%b\n" "$1"		### %b: print the argument while expanding backslash escape sequences (for text colours to take effect).
-    if [ -n "$2" ]; then	### if $2 is specified (is not null -n), it is the log file where the call wants store the message in $1
+    printf "%b\n" "$1"	      ### %b: print the argument while expanding backslash escape sequences for text colours to take effect.
+    if [ -n "$2" ]; then      ### if $2 is specified (is not null -n), it is the log file where the message in $1 is to be added.
 	printf "%b\n" "$1" >> "$2"	
     fi
 }
 
+#___________________________________________
 function check_instancesNamesFile_format() {
     # $1 is the script checking the instancesNamesFile format, any of these: aws_domainNames_create.sh, aws_elasticIPs_allocate.sh,
     #	 aws_elasticIPs_associate2instance.sh, aws_instances_launch.sh, aws_loginKeyPair_create.sh
     # $2 instancesNamesFile actual name used to create instances and/or related resources
 
-    [ ! -f $2 ] && message "\n$(colour red ERROR): file $(colour lb "$2") does not exit." && return 1
+    [ ! -f $2 ] && message "\n$(colour red ERROR): file $(colour lb "$2") does not exist." && return 1
     ### check the "instancesNamesFile" has only one field in each line - it does not matter if there are empty lines
     fields_in_instances_names_file=`awk '
         BEGIN { number_of_fields = 1 }  
@@ -124,6 +128,7 @@ MetaGenomics-course-instance-01
     return 1
 }
 
+#________________________________________________
 function message_error_awsResourceFiles_exist() {
     # $1 is the script checking the Scripts configuration files, any of these: aws_domainNames_create.sh, aws_elasticIPs_allocate.sh,
     #	 aws_elasticIPs_associate2instance.sh, aws_instances_launch.sh, aws_loginKeyPair_create.sh
@@ -131,7 +136,7 @@ function message_error_awsResourceFiles_exist() {
     # $3 instancesNamesFile.txt used to create instances and/or related resources
 
     message "$(colour red "Environment condition ERROR"):
-$(colour lg ${1}) $(colour redTextWhitekBackground aborting): the following file/s already exist and $(colour lb "WILL NOT") be overwritten:"
+$(colour lg ${1}) $(colour redTextWhiteBackground aborting): the following file/s already exist and $(colour lb "WILL NOT") be overwritten:"
     message "\n$2"			###     # did not work without double quotes: message "$(colour lb $2)"
     message "- You are trying to create instances and related resources using $(colour lb "previously used") instances names. 
 - The file/s contain AWS resource ID/s that are needed to delete the related resource/s from your 
@@ -145,7 +150,7 @@ $(colour lg ${1}) $(colour redTextWhitekBackground aborting): the following file
     return 0
 }
 
-
+#_____________________________________________________
 function message_error_awsResourceFiles_DONT_exist() {
     # $1 is the script checking the Scripts configuration files, any of these: aws_domainNames_create.sh, aws_elasticIPs_allocate.sh,
     #	 aws_elasticIPs_associate2instance.sh, aws_instances_launch.sh, aws_loginKeyPair_create.sh
@@ -153,7 +158,7 @@ function message_error_awsResourceFiles_DONT_exist() {
     # $3 instancesNamesFile.txt used to create instances and/or related resources
 
     message "Environment condition $(colour brown "WARNING"):
-$(colour lg "${1}") $(colour redTextWhitekBackground aborting): the following file/s DO NOT exist:"
+$(colour lg "${1}") $(colour redTextWhiteBackground aborting): the following file/s DO NOT exist:"
     message "\n$2"
     message "- Check you are using the same $(colour lb "instances names") you used to create the instances or resources.
 - RECALL that instances and related resouces (IP, login keys, etc.) are created, configured, deleted, 
@@ -162,18 +167,22 @@ $(colour lg "${1}") $(colour redTextWhitekBackground aborting): the following fi
     return 0
 }
 
+#_________________________________________________
 function check_created_resources_results_files() {
     # $1 either "DO-EXIST" or "DO-NOT-EXIST"
     # $2 the script checking: aws_*.sh (but not: aws_cli_install_update_linux.sh - aws_storageEBS_increase.sh - aws_instances_configure.sh)
     # $3 outputsResourceDir within outuputs dir
     # $4 instancesNamesFile.txt used to create instances and/or related resources
-    local instances_names=( `cat $4` ); local files_list=""; local instance=""; local resource_filename=""
+    local instances_names=( `cat $4` )
+    local files_list=""
+    local instance=""
+    local resource_filename=""
     
-    for instance in ${instances_names[@]}		## $4 WAS instancesNames but  for instance in ${4}[@] or ${4[@]}   DOES NOT WORK
-    do
+    for instance in ${instances_names[@]}	     ## $4 WAS instancesNames but  for instance in ${4}[@] or ${4[@]} DOES NOT WORK
+    do  ### determine which script is making the call to determine the outputs/aws_resources_dir/instance_resource_file.txt/.json
 	case "$2" in
-	    "aws_instances_launch.sh" |"aws_instances_terminate.sh" | "aws_instances_configure.sh" | "csinstances_start.sh" |\
-		"csinstances_stop.sh" )
+	    "csinstances_start.sh" | "csinstances_stop.sh" | "aws_instances_launch.sh" | "aws_instances_terminate.sh" | \
+		"aws_instances_configure.sh" | "aws_instances_configureNoDNs.sh"  )
 		resource_filename="$3/${instance}.txt" ;;
 	    
 	    "aws_elasticIPs_allocate.sh" | "aws_elasticIPs_deallocate.sh" | "aws_domainNames_delete.sh" )
@@ -188,7 +197,7 @@ function check_created_resources_results_files() {
 
 	    "aws_domainNames_create.sh" )
 		resource_filename="$3/domain-name-create-${instance%-src*}.txt" ;;
-	    *) message "$(colour lg "check_cloud_created_resources_results_files $1 $2.."): invalid option: $2" ; return 1;;
+	    *) message "$(colour lg "check_created_resources_results_files $1 $2.."): invalid option: $2" ; return 1;;
 	esac
 	case "$1" in
 	    "DO-NOT-EXIST")
@@ -209,3 +218,114 @@ function check_created_resources_results_files() {
     return 0
 }
 
+#_________________________________________________
+function create_csconfiguration_file() {   ### if possible
+    # $1 either "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" as requested by the user running csinstances_create.sh
+    # $2 resourcesIDs.txt file path
+    message "create_csconfiguration_file: \$1 $1"
+    message "create_csconfiguration_file: \$2 $2"
+    
+    local domainNames=$1
+    local resourcesIDsFile=$2
+    # DONE read the $resourcesIDsFile into an array
+    # DONE loop through the options checking the key values exist use case within for loop
+    # DONE once identified the key value store in a variable named accordingly.
+    # message and read option as to what is going to happen based
+    # write  "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" at the top .csconfiguration.txt
+    # writhe the variable names, keys, and their values in a specific order.
+    local imageId_key instanceType_key securityGroupId_key subnetId_key hostZone_key hostZoneId_key
+    local imageId_val instanceType_val securityGroupId_val subnetId_val hostZone_val hostZoneId_val
+
+    words=( `cat $resourcesIDsFile` )
+    #for word in ${words[@]}
+    wordsNumber=${#words[@]}
+    for (( i = 0; i < $wordsNumber ; i=i+2  ))
+    do
+	case ${words[$i]} in
+	    "imageId" | "imageid" )
+		imageId_key=${words[$i]}
+		imageId_val=${words[$i+1]} ;;# message "imageId_key $imageId_key imageId_val $imageId_val" ;;
+	    "instanceType" | "instancetype" ) 
+		instanceType_key=${words[$i]}
+		instanceType_val=${words[$i+1]} ;;# message "instanceType_key $instanceType_key instanceType_val $instanceType_val" ;;
+	    "securityGroupId" | "securitygroupid" | "securityGroupid" | "securitygroupId" ) 
+		securityGroupId_key=${words[$i]}
+		securityGroupId_val=${words[$i+1]} ;;
+		# message "securityGroupId_key $securityGroupId_key securityGroupId_val $securityGroupId_val" ;;
+	    "subnetId" | "subnetid")
+		subnetId_key=${words[$i]}
+		subnetId_val=${words[$i+1]} ;;# message "subnetId_key $subnetId_key subnetId_val $subnetId_val" ;;
+	    "hostZone" | "hostZone" )
+		hostZone_key=${words[$i]}
+		hostZone_val=${words[$i+1]} ;;# message "hostZone_key $hostZone_key hostZone_val $hostZone_val" ;;
+	    "hostZoneId"| "hostzoneid" | "hostZoneid"   | "hostzoneId" ) 
+		hostZoneID_key=${words[$i]}
+		hostZoneID_val=${words[$i+1]} ;;#	message "hostZoneID_key $hostZoneID_key hostZoneID_val $hostZoneID_val" ;;
+	    *) message "$(colour lg "invalid option"), ${words[$i]}, in file $resourcesIDsFile option" ; exit 2; return 1;;
+	esac
+    done
+    ### check each of the resource configurations given.
+
+    
+    exit
+}
+
+#_________________________________________________
+function check_theScripts_configuration_files() {
+    # $1 the instancesNamesFile.txt full path
+    # $2 either "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" as requested by the user in running csinstances_create.sh
+    message "check_theScripts_configuration_files: \$1 $1"
+    message "check_theScripts_configuration_files: \$2 $2"
+    
+    local instancesNamesFile=${1}
+    local domainNames="FALSE"
+    # return what is left after eliminating the last / and any character following it
+    local inputsDir=${1%/*}
+    # return what is left after eliminating the second to last / and "inputs" and any character following "inputs",
+    # then adds "/outputs"
+    # local outputsDir=${1%/inputs*}/outputs      
+    resourcesIDsFile=$inputsDir/resourcesIDs.txt
+    tagsFile=$inputsDir/tags.txt
+    configFile=$inputsDir/.csconfiguration.txt
+
+    create_csconfiguration_file "$2" "$resourcesIDsFile"
+    message "finishing"
+    exit 2
+
+    if [ -f $configFile ]; then
+	# read the first line, domainNamesConf="DOMAIN_NAMES" or "NO_DOMAIN_NAMES"
+	# if [ -z $2 ];
+	#     ### no domainNames option specified
+	#    return 0 (OK) for the calling script to continue with the current configuration, no question asked
+	#
+	# elif [  domainNames ($2) == domainNamesConf ]; then
+	#    return 0 (OK) for the calling script to continue with the current configuration, no question asked
+	#
+	# elif [  domainNames ($2) != domainNamesConf ]; then
+	#    message about discrepancy, it is not possible to handle manage instances with and w/o DNs.
+	#	they should not specify DNs or not DNs but continue to use the first configuration used
+	#	if it is the first time they run the scripts against this inputs dir, they may delef the file .csconfiguration.txt
+	#	and start again with the option intended.
+	#	or perhaps offer option to delete .csconfiguration.txt file. NO TOO DIFFICULT. Better to delete the file.
+	#    return 2 
+	# else
+	#    message wrong option
+	#    return 2
+	# fi
+	return 0
+    else
+	# create .csconfiguration.txt based on the options given and the resourcesIDs.txt file
+	{ create_csconfiguration_file $2 $resourcesIDsFile && retun 0; } || return 2
+    fi
+       
+#    if [ -n $2 ]; then 
+#	if [ $2 == "DOMAIN_NAMES" ];
+#	then
+#	    domainNames="TRUE"
+#	fi
+ #   else
+  #  fi  
+    # NO let it as it is
+    # should probably call the above function check_created_resources_results_files() here on behalf of csinstances_create/delete.
+    # but let the call in the aws_*.sh scripts in case they are called individually.
+}

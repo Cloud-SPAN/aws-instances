@@ -23,7 +23,7 @@ $(colour bl "Usage:                $(basename $0)  instancesNamesFile")
 	exit 2;;	
 esac
 
-error_message="\n$(colour lg $(basename $0)): $(colour redTextWhitekBackground "aborting") creating instances and related resources!\n"
+error_message="\n$(colour lg $(basename $0)): $(colour redTextWhiteBackground "aborting") creating instances and related resources!\n"
 
 aws_loginKeyPair_create.sh	"$1" || { message "$error_message"; exit 1; }
 aws_elasticIPs_allocate.sh	"$1" || { message "$error_message"; exit 1; }

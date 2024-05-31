@@ -28,7 +28,7 @@ $(colour bl "Usage:                $(basename $0) instancesNamesFile")
 	exit 2;;
 esac
 
-error_message="\n$(colour lg $(basename $0)): $(colour redTextWhitekBackground "aborting") deleting instances and related resources!\n"
+error_message="\n$(colour lg $(basename $0)): $(colour redTextWhiteBackground "aborting") deleting instances and related resources!\n"
 
 aws_instances_terminate.sh	"$1" || { message "$error_message"; exit 1; }
 aws_loginKeyPair_delete.sh	"$1" || { message "$error_message"; exit 1; }

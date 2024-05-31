@@ -65,11 +65,8 @@ instancesNames=( `cat $instancesNamesFile` )	### mapfile instancesNamesMapfile <
 
 for instance in ${instancesNames[@]}
 do
-    #logkeyend=${instance%-src*}
-    #logkeyend=${logkeyend%-gc}
     loginkey="login-key-${instance%-src*}"
 
-    #continue
     aws ec2 run-instances --image-id  $resource_image_id   --instance-type  $resource_instance_type \
 	--key-name $loginkey  \
 	--security-group-ids $resource_security_group_ids \

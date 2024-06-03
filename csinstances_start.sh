@@ -34,7 +34,6 @@ outputsDirThisRun=${outputsDir}/instances-start-output`date '+%Y%m%d.%H%M%S'`
 message "$(colour cyan "Starting instances:")"
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/instances-creation-output" "$instancesNamesFile" || exit 1
-### tests exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of starting instances:")"
@@ -54,4 +53,6 @@ do
     else
 	message "`colour red Error` ($?) starting instance: ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     fi
+    ### with dynamic IP addresses, need to reassign the domain name to the new IP address 
 done
+exit 0

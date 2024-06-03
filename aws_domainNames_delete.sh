@@ -40,7 +40,7 @@ hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.t
 message "$(colour cyan "Deleting domain names:")"
 
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
-check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/ip-addresses-allocation-output" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/domain-names-creation-output" "$instancesNamesFile" || exit 1
 ### deleting domain names requires checking for the IP address results file not the domain
 ### tests exit 1
 
@@ -56,7 +56,7 @@ for instance in ${instancesNames[@]}
 do
     # get the elastic ip out of the instance id.
     subDomainName=${instance%-src*}		# get rid of suffix
-    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
+    #nodns don't use: eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
     dnDeleteFile="$outputsDirThisRun/domain-name-delete-${instance%-src*}.txt"
     
     # get the IP within the file eipAllocationFile with awk, where:
@@ -64,8 +64,11 @@ do
     # - /"PublicIp"/ is the field we are looking for, which precedes the actual eipAllocID.
     # - $2 is (the 2nd field and) the eipAllocId itself which is dirty (e.g.: "eipalloc-060adb8fb72b1aa94",) and with
     # - substr we are unpacking into: eipalloc-060adb8fb72b1aa94
-    eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
-    #message "`colour brown "subDomainName:"` $subDomainName ; `colour b "eip:"` $eip ;`colour b "related instance name:"` $instance"
+    #nodns don't use: eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
+    #nodns use next 3 sentences instead:
+    instanceCreationFile="$outputsDir/instances-creation-output/$instance.txt"
+    instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $instanceCreationFile`
+    eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
     # create the file batch request required by aws cli command to update the domain records
     fileRequest="
 {\n
@@ -75,7 +78,7 @@ do
 \t \t \t      \"Action\": \"DELETE\",\n
 \t \t \t      \"ResourceRecordSet\": {\n
 \t \t \t \t         \"Name\": \"$subDomainName.$hostZone\",\n
-\t \t \t \t        \"Type\": \"A\",\n
+\t \t \t \t         \"Type\": \"A\",\n
 \t \t \t \t         \"TTL\": 3600,\n
 \t \t \t \t         \"ResourceRecords\": [{ \"Value\": \"$eip\"}]\n
 \t \t \t  }\n

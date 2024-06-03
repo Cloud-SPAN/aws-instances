@@ -32,7 +32,6 @@ inputsDir=${1%/*}		 # message "inputsdir: $inputsDir"
 outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the second to last / and "inputs" and any character
 				 # following "inputs", then adds "/outputs"
 				 # message "outputsdir: $outputsDir"
-
 # directory for the results of deallocating addresses labelled with the date and time
 outputsDirThisRun=${outputsDir}/ip-addresses-deallocate-output`date '+%Y%m%d.%H%M%S'`
 

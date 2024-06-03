@@ -30,9 +30,12 @@ esac
 
 error_message="\n$(colour lg $(basename $0)): $(colour redTextWhiteBackground "aborting") deleting instances and related resources!\n"
 
-aws_instances_terminate.sh	"$1" || { message "$error_message"; exit 1; }
-aws_loginKeyPair_delete.sh	"$1" || { message "$error_message"; exit 1; }
-aws_domainNames_delete.sh	"$1" || { message "$error_message"; exit 1; }
-aws_elasticIPs_disassociate.sh	"$1" || { message "$error_message"; exit 1; }
-aws_elasticIPs_deallocate.sh	"$1" || { message "$error_message"; exit 1; }
+domainNames=TRUE
+aws_instances_terminate.sh		"$1" || { message "$error_message"; exit 1; }
+aws_loginKeyPair_delete.sh		"$1" || { message "$error_message"; exit 1; }
+if [ $domainNames == TRUE ]; then
+    aws_domainNames_delete.sh		"$1" || { message "$error_message"; exit 1; }
+    #aws_elasticIPs_disassociate.sh	"$1" || { message "$error_message"; exit 1; } ### no need with dynamic addresses?
+    #aws_elasticIPs_deallocate.sh	"$1" || { message "$error_message"; exit 1; } ### no need with dynamic addresses?
+fi
 exit 0

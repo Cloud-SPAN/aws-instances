@@ -56,15 +56,19 @@ instancesNames=( `cat $instancesNamesFile` )
 for instance in ${instancesNames[@]}
 do
     subDomainName=${instance%-src*}
-    eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
+    #nodns don't use: eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
     dnCreateFile="$outputsDirThisRun/domain-name-create-${instance%-src*}.txt"
-
+    
     # get the IP within the file eipAllocationFile with awk, where:
     # - -F is the field separator (single space " ") within each line
     # - /"PublicIp"/ is the field we are looking for, which precedes the actual eipAllocID.
     # - $2 is (the 2nd field and) the eipAllocId itself which is dirty (e.g.: "eipalloc-060adb8fb72b1aa94",) and with
     # - substr we are unpacking into: eipalloc-060adb8fb72b1aa94
-    eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
+    #nodns don't use: eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
+    #nodns use next 3 sentences instead:
+    instanceCreationFile="$outputsDir/instances-creation-output/$instance.txt"
+    instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $instanceCreationFile`
+    eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
     #message "`colour brown "subDomainName:"` $subDomainName ; `colour b "eip:"` $eip ;`colour b "related instance:"` $instance"
     # create the file batch request required by aws cli command to update the domain records
     fileRequest="

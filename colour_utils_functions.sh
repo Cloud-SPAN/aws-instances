@@ -186,7 +186,10 @@ function check_created_resources_results_files() {
 		resource_filename="$3/${instance}.txt" ;;
 	    
 	    "aws_elasticIPs_allocate.sh" | "aws_elasticIPs_deallocate.sh" | "aws_domainNames_delete.sh" )
-		# strange this case: domain names need to check for the existence of the file containing the relevant IP address
+		# strange this case was in v1: domain names need to check for the existence of the file containing
+		# the relevant IP address because deleting a domain name had to specify the mapping IP address as specified here:
+		# https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/change-resource-record-sets.html
+		# resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
 		resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
 
 	    "aws_loginKeyPair_create.sh" | "aws_loginKeyPair_delete.sh" )
@@ -219,6 +222,19 @@ function check_created_resources_results_files() {
 }
 
 #_________________________________________________
+function wrong_key_words_msg() {
+    
+    message "Valid key words in a ../inputs/resourcesIDs.txt file include and must be followed by value:"
+    message "imageId"
+    message "instanceType"
+    message "securityGroupId"
+    message "subnetId             (optional, depending on AWS acc. configuration)"
+    message "hostZone             (optional)"
+    message "hostZoneId           (optional)"
+    return 0
+}
+
+#_________________________________________________
 function create_csconfiguration_file() {   ### if possible
     # $1 either "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" as requested by the user running csinstances_create.sh
     # $2 resourcesIDs.txt file path
@@ -231,43 +247,60 @@ function create_csconfiguration_file() {   ### if possible
     # DONE loop through the options checking the key values exist use case within for loop
     # DONE once identified the key value store in a variable named accordingly.
     # message and read option as to what is going to happen based
-    # write  "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" at the top .csconfiguration.txt
+    # NO : write  "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" at the top .csconfiguration.txt
+    # instead write to file  .csconfigurationDNs.txt or .csconfigurationNODNs.txt
     # writhe the variable names, keys, and their values in a specific order.
     local imageId_key instanceType_key securityGroupId_key subnetId_key hostZone_key hostZoneId_key
     local imageId_val instanceType_val securityGroupId_val subnetId_val hostZone_val hostZoneId_val
+    local WORDS word wordsNumber i wrongKeys=FALSE
 
-    words=( `cat $resourcesIDsFile` )
+    WORDS=( `cat $resourcesIDsFile` )
     #for word in ${words[@]}
-    wordsNumber=${#words[@]}
+    wordsNumber=${#WORDS[@]}
     for (( i = 0; i < $wordsNumber ; i=i+2  ))
-    do
-	case ${words[$i]} in
-	    "imageId" | "imageid" )
-		imageId_key=${words[$i]}
-		imageId_val=${words[$i+1]} ;;# message "imageId_key $imageId_key imageId_val $imageId_val" ;;
-	    "instanceType" | "instancetype" ) 
-		instanceType_key=${words[$i]}
-		instanceType_val=${words[$i+1]} ;;# message "instanceType_key $instanceType_key instanceType_val $instanceType_val" ;;
-	    "securityGroupId" | "securitygroupid" | "securityGroupid" | "securitygroupId" ) 
-		securityGroupId_key=${words[$i]}
-		securityGroupId_val=${words[$i+1]} ;;
-		# message "securityGroupId_key $securityGroupId_key securityGroupId_val $securityGroupId_val" ;;
-	    "subnetId" | "subnetid")
-		subnetId_key=${words[$i]}
-		subnetId_val=${words[$i+1]} ;;# message "subnetId_key $subnetId_key subnetId_val $subnetId_val" ;;
-	    "hostZone" | "hostZone" )
-		hostZone_key=${words[$i]}
-		hostZone_val=${words[$i+1]} ;;# message "hostZone_key $hostZone_key hostZone_val $hostZone_val" ;;
-	    "hostZoneId"| "hostzoneid" | "hostZoneid"   | "hostzoneId" ) 
-		hostZoneID_key=${words[$i]}
-		hostZoneID_val=${words[$i+1]} ;;#	message "hostZoneID_key $hostZoneID_key hostZoneID_val $hostZoneID_val" ;;
-	    *) message "$(colour lg "invalid option"), ${words[$i]}, in file $resourcesIDsFile option" ; exit 2; return 1;;
+    do  # convert each word to lowercase
+	local word=${WORDS[$i],,}	### ,, converts everything to lowercase
+	message "word being processed $word"
+	case ${word} in
+	    "imageid" )
+		imageId_key=${WORDS[$i]} ; imageId_val=${WORDS[$i+1]}
+		message "imageId_key $imageId_key imageId_val $imageId_val" ;;
+	    "instancetype" )
+		instanceType_key=${WORDS[$i]} ;	instanceType_val=${WORDS[$i+1]}
+		message "instanceType_key $instanceType_key instanceType_val $instanceType_val" ;;
+	    "securitygroupid" )
+		securityGroupId_key=${WORDS[$i]} ; securityGroupId_val=${WORDS[$i+1]} 
+		message "securityGroupId_key $securityGroupId_key securityGroupId_val $securityGroupId_val" ;;
+	    "subnetid")
+ 		subnetId_key=${WORDS[$i]} ; subnetId_val=${WORDS[$i+1]}
+		message "subnetId_key $subnetId_key subnetId_val $subnetId_val" ;;
+	    "hostzone" )
+		hostZone_key=${WORDS[$i]} ; hostZone_val=${WORDS[$i+1]}
+		message "hostZone_key $hostZone_key hostZone_val $hostZone_val" ;;
+	    "hostzoneid" )
+		hostZoneID_key=${WORDS[$i]} ; hostZoneID_val=${WORDS[$i+1]}
+		message "hostZoneID_key $hostZoneID_key hostZoneID_val $hostZoneID_val" ;;
+	    *) message "$(colour lr "invalid key word"): ${WORDS[$i]}" ;
+	       wrongKeys=TRUE ;;
+	       #exit 2; return 1;;
 	esac
     done
     ### check each of the resource configurations given.
+    [ $wrongKeys == TRUE ] && wrong_key_words_msg && return 2
+
+    ### perhaps I don't need to do much checking as aws calls will reject the call if wrong
+    [ -z $imageId_key ] && message "variable \$hostZone_key THE TRUE was not specified:" && return 2 
+    [ -z $instanceType_key ] && message "variable \$hostZone_key THE TRUE was not specified:" && return 2 
+    [ -z $securityGroupId_key ] && message "variable \$hostZone_key THE TRUE was not specified:" && return 2 
+    [ -z $subnetId_key ] &&   message "variable \$hostZone_key was not specified:" && return 2
+    if [ $domainNames == DOMAIN_NAMES ]; then
+	[ -z $hostZone_key ] &&	message "variable \$hostZone_key was not specified:" && return 2 
+	[ -z $hostZoneId_key ] && message "variable \$hostZone_key was not specified:" && return 2
+    fi
+    ### everything was fine, now create the .csconfiguration file 
 
     
-    exit
+    exit 0
 }
 
 #_________________________________________________
@@ -328,4 +361,5 @@ function check_theScripts_configuration_files() {
     # NO let it as it is
     # should probably call the above function check_created_resources_results_files() here on behalf of csinstances_create/delete.
     # but let the call in the aws_*.sh scripts in case they are called individually.
+    # just for rsync test
 }

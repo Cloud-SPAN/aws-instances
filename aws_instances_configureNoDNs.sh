@@ -62,8 +62,8 @@ do
 	fi
     done
 
-    ### THIS ONE aws ec2 describe-instances --instance-ids  "i-0bab3619a50ac88f7" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text
-    ### OR THIS ONE aws ec2 describe-instances --instance-ids  "i-0bab3619a50ac88f7" --query 'Reservations[*]. Instances[*]. PublicDnsName' --output text  
+    ### THIS ONE aws ec2 describe-instances --instance-ids  "i-0bab3619a50ac88f7" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text                                           
+    ### OR THIS ONE aws ec2 describe-instances --instance-ids  "i-0bab3619a50ac88f7" --query 'Reservations[*]. Instances[*]. PublicDnsName' --output text  BUT IN BOTH EXAMPLES change "i-0bab3619a50ac88f7" for "$instanceID" or another variable name
     instanceHostName=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicDnsName' --output text`
     message "Getting the generic, public instanceHostName `colour bl "$instanceHostName"` assigned by AWS."
     

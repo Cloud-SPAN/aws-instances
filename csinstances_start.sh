@@ -46,6 +46,7 @@ instancesNames=( `cat $instancesNamesFile` )
 for instance in ${instancesNames[@]}
 do
     instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $outputsDir/instances-creation-output/$instance.txt`
+    
     aws  ec2  start-instances  --instance-ids $instanceID  > $outputsDirThisRun/$instance.txt 2>&1
 
     if [ $? -eq 0 ]; then
@@ -53,6 +54,37 @@ do
     else
 	message "`colour red Error` ($?) starting instance: ${instance%-src*}"  $outputsDirThisRun/$instance.txt
     fi
-    ### with dynamic IP addresses, need to reassign the domain name to the new IP address 
+    ### with dynamic IP addresses, we need to reassign the domain name to the new IP address as described here:
+    ### https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/change-resource-record-sets.html 
+    eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
+    fileRequest="
+{\n
+\t   \"Comment\": \"Updating subdomain\",\n
+\t   \"Changes\": [\n
+\t \t     {\n
+\t \t \t      \"Action\": \"UPSERT\",\n
+\t \t \t      \"ResourceRecordSet\": {\n
+\t \t \t \t         \"Name\": \"$subDomainName.$hostZone\",\n
+\t \t \t \t         \"Type\": \"A\",\n
+\t \t \t \t         \"TTL\": 3600,\n
+\t \t \t \t         \"ResourceRecords\": [{ \"Value\": \"$eip\"}]\n
+\t \t \t  }\n
+\t \t  }\n
+\t ]\n
+}\n
+"
+    echo -e $fileRequest > ${dnCreateFile%.txt}Request.json
+    #continue
+    # message "fileRequest: $fileRequest"
+    aws route53 change-resource-record-sets --hosted-zone-id $hostZoneID --change-batch file://${dnCreateFile%.txt}Request.json > $dnCreateFile 2>&1
+
+    if [ $? -eq 0 ]; then
+	message "`colour gl Success` creating `colour b "domain:"` $subDomainName.$hostZone, `colour b ip:` ${eip}"
+	### write results to log file without colour because colour characters make it difficult to recover the IP address
+	### to delete the domain name which requires to specify the mapping IP address
+	message "Success creating domain: $subDomainName.$hostZone; ip: ${eip}"  $dnCreateFile
+    else
+	message "`colour red Error` creating `colour b "domain:"` $subDomainName.$hostZone, `colour b ip:` ${eip}"  $dnCreateFile
+    fi
 done
 exit 0

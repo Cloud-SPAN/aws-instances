@@ -178,16 +178,16 @@ function check_created_resources_results_files() {
     local instance=""
     local resource_filename=""
     
-    for instance in ${instances_names[@]}	     ## $4 WAS instancesNames but  for instance in ${4}[@] or ${4[@]} DOES NOT WORK
+    for instance in ${instances_names[@]}	  ### $4 WAS instancesNames but for instance in ${4}[@] or ${4[@]} DOES NOT WORK
     do  ### determine which script is making the call to determine the outputs/aws_resources_dir/instance_resource_file.txt/.json
 	case "$2" in
 	    "csinstances_start.sh" | "csinstances_stop.sh" | "aws_instances_launch.sh" | "aws_instances_terminate.sh" | \
 		"aws_instances_configure.sh" | "aws_instances_configureNoDNs.sh"  )
 		resource_filename="$3/${instance}.txt" ;;
 	    
-	    "aws_elasticIPs_allocate.sh" | "aws_elasticIPs_deallocate.sh" | "aws_domainNames_delete.sh" )
-		# strange this case was in v1: domain names need to check for the existence of the file containing
-		# the relevant IP address because deleting a domain name had to specify the mapping IP address as specified here:
+	    "aws_elasticIPs_allocate.sh" | "aws_elasticIPs_deallocate.sh" ) ### | "aws_domainNames_delete.sh" ) ### in v1:
+		# deleting domain names needed to check for the existence of the file containing the relevant IP address
+		# because deleting a domain name had to specify the mapping IP address as specified here:
 		# https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/change-resource-record-sets.html
 		# resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
 		resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
@@ -198,7 +198,7 @@ function check_created_resources_results_files() {
 	    "aws_elasticIPs_associate2ins.sh" | "aws_elasticIPs_disassociate.sh" )
 		resource_filename="$3/${instance%-src*}-ip-associationID.txt";;
 
-	    "aws_domainNames_create.sh" )
+	    "aws_domainNames_create.sh" | "aws_domainNames_delete.sh" ) ### for v2, "aws_domainNames_delete.sh" was moved here
 		resource_filename="$3/domain-name-create-${instance%-src*}.txt" ;;
 	    *) message "$(colour lg "check_created_resources_results_files $1 $2.."): invalid option: $2" ; return 1;;
 	esac

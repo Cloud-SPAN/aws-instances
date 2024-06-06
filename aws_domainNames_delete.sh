@@ -41,8 +41,6 @@ message "$(colour cyan "Deleting domain names:")"
 
 check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
 check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/domain-names-creation-output" "$instancesNamesFile" || exit 1
-### deleting domain names requires checking for the IP address results file not the domain
-### tests exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting domain names:")"
@@ -58,17 +56,12 @@ do
     subDomainName=${instance%-src*}		# get rid of suffix
     #nodns don't use: eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
     dnDeleteFile="$outputsDirThisRun/domain-name-delete-${instance%-src*}.txt"
-    
-    # get the IP within the file eipAllocationFile with awk, where:
+    domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${subDomainName}.txt"
+    # get the IP address from the  within the file domainNameCreationFile where:
     # - -F is the field separator (single space " ") within each line
-    # - /"PublicIp"/ is the field we are looking for, which precedes the actual eipAllocID.
-    # - $2 is (the 2nd field and) the eipAllocId itself which is dirty (e.g.: "eipalloc-060adb8fb72b1aa94",) and with
-    # - substr we are unpacking into: eipalloc-060adb8fb72b1aa94
-    #nodns don't use: eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
-    #nodns use next 3 sentences instead:
-    instanceCreationFile="$outputsDir/instances-creation-output/$instance.txt"
-    instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $instanceCreationFile`
-    eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
+    # - "Success" is the field we are looking for, the containing record also contains the ip address as the $6 field
+    eip=`awk -F " " '$1 == "Success" {print $6}' $domainNameCreationFile`
+
     # create the file batch request required by aws cli command to update the domain records
     fileRequest="
 {\n

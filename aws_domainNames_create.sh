@@ -93,9 +93,12 @@ do
     aws route53 change-resource-record-sets --hosted-zone-id $hostZoneID --change-batch file://${dnCreateFile%.txt}Request.json > $dnCreateFile 2>&1
 
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` creating `colour b "domain:"` $subDomainName.$hostZone; `colour b ip:` $eip"  $dnCreateFile
+	message "`colour gl Success` creating `colour b "domain:"` $subDomainName.$hostZone, `colour b ip:` ${eip}"
+	### write results to log file without colour because colour characters make it difficult to recover the IP address
+	### to delete the domain name which requires to specify the mapping IP address
+	message "Success creating domain: $subDomainName.$hostZone; ip: ${eip}"  $dnCreateFile
     else
-	message "`colour red Error` creating `colour b "domain:"` $subDomainName.$hostZone; `colour b ip:` $eip"  $dnCreateFile
+	message "`colour red Error` creating `colour b "domain:"` $subDomainName.$hostZone, `colour b ip:` ${eip}"  $dnCreateFile
     fi
 done
 exit 0

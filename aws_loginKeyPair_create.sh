@@ -33,7 +33,8 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 outputsDirThisRun=${outputsDir}/login-keys-creation-output		# to add later perhaps `date '+%Y%m%d.%H%M%S'`
 
 message "\n$(colour cyan "Creating login keys:")"
-check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+
+check_theScripts_csconfiguration "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of creating the login keys:")"
@@ -46,34 +47,39 @@ if [ ! -d $outputsDir/login-keys ]; then
     mkdir -p $outputsDir/login-keys
 fi
 
-check_created_resources_results_files "DO-NOT-EXIST" "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
-### tests exit 1
+check_created_resources_results_files "DO-NOT-EXIST" "LOGIN_KEY_FILES" "$instancesNamesFile" || { message "$(colour lb "$(basename $0) aborting")"; exit 1; }
 
-tags=( `cat $inputsDir/tags.txt` )	# we just need values, entries: 1, 3, 5, .. (not the key names: 0, 2, 6 ..) 
-tag_name_value=${tags[1]}		# redefined below but better to read them as the others
-tag_group_value=${tags[3]}
-tag_project_value=${tags[5]}
-tag_status_value=${tags[7]}
-tag_pushedby_value=${tags[9]}
-tag_definedin_value=${tags[11]}
+# process the tags.txt file if it exists. If so, it has been checked before as to having 2 fields (keyName keyValue) per line
+# only 10 tags (key-value pairs, 20 fields) are processed.
+
+tagsAWS=""
+if [ -f $inputsDir/tags.txt ]; then
+    TAGS=( `cat $inputsDir/tags.txt` )	
+    tagsNumber=${#TAGS[@]}
+    [[ $tagsNumber > 20 ]] && (( tagsNumber=20 ))
+    
+    tagsAWS=""
+    
+    for (( i = 0; i < $tagsNumber ; i=i+2  ))
+    do
+	tagsAWS="${tagsAWS}{ Key=${TAGS[$i]}, Value=${TAGS[$i+1]} }, "
+    done
+fi
 
 instancesNames=( `cat $instancesNamesFile` )
 
-for instance in ${instancesNames[@]}
+for instanceFullName in ${instancesNames[@]}
 do
-    loginkey="login-key-${instance%-src*}"		### gets rid of the suffix "-src" and anything * that follows
+    instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
+    loginkey="login-key-$instance"
+    
     ### aws ec2 create-key-pair --dry-run --key-name ..
     aws ec2 create-key-pair --key-name $loginkey --key-type rsa  --tag-specifications \
-	"ResourceType=key-pair, Tags=[{Key=Name, Value=$loginkey}, {Key=name, Value=${loginkey,,}}, \
-    				    {Key=group, Value=$tag_group_value}, \
-    				    {Key=project, Value=$tag_project_value}, \
-    				    {Key=status, Value=$tag_status_value}, \
-    				    {Key=pushed_by, Value=$tag_pushedby_value}, \
-				    {Key=defined_in, Value=$tag_definedin_value},  \
-				  ]" > $outputsDirThisRun/$loginkey.json 2>&1
-    ### above, in "Value=${loginkey,,}}", ${var,,} converts everything to lowercase as required by York tagging
+    	"ResourceType=key-pair, Tags=[ {Key=Name, Value=$loginkey}, $tagsAWS ]" > $outputsDirThisRun/$loginkey.txt 2>&1
+
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}" $outputsDirThisRun/$loginkey.json
+	message "`colour gl Success` creating `colour bl login-key:` $loginkey; `colour bl "instance:"` $instance" $outputsDirThisRun/$loginkey.txt
+	
 	# format the key as expected by macOS machines
 	awk '
 	BEGIN {
@@ -88,16 +94,17 @@ do
 	    	     print $i
     	 	 }
 	}
-	END{
+	END {
 		print "-----END RSA PRIVATE KEY-----"
 	}
-	' $outputsDirThisRun/$loginkey.json > $outputsDir/login-keys/$loginkey.pem
+	' $outputsDirThisRun/$loginkey.txt > $outputsDir/login-keys/$loginkey.pem
 	
 	# and change permissions
 	chmod 700 $outputsDir/login-keys/$loginkey.pem
 
     else
-	message "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}" $outputsDirThisRun/$loginkey.json
+	message "`colour red Error` ($?) creating `colour bl login-key:` $loginkey; `colour bl "for instance:"` ${instance%-src*}" $outputsDirThisRun/$loginkey.txt
+	exit 2
     fi
 done
 exit 0

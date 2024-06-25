@@ -101,31 +101,11 @@ function message() {
     fi
 }
 
-#___________________________________________
-function check_instancesNamesFile_format() {
-    # $1 is the script checking the instancesNamesFile format, any of these: aws_domainNames_create.sh, aws_elasticIPs_allocate.sh,
-    #	 aws_elasticIPs_associate2instance.sh, aws_instances_launch.sh, aws_loginKeyPair_create.sh
-    # $2 instancesNamesFile actual name used to create instances and/or related resources
-
-    [ ! -f $2 ] && message "\n$(colour red ERROR): file $(colour lb "$2") does not exist." && return 1
-    ### check the "instancesNamesFile" has only one field in each line - it does not matter if there are empty lines
-    fields_in_instances_names_file=`awk '
-        BEGIN { number_of_fields = 1 }  
-	      {	if ( NF > 1 )
-	     	   number_of_fields = NF
-	      }
-	END   { print number_of_fields }' $2`
-
-    [ $fields_in_instances_names_file -eq 1 ] && return 0  # 0: OK, every single line has only one or 0 strings
-    message "\n$(colour red "File configuration ERROR"): 
-$(colour lg ${1}): the file $(colour lb ../$(basename "$2")) must contain $(colour lb "only one") instance name per line. 
-Some lines have up to $fields_in_instances_names_file fields! $(colour lb "Check it is the right file").
-
-An $(colour lb "instance name") must consist of alpha-numeric characters and hyphens/minus signs (-) only. $(colour lb Examples): 
-genomics-instance01
-MetaGenomics-course-instance-01
-"
-    return 1
+#___________________
+function message2file() {
+    ### $1 message to print
+    ### $2 file to print to
+    printf "%b\n" "$1" >> "$2"	
 }
 
 #________________________________________________
@@ -169,43 +149,40 @@ $(colour lg "${1}") $(colour redTextWhiteBackground aborting): the following fil
 
 #_________________________________________________
 function check_created_resources_results_files() {
-    # $1 either "DO-EXIST" or "DO-NOT-EXIST"
-    # $2 the script checking: aws_*.sh (but not: aws_cli_install_update_linux.sh - aws_storageEBS_increase.sh - aws_instances_configure.sh)
-    # $3 outputsResourceDir within outuputs dir
+    # $1 is either "DO-EXIST" or "DO-NOT-EXIST"
+    # $2 is the type of created resource files whose existence is to be checked, namely:
+    #    "INSTANCE_FILES", "IP_ADDRESS_FILES", "LOGIN_KEY_FILES", and "DOMAIN_NAME_FILES" 
+    # $3 outputsResourceDir within the outuputs dir
     # $4 instancesNamesFile.txt used to create instances and/or related resources
-    local instances_names=( `cat $4` )
     local files_list=""
     local instance=""
     local resource_filename=""
+    local outputs_dir=${3%/inputs*}/outputs	### general outputs directory where results files are.
+    local instances_names=( `cat $3` )
     
-    for instance in ${instances_names[@]}	  ### $4 WAS instancesNames but for instance in ${4}[@] or ${4[@]} DOES NOT WORK
-    do  ### determine which script is making the call to determine the outputs/aws_resources_dir/instance_resource_file.txt/.json
+    for instance in ${instances_names[@]}	### instancesNames WAS $3 but for instance in ${4}[@] or ${4[@]} DOES NOT WORK
+    do
+	instance=${instance%-src*}		### get rid of suffix "-srcAMInn.." if it exists
 	case "$2" in
-	    "csinstances_start.sh" | "csinstances_stop.sh" | "aws_instances_launch.sh" | "aws_instances_terminate.sh" | \
-		"aws_instances_configure.sh" | "aws_instances_configureNoDNs.sh"  )
-		resource_filename="$3/${instance}.txt" ;;
+	    "DOMAIN_NAME_FILES" ) 
+		resource_filename="$outputs_dir/domain-names-creation-output/domain-name-create-$instance.txt" ;;
 	    
-	    "aws_elasticIPs_allocate.sh" | "aws_elasticIPs_deallocate.sh" ) ### | "aws_domainNames_delete.sh" ) ### in v1:
-		# deleting domain names needed to check for the existence of the file containing the relevant IP address
-		# because deleting a domain name had to specify the mapping IP address as specified here:
-		# https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/change-resource-record-sets.html
-		# resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
-		resource_filename="$3/elastic-IPaddress-for-${instance%-src*}.txt" ;;
-
-	    "aws_loginKeyPair_create.sh" | "aws_loginKeyPair_delete.sh" )
-		resource_filename="$3/login-key-${instance%-src*}.json" ;;
+	    "INSTANCE_FILES" )
+		resource_filename="$outputs_dir/instances-creation-output/$instance.txt" ;;
 	    
-	    "aws_elasticIPs_associate2ins.sh" | "aws_elasticIPs_disassociate.sh" )
-		resource_filename="$3/${instance%-src*}-ip-associationID.txt";;
-
-	    "aws_domainNames_create.sh" | "aws_domainNames_delete.sh" ) ### for v2, "aws_domainNames_delete.sh" was moved here
-		resource_filename="$3/domain-name-create-${instance%-src*}.txt" ;;
+	    "IP_ADDRESS_FILES" )
+		resource_filename="$outputs_dir/domain-names-creation-output/ip-addresses-$instance.txt" ;;
+	    
+	    "LOGIN_KEY_FILES" )
+		resource_filename="$outputs_dir/login-keys-creation-output/login-key-$instance.txt" ;;
+	    
 	    *) message "$(colour lg "check_created_resources_results_files $1 $2.."): invalid option: $2" ; return 1;;
 	esac
 	case "$1" in
 	    "DO-NOT-EXIST")
 		### first case developed for creating instances or related resources.
 		[ -f "$resource_filename" ] && files_list="${files_list}$(colour brown "--->") $resource_filename   $hyphen2 related $(colour lb "instance name"):     ${instance%-src*}\n" ;;
+	    
 	    "DO-EXIST")
 		### second case developed for DELETING instances or related resources or to STOP/START instances.
 		[ ! -f "$resource_filename" ] && files_list="${files_list}$(colour brown "--->") $resource_filename   $hyphen2 related $(colour lb "instance name"):     ${instance%-src*}\n" ;;
@@ -214,6 +191,7 @@ function check_created_resources_results_files() {
     case "$1" in
 	"DO-NOT-EXIST")
 	    [ -n "$files_list" ] && message_error_awsResourceFiles_exist "$2" "$files_list" "$4" && return 2 ;;
+	
  	"DO-EXIST")
 	    ### as files SHOULD exist, the error message is about the files NOT existing
 	    [ -n "$files_list" ] && message_error_awsResourceFiles_DONT_exist "$2" "$files_list" "$4" && return 2 ;;
@@ -221,145 +199,271 @@ function check_created_resources_results_files() {
     return 0
 }
 
+#___________________________________________
+function check_instancesNames_file() {
+    # $1 is instancesNames.txt file full path
+
+    [ ! -f $1 ] && message "\n$(colour red ERROR): file $(colour lb "$1") does not exist." && return 1
+
+    ### check the "instancesNamesFile" has only one field in each line and valid characteres, empty lines are ignored.
+    awk '
+        BEGIN { number_of_fields = 1
+	      	bad_instance_name = "FALSE"
+	      }  
+	      {	if ( NF == 0 ) {
+	      	   ;	 ### ignore empty lines
+		} else { 
+	          if ( NF > 1 ) {
+	      	    number_of_fields = NF
+	      	    print "--> more than one instance name in line:", $0
+	      	  }
+		  if ( $0 !~ /^[a-zA-Z][a-zA-Z0-9_-]*$/ ) {
+		    bad_instance_name = "TRUE"
+	      	    print "--> invalid characters in instance name:", $0
+		  }
+	        }
+	      }
+	END   { if ( number_of_fields != 1 || bad_instance_name == "TRUE")
+		  exit 3
+		else 
+		  exit 0
+	      }' $1
+    [ $? == 0 ] && return 0  # 0: OK, every single line has only one or 0 strings
+    message "\n$(colour red "Formatting ERROR") (see lines \"--> ..\" above) in file: $(colour lb "$1") 
+The file must contain $(colour lb "ONLY ONE") instance name per line; $(colour lb "instance names") must $(colour r start) with a letter [a-zA-Z] and then include only alpha-numeric characters or hyphens (-) or underscores. 
+$(colour cyan Examples): 
+genomics-instance01
+MetaGenomics_course_instance-01"
+    return 1
+}
+
+function check_tags_file() {
+    # $1 is the tags.txt file full path
+
+    [ ! -f $1 ] && message "\n$(colour cyan Optional) tags file $(colour lb "$1") does not exist, continuing .." && return 0
+
+    message "\nChecking formatting of file ../tags.txt:"
+
+    ### check the "tags" file has two fields in each line (keywork and value) - it does not matter if there are empty lines
+    awk '
+        BEGIN {  number_of_fields = 2 }  
+	      {	 if ( NF != 0 && NF != 2 ) {
+	     	   number_of_fields = NF
+	      	   print "--> only 2 values per line allowed ( found", NF, "):", $0
+		 }
+	      }
+	END   {  if ( number_of_fields != 2 )
+	      	   exit 3
+		 else
+		   exit 0
+	      }' $1
+
+    [ $? == 0 ] && return 0  # 0: OK, every single line has only one or 0 strings
+    message "\n$(colour red "Formatting ERROR") (see lines \"--> ..\" above) in file: $(colour lb "$1") 
+The file must contain a $(colour lb "key value") pair per line: 2 values /fields /strings! 
+You can use up to 10 $(colour lb "key value") pairs and each $(colour lb key) must be unique. 
+$(colour cyan Examples):
+name		instance
+group		BIOL
+project		cloud-span
+status		prod"
+    return 1
+}
+
 #_________________________________________________
-function wrong_key_words_msg() {
-    
-    message "Valid key words in a ../inputs/resourcesIDs.txt file include and must be followed by value:"
-    message "imageId"
-    message "instanceType"
-    message "securityGroupId"
-    message "subnetId             (optional, depending on AWS acc. configuration)"
-    message "hostZone             (optional)"
-    message "hostZoneId           (optional)"
+function valid_AWS_configurations_print () {
+    message "A $(colour lb "resourcesIDs.txt") file must specify some or all the keywords below and valid corresponding values:
+ 
+KEYWORD            VALUE examples (Cloud-SPAN's for Genomics course using instance domain names)
+
+imageId		   ami-07172f26233528178      ### NOT optional
+instanceType	   t3.small		      ### NOT optional
+securityGroupId	   sg-0771b67fde13b3899	      ### NOT optional
+subnetId	   subnet-00ff8cd3b7407dc83   ### NOT optional
+hostZone	   cloud-span.aws.york.ac.uk  ### optional: specify to use instance domain names
+hostZoneId	   Z012538133YPRCJ0WP3UZ      ### optional: specify to use instance domain names
+
+$(colour r NB): keywords are NON-case sensitive; values are validated, last four values against your AWS account
+configuration. If $(colour lb hostZone) and $(colour lb hostZoneId) and their values are specified, an instance domain name will
+look like this: $(colour cyan instance01.cloud-span.aws.york.ac.uk), where instance01 is the specified instance name.
+  Otherwise, you will access each instance using the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
+by AWS which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com)."
+}
+
+#_________________________________________________
+function validate_imageId () {
+    ### $1 = imageID_value
+
+    aws ec2 describe-images --image-ids $1 > /dev/null 2> /dev/null
+    [[ $? -ne 0 ]] && { message "--> $(colour lb imageId) $1 is $(colour r "invalid")"; return 3; }
+    #message "Success validating imageId (AMI id) $1"
     return 0
 }
 
 #_________________________________________________
-function create_csconfiguration_file() {   ### if possible
-    # $1 either "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" as requested by the user running csinstances_create.sh
-    # $2 resourcesIDs.txt file path
-    message "create_csconfiguration_file: \$1 $1"
-    message "create_csconfiguration_file: \$2 $2"
-    
-    local domainNames=$1
-    local resourcesIDsFile=$2
-    # DONE read the $resourcesIDsFile into an array
-    # DONE loop through the options checking the key values exist use case within for loop
-    # DONE once identified the key value store in a variable named accordingly.
-    # message and read option as to what is going to happen based
-    # NO : write  "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" at the top .csconfiguration.txt
-    # instead write to file  .csconfigurationDNs.txt or .csconfigurationNODNs.txt
-    # writhe the variable names, keys, and their values in a specific order.
-    local imageId_key instanceType_key securityGroupId_key subnetId_key hostZone_key hostZoneId_key
-    local imageId_val instanceType_val securityGroupId_val subnetId_val hostZone_val hostZoneId_val
-    local WORDS word wordsNumber i wrongKeys=FALSE
+function validate_instanceType () {
+    ### $1 = instanceType_value
 
-    WORDS=( `cat $resourcesIDsFile` )
-    #for word in ${words[@]}
-    wordsNumber=${#WORDS[@]}
-    for (( i = 0; i < $wordsNumber ; i=i+2  ))
-    do  # convert each word to lowercase
-	local word=${WORDS[$i],,}	### ,, converts everything to lowercase
-	message "word being processed $word"
-	case ${word} in
-	    "imageid" )
-		imageId_key=${WORDS[$i]} ; imageId_val=${WORDS[$i+1]}
-		message "imageId_key $imageId_key imageId_val $imageId_val" ;;
-	    "instancetype" )
-		instanceType_key=${WORDS[$i]} ;	instanceType_val=${WORDS[$i+1]}
-		message "instanceType_key $instanceType_key instanceType_val $instanceType_val" ;;
-	    "securitygroupid" )
-		securityGroupId_key=${WORDS[$i]} ; securityGroupId_val=${WORDS[$i+1]} 
-		message "securityGroupId_key $securityGroupId_key securityGroupId_val $securityGroupId_val" ;;
-	    "subnetid")
- 		subnetId_key=${WORDS[$i]} ; subnetId_val=${WORDS[$i+1]}
-		message "subnetId_key $subnetId_key subnetId_val $subnetId_val" ;;
-	    "hostzone" )
-		hostZone_key=${WORDS[$i]} ; hostZone_val=${WORDS[$i+1]}
-		message "hostZone_key $hostZone_key hostZone_val $hostZone_val" ;;
-	    "hostzoneid" )
-		hostZoneID_key=${WORDS[$i]} ; hostZoneID_val=${WORDS[$i+1]}
-		message "hostZoneID_key $hostZoneID_key hostZoneID_val $hostZoneID_val" ;;
-	    *) message "$(colour lr "invalid key word"): ${WORDS[$i]}" ;
-	       wrongKeys=TRUE ;;
-	       #exit 2; return 1;;
-	esac
-    done
-    ### check each of the resource configurations given.
-    [ $wrongKeys == TRUE ] && wrong_key_words_msg && return 2
-
-    ### perhaps I don't need to do much checking as aws calls will reject the call if wrong
-    [ -z $imageId_key ] && message "variable \$hostZone_key THE TRUE was not specified:" && return 2 
-    [ -z $instanceType_key ] && message "variable \$hostZone_key THE TRUE was not specified:" && return 2 
-    [ -z $securityGroupId_key ] && message "variable \$hostZone_key THE TRUE was not specified:" && return 2 
-    [ -z $subnetId_key ] &&   message "variable \$hostZone_key was not specified:" && return 2
-    if [ $domainNames == DOMAIN_NAMES ]; then
-	[ -z $hostZone_key ] &&	message "variable \$hostZone_key was not specified:" && return 2 
-	[ -z $hostZoneId_key ] && message "variable \$hostZone_key was not specified:" && return 2
-    fi
-    ### everything was fine, now create the .csconfiguration file 
-
-    
-    exit 0
+    aws ec2 describe-instance-types --instance-types $1  > /dev/null 2> /dev/null
+    [[ $? -ne 0 ]] && { message "--> $(colour lb instanceType) $1 is $(colour r "invalid")"; return 3; }
+    #message "Success validating instanceType $1"
+    return 0
 }
 
 #_________________________________________________
-function check_theScripts_configuration_files() {
-    # $1 the instancesNamesFile.txt full path
-    # $2 either "DOMAIN_NAMES" or "NO_DOMAIN_NAMES" as requested by the user in running csinstances_create.sh
-    message "check_theScripts_configuration_files: \$1 $1"
-    message "check_theScripts_configuration_files: \$2 $2"
+function validate_securityGroupId () {
+    ### $1 = $securityGroupId_value
+
+    aws ec2  describe-security-groups --group-ids $1  > /dev/null 2> /dev/null
+    [[ $? -ne 0 ]] && { message "--> $(colour lb securityGroupId) $1 is $(colour r "invalid")"; return 3; }
+    #message "Success validating securityGroupId $1"
+    return 0
+}
+
+#_________________________________________________
+function validate_subnetId () {
+    ### $1 = $subnetId_value
+
+    aws ec2  describe-subnets --subnet-ids  $1	 > /dev/null 2> /dev/null
+    [[ $? -ne 0 ]] && { message "--> $(colour lb subnetId) $1 is $(colour r "invalid")"; return 3; }
+    #message "Success validating subnetId  $1"
+    return 0
+}
+
+#_________________________________________________
+function validate_hostZone () {
+    ### $1 = $hostZone_value
+
+    found=`aws route53 list-hosted-zones-by-name --dns-name "$1" | awk -F " " 'BEGIN {found="FALSE"} $1 == "\"Name\":" && substr($2, 2, length($2) -4) == "'"$1"'" { found=substr($2, 2, length($2) -4) } END {print found}'`
     
-    local instancesNamesFile=${1}
-    local domainNames="FALSE"
-    # return what is left after eliminating the last / and any character following it
-    local inputsDir=${1%/*}
-    # return what is left after eliminating the second to last / and "inputs" and any character following "inputs",
-    # then adds "/outputs"
-    # local outputsDir=${1%/inputs*}/outputs      
-    resourcesIDsFile=$inputsDir/resourcesIDs.txt
-    tagsFile=$inputsDir/tags.txt
-    configFile=$inputsDir/.csconfiguration.txt
+    [[ $found != $1 ]] && { message "--> $(colour lb hostZone) $1 is $(colour r "invalid")"; return 3; }
+    #message "Success validating hostZone $1"
+    return 0
+}
 
-    create_csconfiguration_file "$2" "$resourcesIDsFile"
-    message "finishing"
-    exit 2
+#_________________________________________________
+function validate_hostZoneId () {
+    ### $1 = $hostZoneId_value
+    
+    aws route53  list-hosted-zones-by-name --hosted-zone-id  $1	 > /dev/null 2> /dev/null
+    [[ $? -ne 0 ]] && { message "--> $(colour lb hostZoneId) $1 is $(colour r "invalid")"; return 3; }
+    #message "Success validating hostZoneId $1"
+    return 0
+}
 
-    if [ -f $configFile ]; then
-	# read the first line, domainNamesConf="DOMAIN_NAMES" or "NO_DOMAIN_NAMES"
-	# if [ -z $2 ];
-	#     ### no domainNames option specified
-	#    return 0 (OK) for the calling script to continue with the current configuration, no question asked
-	#
-	# elif [  domainNames ($2) == domainNamesConf ]; then
-	#    return 0 (OK) for the calling script to continue with the current configuration, no question asked
-	#
-	# elif [  domainNames ($2) != domainNamesConf ]; then
-	#    message about discrepancy, it is not possible to handle manage instances with and w/o DNs.
-	#	they should not specify DNs or not DNs but continue to use the first configuration used
-	#	if it is the first time they run the scripts against this inputs dir, they may delef the file .csconfiguration.txt
-	#	and start again with the option intended.
-	#	or perhaps offer option to delete .csconfiguration.txt file. NO TOO DIFFICULT. Better to delete the file.
-	#    return 2 
-	# else
-	#    message wrong option
-	#    return 2
-	# fi
-	return 0
-    else
-	# create .csconfiguration.txt based on the options given and the resourcesIDs.txt file
-	{ create_csconfiguration_file $2 $resourcesIDsFile && retun 0; } || return 2
+csconfig_domainNames_management=FALSE   ### global as needed by a few functions below
+#_________________________________________________
+function check_resourcesIDs_file () { 
+    # $1 is  resourcesIDs.txt file full path
+    [ ! -f "$1" ] && message "\n$(colour red ERROR): file (with AWS configuration) $1 does not exist" && return 2
+    
+    local resourcesIDsFile=$1
+    
+    local imageId_value=`awk -F " "         'tolower($1) == "imageid" {print $2}' $resourcesIDsFile`
+    local instanceType_value=`awk -F " "    'tolower($1) == "instancetype" {print $2}' $resourcesIDsFile`
+    local securityGroupId_value=`awk -F " " 'tolower($1) == "securitygroupid" {print $2}' $resourcesIDsFile`
+    local subnetId_value=`awk -F " "        'tolower($1) == "subnetid" {print $2}' $resourcesIDsFile`
+    local hostZone_value=`awk -F " "	    'tolower($1) == "hostzone" {print $2}' $resourcesIDsFile`
+    local hostZoneId_value=`awk -F " "	    'tolower($1) == "hostzoneid" {print $2}' $resourcesIDsFile`
+
+    local configError=FALSE
+    csconfig_domainNames_management=FALSE
+
+    message "\nChecking configuration specification in file ../resourcesIDs.txt:"
+    ### -z  means zero bytes or empty string
+    [ -z $imageId_value ] && \
+	message "--> $(colour lb imageId) (AMI id) value $(colour r "not specified")" && configError=TRUE
+    [ -z $instanceType_value ] && \
+	message "--> $(colour lb instanceType) value $(colour r "not specified")" && configError=TRUE
+    [ -z $securityGroupId_value ] && \
+	message "--> $(colour lb securityGroupId) value $(colour r "not specified")" && configError=TRUE
+    [ -z $subnetId_value ] && \
+	message "--> $(colour lb subnetId) value is $(colour r "not specified")" && configError=TRUE
+
+    { [ ! -z $hostZone_value ] && [ -z $hostZoneId_value ]; } || { [ -z $hostZone_value ] && [ ! -z $hostZoneId_value ]; } && configError=TRUE ### && message "ERROR HERE---------------------------"
+
+    # -n DOES NOT WORK, as awk seems to return empty string
+    #[ -n $hostZone_value ] && [ -n $hostZoneId_value ] && csconfig_domainNames_management=TRUE
+    [ ! -z $hostZone_value ] && [ ! -z $hostZoneId_value ] && csconfig_domainNames_management=TRUE
+
+    [ $configError == TRUE ] && \
+	{ message "\n$(colour r "Configuration specification error") in file:\n$resourcesIDsFile\n" ; valid_AWS_configurations_print ; return 2; }
+    
+    message "\nValidating configuration values in file ../resourcesIDs.txt:"
+    validate_imageId $imageId_value			|| configError=TRUE 
+    validate_instanceType $instanceType_value		|| configError=TRUE 
+    validate_securityGroupId $securityGroupId_value	|| configError=TRUE 
+    validate_subnetId $subnetId_value			|| configError=TRUE 
+    
+    if [ $csconfig_domainNames_management == TRUE ]; then
+	validate_hostZone $hostZone_value		|| configError=TRUE 
+	validate_hostZoneId $hostZoneId_value		|| configError=TRUE
     fi
-       
-#    if [ -n $2 ]; then 
-#	if [ $2 == "DOMAIN_NAMES" ];
-#	then
-#	    domainNames="TRUE"
-#	fi
- #   else
-  #  fi  
-    # NO let it as it is
-    # should probably call the above function check_created_resources_results_files() here on behalf of csinstances_create/delete.
-    # but let the call in the aws_*.sh scripts in case they are called individually.
-    # just for rsync test
+
+    [ $configError == TRUE ] && \
+	{ message "\n$(colour r "Configuration validation error") in file:\n$resourcesIDsFile\n" ; valid_AWS_configurations_print ; return 3; }
+
+    if [ $csconfig_domainNames_management == TRUE ]; then
+	message "--> $(colour lb "base domain name") to create instance domain names was $(colour lb FOUND) and validated.
+Each instance to be created will be accessed with a domain name that looks like this:
+$(colour cyan instance01.$hostZone_value) (where instance01 is just an example of an instance name).\n"
+    else
+	message "--> NO $(colour lb "base domain name") was FOUND. 
+Each instance to be created will be accessed with the $(colour lb "IP address") or the $(colour lb generic) domain name provided
+by AWS, which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com).\n"
+    fi
+    return 0
+}
+
+#_______________________________________
+function create_csconfiguration_file() {   ### if user configuration files are fine.
+    # $1 is the full path of instancesNamesFile.txt
+    local inputsDir=${1%/*}
+    local configError=FALSE
+
+    ### check_instancesNames_file $1 is invoked from other scripts but we only want the next message to appear when called here
+    message "\nChecking formatting of file ../$(basename $1):"
+    check_instancesNames_file $1 || configError=TRUE
+    check_tags_file	      $inputsDir/tags.txt || configError=TRUE
+    check_resourcesIDs_file   $inputsDir/resourcesIDs.txt || configError=TRUE
+
+    [ $configError == TRUE ] && return 3
+
+    ### Everything fine, give option as to whether to create the csconfiguration file
+    read -p "Would you like to continue (y/n)?: " option
+
+    if [ "$option" != "n" -a "$option" != "N" -a "$option" != "y" -a "$option" != "Y" ]; then
+	message "\nWrong option $option, cancelling."
+	return 1;
+    elif [ "$option" == "n" -o "$option" == "N" ]; then
+	message "\nRun cancelled ($option)."
+	return 1;
+    fi
+    
+    if [ $csconfig_domainNames_management == TRUE ]; then    
+	touch $inputsDir/.csconfig_DOMAIN_NAMES.txt
+    else
+	touch $inputsDir/.csconfig_NO_DOMAIN_NAMES.txt
+    fi
+    return 0
+}
+
+#________________________________________________
+function check_theScripts_csconfiguration() {
+    # $1 is the full path of instancesNamesFile.txt 
+    local inputsDir=${1%/*}	  # %/* returns what is left after eliminating the last / and any character following it
+
+    if [ -f "$inputsDir/.csconfig_DOMAIN_NAMES.txt" ]; then
+	### if configuration file exists, only check the formatting of the "instancesNamesFile" in case it is a new such file
+	{ check_instancesNames_file $1 && return 0; } || return 2
+
+    elif  [ -f "$inputsDir/.csconfig_NO_DOMAIN_NAMES.txt" ]; then
+	### if configuration file exists, only check the formatting of the "instancesNamesFile" in case it is a new such file
+	{ check_instancesNames_file $1 && return 0; } || return 2
+
+    else
+	### if no configuration file exists, create it if files "instancesNamesFile", resourcesIDs.txt and tags.txt are
+	### well configured
+	{ create_csconfiguration_file "$1" && return 0; } || return 2
+    fi
 }

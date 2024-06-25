@@ -29,13 +29,13 @@ inputsDir=${1%/*}		 # message "inputsdir: $inputsDir"
 outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the second to last / and "inputs" and any character
 				 # following "inputs", then adds "/outputs" # message "outputsdir: $outputsDir"
 
-# directory for the results of creating instances, labelled with the date and time
-outputsDirThisRun=${outputsDir}/instances-delete-output`date '+%Y%m%d.%H%M%S'`
-
 message "$(colour cyan "Terminating instances:")"
-check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
-check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/instances-creation-output" "$instancesNamesFile" || exit 1
-### tests exit 1
+
+check_theScripts_csconfiguration "$instancesNamesFile" || exit 1
+
+check_created_resources_results_files "DO-EXIST" "INSTANCE_FILES" "$instancesNamesFile" || { message "$(colour lb "$(basename $0) aborting")"; exit 1; }
+
+outputsDirThisRun=${outputsDir}/instances-delete-output`date '+%Y%m%d.%H%M%S'`
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting instances:")"
@@ -45,13 +45,17 @@ fi
 
 instancesNames=( `cat $instancesNamesFile` )
 
-for instance in ${instancesNames[@]}
+for instanceFullName in ${instancesNames[@]}
 do
+    instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
+    
     instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $outputsDir/instances-creation-output/$instance.txt`
+    
     aws  ec2  terminate-instances  --instance-ids $instanceID  > $outputsDirThisRun/$instance.txt 2>&1
+
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` terminating instance: ${instance%-src*}"  $outputsDirThisRun/$instance.txt
+	message "`colour gl Success` terminating instance: $instance"  $outputsDirThisRun/$instance.txt
     else
-	message "`colour red Error` ($?) terminating instance: ${instance%-src*}"  $outputsDirThisRun/$instance.txt
+	message "`colour red Error` ($?) terminating instance: $instance"  $outputsDirThisRun/$instance.txt
     fi
 done

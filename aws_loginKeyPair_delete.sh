@@ -33,9 +33,10 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 outputsDirThisRun=${outputsDir}/login-keys-delete-output`date '+%Y%m%d.%H%M%S'`
 
 message "$(colour cyan "Deleting login key pairs:")"
-check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
-check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/login-keys-creation-output" "$instancesNamesFile" || exit 1
-### tests exit 1
+
+check_theScripts_csconfiguration "$instancesNamesFile" || exit 1
+
+check_created_resources_results_files "DO-EXIST" "LOGIN_KEY_FILES" "$instancesNamesFile" ||  { message "$(colour lb "$(basename $0) aborting")"; exit 1; }
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting the login keys:")"
@@ -45,16 +46,17 @@ fi
 
 instancesNames=( `cat $instancesNamesFile` )
 
-for instance in ${instancesNames[@]}
+for instanceFullName in ${instancesNames[@]}
 do
-    loginkey=${instance%-src*}
-    loginkey="login-key-${loginkey%-gc}"
-    #continue
+    instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
+    loginkey="login-key-$instance"
+
     aws ec2 delete-key-pair --key-name $loginkey  >  $outputsDirThisRun/$loginkey.txt 2>&1	     
+
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"  $outputsDirThisRun/$loginkey.txt
+	message "`colour gl Success` deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` $instance"  $outputsDirThisRun/$loginkey.txt
     else
-	message "`colour red Error` ($?) deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` ${instance%-src*}"  $outputsDirThisRun/$loginkey.txt
+	message "`colour red Error` ($?) deleting `colour bl login-key:` $loginkey; `colour bl "instance:"` $instance"  $outputsDirThisRun/$loginkey.txt
     fi
 done
 exit 0

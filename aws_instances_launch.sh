@@ -34,7 +34,7 @@ outputsDirThisRun=${outputsDir}/instances-creation-output	# we may add the date 
 
 message "\n$(colour cyan "Creating instances:")"
 
-check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+check_theScripts_csconfiguration "$instancesNamesFile" || exit 1
 
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of creating instances:")"
@@ -42,47 +42,49 @@ if [ ! -d $outputsDirThisRun ]; then
     mkdir -p $outputsDirThisRun
 fi
 
-check_created_resources_results_files "DO-NOT-EXIST" "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
+check_created_resources_results_files "DO-NOT-EXIST" "INSTANCE_FILES" "$instancesNamesFile" || { message "$(colour lb "$(basename $0) aborting")"; exit 2; }
 
-tags=( `cat $inputsDir/tags.txt` )   # mapfile tags < $inputsDir/tags.txt is more difficult: two items per element
-# we just need the tag values: 1, 3, 5, .. (not the tag key names: 0, 2, 6 ..) 
-tag_name_value=${tags[1]}	  # redefined below but better to read them as the others
-tag_group_value=${tags[3]}
-tag_project_value=${tags[5]}
-tag_status_value=${tags[7]}
-tag_pushedby_value=${tags[9]}
-tag_definedin_value=${tags[11]}
+# process the tags.txt file if it exists. If so, it has been checked before as to having 2 fields (keyName keyValue) per line
+# only 10 tags (key-value pairs, 20 fields) are processed.
 
-resources=( `cat $inputsDir/resourcesIDs.txt` )
-# we just need the tag values: 1, 3, 5, .. (not the tag key names: 0, 2, 6 ..)
-resource_image_id=${resources[1]}
-resource_instance_type=${resources[3]}
-resource_security_group_ids=${resources[5]}
-resource_subnet_id=${resources[7]}
+tagsAWS=""
+if [ -f $inputsDir/tags.txt ]; then
+    TAGS=( `cat $inputsDir/tags.txt` )
 
-instancesNames=( `cat $instancesNamesFile` )	### mapfile instancesNamesMapfile < $instancesNamesFile   # does not work in macOS
+    tagsNumber=${#TAGS[@]}
+    [[ $tagsNumber > 20 ]] && (( tagsNumber=20 ))
 
-for instance in ${instancesNames[@]}
+    for (( i = 0; i < $tagsNumber ; i=i+2  ))
+    do
+	tagsAWS="${tagsAWS}{ Key=${TAGS[$i]}, Value=${TAGS[$i+1]} }, "
+    done
+fi
+
+# get the resourcesIDs.txt values for configuration - they have been checked and validated before
+resource_image_id=`awk -F " "           'tolower($1) == "imageid"         {print $2}' $inputsDir/resourcesIDs.txt`
+resource_instance_type=`awk -F " "      'tolower($1) == "instancetype"    {print $2}' $inputsDir/resourcesIDs.txt`
+resource_security_group_ids=`awk -F " " 'tolower($1) == "securitygroupid" {print $2}' $inputsDir/resourcesIDs.txt`
+resource_subnet_id=`awk -F " "          'tolower($1) == "subnetid"	  {print $2}' $inputsDir/resourcesIDs.txt`
+
+instancesNames=( `cat $instancesNamesFile` )  ### mapfile instancesNamesMapfile < $instancesNamesFile ### does not work in macOS
+
+for instanceFullName in ${instancesNames[@]}
 do
-    loginkey="login-key-${instance%-src*}"
+    instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
+    loginkey=login-key-$instance
 
     aws ec2 run-instances --image-id  $resource_image_id   --instance-type  $resource_instance_type \
 	--key-name $loginkey  \
 	--security-group-ids $resource_security_group_ids \
-	--subnet-id $resource_subnet_id --tag-specifications \
-	"ResourceType=instance, Tags=[{Key=Name,	Value=$instance}, \
-    				    {Key=name,		Value=${instance,,}}, \
-    				    {Key=group, Value=$tag_group_value}, \
-    				    {Key=project, Value=$tag_project_value}, \
-    				    {Key=status, Value=$tag_status_value}, \
-    				    {Key=pushed_by, Value=$tag_pushedby_value}, \
-				    {Key=defined_in, Value=$tag_definedin_value},  \
-				  ]" >  $outputsDirThisRun/$instance.txt 2>&1
-    ## above in "Value=${instance,,}}", ${var,,} converts everything to lowercase as required by York tagging
+	--subnet-id $resource_subnet_id \
+	--tag-specifications \
+	"ResourceType=instance, Tags=[{Key=Name, Value=$instanceFullName}, $tagsAWS ]" >  $outputsDirThisRun/$instance.txt 2>&1
+    
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` creating `colour bl instance:` ${instance%-src*}"  $outputsDirThisRun/$instance.txt
+	message "`colour gl Success` creating `colour bl instance:` $instance"  $outputsDirThisRun/$instance.txt
     else
-	message "`colour red Error` ($?) creating `colour bl instance:` ${instance%-src*}"  $outputsDirThisRun/$instance.txt
+	message "`colour red Error` ($?) creating `colour bl instance:` $instance"  $outputsDirThisRun/$instance.txt
+	exit 2
     fi
 done
 exit 0

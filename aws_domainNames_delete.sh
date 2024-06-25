@@ -30,18 +30,13 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 				 # following "inputs", then adds "/outputs"
 				 # message "outputsdir: $outputsDir"
 
-# directory for the results of deallocating addresses labelled with the date and time
-outputsDirThisRun=${outputsDir}/domain-names-delete-output`date '+%Y%m%d.%H%M%S'`
-#hostZone=cloud-span.aws.york.ac.uk	# from the AWS Console - Route 53 - Host Zone
-#hostZoneID=Z012538133YPRCJ0WP3UZ	# idem
-hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
-hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
-
 message "$(colour cyan "Deleting domain names:")"
 
-check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
-check_created_resources_results_files "DO-EXIST" "$(basename $0)" "$outputsDir/domain-names-creation-output" "$instancesNamesFile" || exit 1
+check_theScripts_csconfiguration "$instancesNamesFile" || exit 1
 
+check_created_resources_results_files "DO-EXIST" "DOMAIN_NAME_FILES" "$instancesNamesFile" ||  { message "$(colour lb "$(basename $0) aborting")"; exit 1; }
+
+outputsDirThisRun=${outputsDir}/domain-names-delete-output`date '+%Y%m%d.%H%M%S'`
 if [ ! -d $outputsDirThisRun ]; then
     message "$(colour brown "Creating directory to hold the results of deleting domain names:")"
     message $outputsDirThisRun
@@ -50,18 +45,15 @@ fi
 
 instancesNames=( `cat $instancesNamesFile` )
 
-for instance in ${instancesNames[@]}
+for instanceFullName in ${instancesNames[@]}
 do
-    # get the elastic ip out of the instance id.
-    subDomainName=${instance%-src*}		# get rid of suffix
-    #nodns don't use: eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
-    dnDeleteFile="$outputsDirThisRun/domain-name-delete-${instance%-src*}.txt"
-    domainNameCreationFile="$outputsDir/domain-names-creation-output/domain-name-create-${subDomainName}.txt"
-    # get the IP address from the  within the file domainNameCreationFile where:
-    # - -F is the field separator (single space " ") within each line
-    # - "Success" is the field we are looking for, the containing record also contains the ip address as the $6 field
-    eip=`awk -F " " '$1 == "Success" {print $6}' $domainNameCreationFile`
+    instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
+    resultsFile="$outputsDirThisRun/domain-name-delete-$instance.txt"
+    
+    eip=`awk -F " " '$1 == "Success" {ipaddress=$6} END {print ipaddress}' $outputsDir/domain-names-creation-output/domain-name-create-$instance.txt`
 
+    instanceDomainName=`awk -F " " '$1 == "Success" {domainName=$4} END {print domainName}' $outputsDir/domain-names-creation-output/domain-name-create-$instance.txt`
+   
     # create the file batch request required by aws cli command to update the domain records
     fileRequest="
 {\n
@@ -70,7 +62,7 @@ do
 \t \t     {\n
 \t \t \t      \"Action\": \"DELETE\",\n
 \t \t \t      \"ResourceRecordSet\": {\n
-\t \t \t \t         \"Name\": \"$subDomainName.$hostZone\",\n
+\t \t \t \t         \"Name\": \"$instanceDomainName\",\n
 \t \t \t \t         \"Type\": \"A\",\n
 \t \t \t \t         \"TTL\": 3600,\n
 \t \t \t \t         \"ResourceRecords\": [{ \"Value\": \"$eip\"}]\n
@@ -79,13 +71,18 @@ do
 \t ]\n
 }\n
 "
-    echo -e $fileRequest > ${dnDeleteFile%.txt}Request.json
+    echo -e $fileRequest > ${resultsFile%.txt}Request.json
     #message "fileRequest: $fileRequest"
-    aws route53 change-resource-record-sets --hosted-zone-id $hostZoneID --change-batch file://${dnDeleteFile%.txt}Request.json > $dnDeleteFile 2>&1
+    hostZoneId=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
 
-    if [ $? -eq 0 ]; then
-	message "`colour gl Success` deleting `colour bl "domain:"` $subDomainName.$hostZone; `colour bl ip:` $eip"  $dnDeleteFile
+    aws route53 change-resource-record-sets --hosted-zone-id $hostZoneId --change-batch file://${resultsFile%.txt}Request.json > $resultsFile 2>&1
+    
+    awsResult=$?
+    if [ $awsResult -eq 0 ]; then
+	message "`colour gl Success` deleting `colour bl "domain:"` $instanceDomainName `colour bl ip:` $eip" $resultsFile
     else
-	message "`colour red Error` deleting `colour bl "domain:"` $subDomainName.$hostZone; `colour bl ip:` $eip"  $dnDeleteFile
+	message "`colour red Error` ($awsResult) deleting `colour bl "domain:"` $instanceDomainName `colour bl ip:` $eip" $resultsFile
+	message "$(colour gl NB): if error is 254 the domain name to delete was not found (was likely deleted before) and eveything is OK. Otherwise check the results file \"$resultsFile\"." $resultsFile
+
     fi
 done

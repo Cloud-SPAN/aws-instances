@@ -34,42 +34,31 @@ outputsDir=${1%/inputs*}/outputs # return what is left after eliminating the sec
 
 message "\n$(colour cyan "Creating domain names:")"
 
-check_instancesNamesFile_format "$(basename $0)" "$instancesNamesFile" || exit 1
+check_theScripts_csconfiguration "$instancesNamesFile" || exit 1
+
+check_created_resources_results_files "DO-NOT-EXIST" "DOMAIN_NAME_FILES" "$instancesNamesFile" || { message "\n$(colour lb "$(basename $0) aborting")"; exit 1; }
 
 # directory for the results of creating domain names
 outputsDirThisRun=${outputsDir}/domain-names-creation-output		# may be later add `date '+%Y%m%d.%H%M%S'`
 if [ ! -d $outputsDirThisRun ]; then
-    message "$(colour brown "Creating directory to hold the results of creating domain names and associating them to instances:")"
+    message "$(colour brown "Creating directory to hold the results of creating domain names and IP addresses:")"
     message $outputsDirThisRun
     mkdir -p $outputsDirThisRun
 fi
 
-check_created_resources_results_files "DO-NOT-EXIST" "$(basename $0)" "$outputsDirThisRun" "$instancesNamesFile" || exit 1
-### tests exit 1
+hostZone=`awk -F " "   'tolower($1) == "hostzone"   {print $2}' $inputsDir/resourcesIDs.txt`
+hostZoneID=`awk -F " " 'tolower($1) == "hostzoneid" {print $2}' $inputsDir/resourcesIDs.txt`
 
-hostZone=`awk -F " " '$1 == "hostZone" {print $2}' $inputsDir/resourcesIDs.txt`
-hostZoneID=`awk -F " " '$1 == "hostZoneId" {print $2}' $inputsDir/resourcesIDs.txt`
 message "`colour cyanlight "Using hostZone"`: $hostZone (hostZoneID: $hostZoneID)"
 
 instancesNames=( `cat $instancesNamesFile` )
 
-for instance in ${instancesNames[@]}
+for instanceFullName in ${instancesNames[@]}
 do
-    subDomainName=${instance%-src*}
-    #nodns don't use: eipAllocationFile="$outputsDir/ip-addresses-allocation-output/elastic-IPaddress-for-${instance%-src*}.txt"
-    dnCreateFile="$outputsDirThisRun/domain-name-create-${instance%-src*}.txt"
-    
-    # get the IP within the file eipAllocationFile with awk, where:
-    # - -F is the field separator (single space " ") within each line
-    # - /"PublicIp"/ is the field we are looking for, which precedes the actual eipAllocID.
-    # - $2 is (the 2nd field and) the eipAllocId itself which is dirty (e.g.: "eipalloc-060adb8fb72b1aa94",) and with
-    # - substr we are unpacking into: eipalloc-060adb8fb72b1aa94
-    #nodns don't use: eip=`awk -F " " '$1 == "\"PublicIp\":" {print substr($2, 2, length($2) -3)}' $eipAllocationFile`
-    #nodns use next 3 sentences instead:
-    instanceCreationFile="$outputsDir/instances-creation-output/$instance.txt"
-    instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $instanceCreationFile`
+    instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
+    resultsFile="$outputsDirThisRun/domain-name-create-$instance.txt"
+    instanceID=`awk -F " " '$1 == "\"InstanceId\":" {print substr($2, 2, length($2) -3)}' $outputsDir/instances-creation-output/$instance.txt`
     eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
-    #message "`colour brown "subDomainName:"` $subDomainName ; `colour b "eip:"` $eip ;`colour b "related instance:"` $instance"
     # create the file batch request required by aws cli command to update the domain records
     fileRequest="
 {\n
@@ -78,7 +67,7 @@ do
 \t \t     {\n
 \t \t \t      \"Action\": \"CREATE\",\n
 \t \t \t      \"ResourceRecordSet\": {\n
-\t \t \t \t         \"Name\": \"$subDomainName.$hostZone\",\n
+\t \t \t \t         \"Name\": \"$instance.$hostZone\",\n
 \t \t \t \t        \"Type\": \"A\",\n
 \t \t \t \t         \"TTL\": 3600,\n
 \t \t \t \t         \"ResourceRecords\": [{ \"Value\": \"$eip\"}]\n
@@ -87,18 +76,18 @@ do
 \t ]\n
 }\n
 "
-    echo -e $fileRequest > ${dnCreateFile%.txt}Request.json
-    #continue
-    # message "fileRequest: $fileRequest"
-    aws route53 change-resource-record-sets --hosted-zone-id $hostZoneID --change-batch file://${dnCreateFile%.txt}Request.json > $dnCreateFile 2>&1
+    echo -e $fileRequest > ${resultsFile%.txt}Request.json
+
+    aws route53 change-resource-record-sets --hosted-zone-id $hostZoneID --change-batch file://${resultsFile%.txt}Request.json > $resultsFile 2>&1
 
     if [ $? -eq 0 ]; then
-	message "`colour gl Success` creating `colour b "domain:"` $subDomainName.$hostZone, `colour b ip:` ${eip}"
-	### write results to log file without colour because colour characters make it difficult to recover the IP address
+	message "`colour gl Success` creating `colour b "domain:"` $instance.$hostZone, `colour b ip:` ${eip}"
+	### write results without colour because colour characters make it difficult to recover the IP address
 	### to delete the domain name which requires to specify the mapping IP address
-	message "Success creating domain: $subDomainName.$hostZone; ip: ${eip}"  $dnCreateFile
+	message2file "Success creating domain: $instance.$hostZone ip: ${eip}"  $resultsFile
     else
-	message "`colour red Error` creating `colour b "domain:"` $subDomainName.$hostZone, `colour b ip:` ${eip}"  $dnCreateFile
+	message "`colour red Error` creating `colour b "domain:"` $instance.$hostZone, `colour b ip:` ${eip}"  $resultsFile
+	exit 2
     fi
 done
 exit 0

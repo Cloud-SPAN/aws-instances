@@ -28,7 +28,7 @@ $(colour bl "Usage:                $(basename $0)  instancesNamesFile")
 - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
   of the aws commands will be stored.
 - $(colour r NB): the $(colour bl inputs) directory $(colour cyan "may have") the $(colour bl tags.txt) file but $(colour r "must have") the $(colour bl resourcesIDs.txt) file too.
-A $(colour bl tags.txt) file has \"key value\" pairs, one per line, to tag AWS resources; up to 10 tags are used."
+A $(colour bl tags.txt) file contains \"key value\" pairs, one per line, to tag AWS resources; up to 10 tags are used."
 
 ##########  START
 
@@ -38,15 +38,12 @@ case $# in
     0|*) message "$usage_msg" ; valid_AWS_configurations_print;  exit 1 ;;	
 esac
 
-
 check_theScripts_csconfiguration        "$1" || { message "$error_msg"; exit 1; }
 
-#message "$(basename $0) after checking the Scripts configuration files"
-#exit 2
 aws_loginKeyPair_create.sh 		"$1" || { message "$error_msg"; exit 1; }
 aws_instances_launch.sh			"$1" || { message "$error_msg"; exit 1; }
 
-if [ -f "${1%/*}/.csconfig_DOMAIN_NAMES.txt" ]; then  ### %/* gets inputs dir path
+if [ -f "${1%/*}/.csconfig_DOMAIN_NAMES.txt" ]; then  ### %/* gets the inputs directory path
     aws_domainNames_create.sh 		"$1" || { message "$error_msg"; exit 1; }
 fi
 aws_instances_configure.sh 		"$1" || { message "$error_msg"; exit 1; }

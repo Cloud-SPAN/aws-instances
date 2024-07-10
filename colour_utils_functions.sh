@@ -230,10 +230,12 @@ function check_instancesNames_file() {
 	      }' $1
     [ $? == 0 ] && return 0  # 0: OK, every single line has only one or 0 strings
     message "\n$(colour red "Formatting ERROR") (see lines \"--> ..\" above) in file: $(colour lb "$1") 
-The file must contain $(colour lb "ONLY ONE") instance name per line; $(colour lb "instance names") must $(colour r start) with a letter [a-zA-Z] and then include only alpha-numeric characters or hyphens (-) or underscores. 
+The file must contain $(colour lb "ONLY ONE") instance name per line; $(colour lb "instance names") must $(colour r start) with an alphabetic
+character and then include only alpha-numeric characters or hyphens (-) or underscores (_). 
 $(colour cyan Examples): 
 genomics-instance01
 MetaGenomics_course_instance-01"
+    
     return 1
 }
 
@@ -272,21 +274,21 @@ status		prod"
 
 #_________________________________________________
 function valid_AWS_configurations_print () {
-    message "A $(colour lb "resourcesIDs.txt") file must specify some or all the keywords below and valid corresponding values:
+    message "A $(colour lb "resourcesIDs.txt") file contains some or all of the keywords below and valid corresponding values:
  
 KEYWORD            VALUE examples (Cloud-SPAN's for Genomics course using instance domain names)
-
-imageId		   ami-07172f26233528178      ### NOT optional
-instanceType	   t3.small		      ### NOT optional
-securityGroupId	   sg-0771b67fde13b3899	      ### NOT optional
-subnetId	   subnet-00ff8cd3b7407dc83   ### NOT optional
-hostZone	   cloud-span.aws.york.ac.uk  ### optional: specify to use instance domain names
-hostZoneId	   Z012538133YPRCJ0WP3UZ      ### optional: specify to use instance domain names
+                                              ## $(colour cyan NOTE): \"key value\" pairs can be specified in any order
+imageId            ami-07172f26233528178      ## NOT optional - instance template (AMI) id
+instanceType       t3.small                   ## NOT optional - processor count, memory size, bandwidth
+securityGroupId    sg-0771b67fde13b3899       ## NOT optional - should allow ssh communication
+subnetId           subnet-00ff8cd3b7407dc83   ## NOT optional - search vpc then subnet in AWS console
+hostZone           cloud-span.aws.york.ac.uk  ## optional: specify to use instance domain names
+hostZoneId         Z012538133YPRCJ0WP3UZ      ## optional: specify to use instance domain names
 
 $(colour r NB): keywords are NON-case sensitive; values are validated, last four values against your AWS account
 configuration. If $(colour lb hostZone) and $(colour lb hostZoneId) and their values are specified, an instance domain name will
 look like this: $(colour cyan instance01.cloud-span.aws.york.ac.uk), where instance01 is the specified instance name.
-  Otherwise, you will access each instance using the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
+  Otherwise, access to each instance will be using the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
 by AWS which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com)."
 }
 

@@ -276,18 +276,18 @@ status		prod"
 function valid_AWS_configurations_print () {
     message "A $(colour lb "resourcesIDs.txt") file contains some or all of the keywords below and valid corresponding values:
  
-KEYWORD            VALUE examples (Cloud-SPAN's for Genomics course using instance domain names)
+KEYWORD           VALUE examples (Cloud-SPAN's for Genomics course using instance domain names)
                                               ## $(colour cyan NOTE): \"key value\" pairs can be specified in any order
-imageId            ami-07172f26233528178      ## NOT optional - instance template (AMI) id
-instanceType       t3.small                   ## NOT optional - processor count, memory size, bandwidth
-securityGroupId    sg-0771b67fde13b3899       ## NOT optional - should allow ssh communication
-subnetId           subnet-00ff8cd3b7407dc83   ## NOT optional - search vpc then subnet in AWS console
-hostZone           cloud-span.aws.york.ac.uk  ## optional: specify to use instance domain names
-hostZoneId         Z012538133YPRCJ0WP3UZ      ## optional: specify to use instance domain names
+imageId           ami-07172f26233528178       ## NOT optional: instance template (AMI) id
+instanceType      t3.small                    ## NOT optional: processor count, memory size, bandwidth
+securityGroupId   sg-0771b67fde13b3899        ## NOT optional: should allow ssh (port 22) communication
+subnetId          subnet-00ff8cd3b7407dc83    ## NOT optional: search vpc then subnet in AWS console
+hostZone          cloud-span.aws.york.ac.uk   ## optional: specify to use instance domain names
+hostZoneId        Z012538133YPRCJ0WP3UZ       ## optional: specify to use instance domain names
 
 $(colour r NB): keywords are NON-case sensitive; values are validated, last four values against your AWS account
 configuration. If $(colour lb hostZone) and $(colour lb hostZoneId) and their values are specified, an instance domain name will
-look like this: $(colour cyan instance01.cloud-span.aws.york.ac.uk), where instance01 is the specified instance name.
+look like this: $(colour cyan instance01.cloud-span.aws.york.ac.uk), where instance01 is a specified instance name.
   Otherwise, access to each instance will be using the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
 by AWS which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com)."
 }

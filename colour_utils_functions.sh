@@ -277,11 +277,11 @@ function valid_AWS_configurations_print () {
     message "A $(colour lb "resourcesIDs.txt") file contains some or all of the keywords below and valid corresponding values:
  
 KEYWORD           VALUE examples (Cloud-SPAN's for Genomics course using instance domain names)
-                                              ## $(colour cyan NOTE): \"key value\" pairs can be specified in any order
+                                              ## $(colour cyan NB): \"key value\" pairs can be specified in any order
 imageId           ami-07172f26233528178       ## NOT optional: instance template (AMI) id
 instanceType      t3.small                    ## NOT optional: processor count, memory size, bandwidth
 securityGroupId   sg-0771b67fde13b3899        ## NOT optional: should allow ssh (port 22) communication
-subnetId          subnet-00ff8cd3b7407dc83    ## NOT optional: search vpc then subnet in AWS console
+subnetId          subnet-00ff8cd3b7407dc83    ## optional: search vpc in AWS console then click subnets
 hostZone          cloud-span.aws.york.ac.uk   ## optional: specify to use instance domain names
 hostZoneId        Z012538133YPRCJ0WP3UZ       ## optional: specify to use instance domain names
 
@@ -297,9 +297,9 @@ function validate_imageId () {
     ### $1 = imageID_value
 
     aws ec2 describe-images --image-ids $1 > /dev/null 2> /dev/null
-    [[ $? -ne 0 ]] && { message "--> $(colour lb imageId) $1 is $(colour r "invalid")"; return 3; }
-    #message "Success validating imageId (AMI id) $1"
-    return 0
+    [[ $? -eq 0 ]] && return 0
+    message "--> $(colour lb imageId) $1 is $(colour r "invalid")"
+    return 3
 }
 
 #_________________________________________________
@@ -307,9 +307,9 @@ function validate_instanceType () {
     ### $1 = instanceType_value
 
     aws ec2 describe-instance-types --instance-types $1  > /dev/null 2> /dev/null
-    [[ $? -ne 0 ]] && { message "--> $(colour lb instanceType) $1 is $(colour r "invalid")"; return 3; }
-    #message "Success validating instanceType $1"
-    return 0
+    [[ $? -eq 0 ]] && return 0
+    message "--> $(colour lb instanceType) $1 is $(colour r "invalid")"
+    return 3
 }
 
 #_________________________________________________
@@ -317,19 +317,52 @@ function validate_securityGroupId () {
     ### $1 = $securityGroupId_value
 
     aws ec2  describe-security-groups --group-ids $1  > /dev/null 2> /dev/null
-    [[ $? -ne 0 ]] && { message "--> $(colour lb securityGroupId) $1 is $(colour r "invalid")"; return 3; }
-    #message "Success validating securityGroupId $1"
-    return 0
+    [[ $? -eq 0 ]] && return 0
+    message "--> $(colour lb securityGroupId) $1 is $(colour r "invalid")"
+    return 3
 }
 
 #_________________________________________________
 function validate_subnetId () {
-    ### $1 = $subnetId_value
+    ### $1 is resourcesIDs.txt file full path
+    ### $2 is $subnetId_value if specified
 
-    aws ec2  describe-subnets --subnet-ids  $1	 > /dev/null 2> /dev/null
-    [[ $? -ne 0 ]] && { message "--> $(colour lb subnetId) $1 is $(colour r "invalid")"; return 3; }
-    #message "Success validating subnetId  $1"
-    return 0
+    if [ ! -z $2 ]; then
+	### if subnetId_value was specified (! -z: not zero byte or not empty string) check it is valid
+	aws ec2  describe-subnets --subnet-ids  $2	 > /dev/null 2> /dev/null
+	[[ $? -eq 0 ]] && return 0
+	message "--> $(colour lb subnetId) $1 is $(colour r "invalid")"
+	return 3
+
+    else
+	### try to get an available subnet's id
+	#	domainStatus=`aws route53  get-change --id $domainNameChangeID | awk -F " " '$1 == "\"Status\":" {print substr($2, 2, length($2) -3)}'`
+	aws ec2  describe-subnets | awk '
+        BEGIN {  found = "FALSE"; state = "NOT_AVAILABLE"; subnetID = "NULL"  } 
+	      ### we are looking for two lines with these two strings:
+	      ### "State": "available",                    in one line and
+	      ### "SubnetId": "subnet-00ff8cd3b7407dc83",  in a subsequent line, 2nd field is only an example
+
+	      {	 if ( $1 == "\"State\":" && $2 == "\"available\"," ) {
+	      	    state = "AVAILABLE"
+	      	 }
+		 if ( state == "AVAILABLE" && $1 == "\"SubnetId\":" ) {
+		   subnetID = substr($2, 2, length($2) -3)
+		   found = "TRUE"
+		 }
+	      }
+	END   {  if ( found == "TRUE" ) {
+	      	   print "subnetId          ", subnetID, "    ## found and added here by the Scripts"
+	      	   exit 0
+		 } else {
+		   exit 3
+		 }
+	      }' >> $1
+
+	[[ $? == 0 ]] && message "--> subnetId $(colour cyan found) and appended to ../resourcesIDs.txt file" && return 0
+	message "--> subnetId $(colour r "NOT FOUND"). In the AWS Console, search for $(colour lb vpc), then click $(colour lb subnets) on the left menu."
+	return 3
+    fi
 }
 
 #_________________________________________________
@@ -338,9 +371,9 @@ function validate_hostZone () {
 
     found=`aws route53 list-hosted-zones-by-name --dns-name "$1" | awk -F " " 'BEGIN {found="FALSE"} $1 == "\"Name\":" && substr($2, 2, length($2) -4) == "'"$1"'" { found=substr($2, 2, length($2) -4) } END {print found}'`
     
-    [[ $found != $1 ]] && { message "--> $(colour lb hostZone) $1 is $(colour r "invalid")"; return 3; }
-    #message "Success validating hostZone $1"
-    return 0
+    [[ $found == $1 ]] && return 0
+    message "--> $(colour lb hostZone) $1 is $(colour r "invalid")"
+    return 3
 }
 
 #_________________________________________________
@@ -348,15 +381,15 @@ function validate_hostZoneId () {
     ### $1 = $hostZoneId_value
     
     aws route53  list-hosted-zones-by-name --hosted-zone-id  $1	 > /dev/null 2> /dev/null
-    [[ $? -ne 0 ]] && { message "--> $(colour lb hostZoneId) $1 is $(colour r "invalid")"; return 3; }
-    #message "Success validating hostZoneId $1"
-    return 0
+    [[ $? -eq 0 ]] && return 0
+    message "--> $(colour lb hostZoneId) $1 is $(colour r "invalid")"
+    return 3
 }
 
 csconfig_domainNames_management=FALSE   ### global as needed by a few functions below
 #_________________________________________________
 function check_resourcesIDs_file () { 
-    # $1 is  resourcesIDs.txt file full path
+    # $1 is resourcesIDs.txt file full path
     [ ! -f "$1" ] && message "\n$(colour red ERROR): file (with AWS configuration) $1 does not exist" && return 2
     
     local resourcesIDsFile=$1
@@ -379,12 +412,13 @@ function check_resourcesIDs_file () {
 	message "--> $(colour lb instanceType) value $(colour r "not specified")" && configError=TRUE
     [ -z $securityGroupId_value ] && \
 	message "--> $(colour lb securityGroupId) value $(colour r "not specified")" && configError=TRUE
-    [ -z $subnetId_value ] && \
-	message "--> $(colour lb subnetId) value is $(colour r "not specified")" && configError=TRUE
+    # subnetId and subnetId_value are optional - Toby Hodges' suggestion, but still is validate below on trying to get one
+    #[ -z $subnetId_value ] && \
+    #	message "--> $(colour lb subnetId) value is $(colour r "not specified")" && configError=TRUE
 
-    { [ ! -z $hostZone_value ] && [ -z $hostZoneId_value ]; } || { [ -z $hostZone_value ] && [ ! -z $hostZoneId_value ]; } && configError=TRUE ### && message "ERROR HERE---------------------------"
-
-    # -n DOES NOT WORK, as awk seems to return empty string
+    { [ ! -z $hostZone_value ] && [ -z $hostZoneId_value ]; } || { [ -z $hostZone_value ] && [ ! -z $hostZoneId_value ]; } && configError=TRUE
+    
+    # -n DOES NOT WORK so used "! -z" instead, as awk seems to return empty string
     #[ -n $hostZone_value ] && [ -n $hostZoneId_value ] && csconfig_domainNames_management=TRUE
     [ ! -z $hostZone_value ] && [ ! -z $hostZoneId_value ] && csconfig_domainNames_management=TRUE
 
@@ -392,14 +426,14 @@ function check_resourcesIDs_file () {
 	{ message "\n$(colour r "Configuration specification error") in file:\n$resourcesIDsFile\n" ; valid_AWS_configurations_print ; return 2; }
     
     message "\nValidating configuration values in file ../resourcesIDs.txt:"
-    validate_imageId $imageId_value			|| configError=TRUE 
-    validate_instanceType $instanceType_value		|| configError=TRUE 
-    validate_securityGroupId $securityGroupId_value	|| configError=TRUE 
-    validate_subnetId $subnetId_value			|| configError=TRUE 
+    validate_imageId $imageId_value			 || configError=TRUE 
+    validate_instanceType $instanceType_value		 || configError=TRUE 
+    validate_securityGroupId $securityGroupId_value	 || configError=TRUE 
+    validate_subnetId $resourcesIDsFile $subnetId_value  || configError=TRUE 
     
     if [ $csconfig_domainNames_management == TRUE ]; then
-	validate_hostZone $hostZone_value		|| configError=TRUE 
-	validate_hostZoneId $hostZoneId_value		|| configError=TRUE
+	validate_hostZone $hostZone_value		 || configError=TRUE 
+	validate_hostZoneId $hostZoneId_value		 || configError=TRUE
     fi
 
     [ $configError == TRUE ] && \
@@ -411,7 +445,7 @@ Each instance to be created will be accessed with a domain name that looks like 
 $(colour cyan instance01.$hostZone_value) (where instance01 is just an example of an instance name).\n"
     else
 	message "--> NO $(colour lb "base domain name") was FOUND. 
-Each instance to be created will be accessed with the $(colour lb "IP address") or the $(colour lb generic) domain name provided
+Each instance to be created will be accessed with the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
 by AWS, which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com).\n"
     fi
     return 0
@@ -423,10 +457,10 @@ function create_csconfiguration_file() {   ### if user configuration files are f
     local inputsDir=${1%/*}
     local configError=FALSE
 
-    ### check_instancesNames_file $1 is invoked from other scripts but we only want the next message to appear when called here
+    ### check_instancesNames_file $1 is invoked from other scripts -- but we only want the next message to appear when called here
     message "\nChecking formatting of file ../$(basename $1):"
-    check_instancesNames_file $1 || configError=TRUE
-    check_tags_file	      $inputsDir/tags.txt || configError=TRUE
+    check_instancesNames_file $1                          || configError=TRUE
+    check_tags_file	      $inputsDir/tags.txt         || configError=TRUE
     check_resourcesIDs_file   $inputsDir/resourcesIDs.txt || configError=TRUE
 
     [ $configError == TRUE ] && return 3

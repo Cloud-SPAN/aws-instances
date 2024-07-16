@@ -274,8 +274,8 @@ status		prod"
 
 #_________________________________________________
 function valid_AWS_configurations_print () {
-    message "A $(colour lb "resourcesIDs.txt") file contains some or all of the keywords below and valid corresponding values:
-$(colour cyan "case-INsensitive")
+    message "$(colour lb "resourcesIDs.txt") contains some of/all the $(colour cyan "case-INsensitive") keywords below and $(colour cyan valid) respective values:
+
 KEYWORD           VALUE examples (Cloud-SPAN's for Genomics course using instance domain names)
                                               ## $(colour cyan NB): \"key value\" pairs can be specified in any order
 imageId           ami-07172f26233528178       ## NOT optional: instance template (AMI) id

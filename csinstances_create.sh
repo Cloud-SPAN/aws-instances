@@ -28,7 +28,7 @@ $(colour bl "Usage:                $(basename $0)  instancesNamesFile")
 - an $(colour bl outputs) directory will be created at the same level of the inputs directory where the results 
   of the aws commands will be stored.
 - $(colour r NB): the $(colour bl inputs) directory $(colour cyan "may have") the $(colour bl tags.txt) file but $(colour r "must have") the $(colour bl resourcesIDs.txt) file too.
-A $(colour bl tags.txt) file contains \"key value\" pairs, one per line, to tag AWS resources; up to 10 tags are used."
+$(colour bl tags.txt) contains \"key value\" pairs (one per line) to tag AWS resources; up to 10 tags are used."
 
 ##########  START
 

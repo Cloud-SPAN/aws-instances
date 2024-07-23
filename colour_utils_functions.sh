@@ -289,7 +289,7 @@ $(colour r NB): keywords are NON-case sensitive; values are validated, last four
 configuration. If $(colour lb hostZone) and $(colour lb hostZoneId) and their values are specified, an instance domain name will
 look like this: $(colour cyan instance01.cloud-span.aws.york.ac.uk), where instance01 is a specified instance name.
   Otherwise, access to each instance will be using the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
-by AWS which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com)."
+by AWS which look like this: $(colour cyan "34.245.22.106") or $(colour cyan "ec2-34-245-22-106.eu-west-1.compute.amazonaws.com")."
 }
 
 #_________________________________________________

@@ -83,7 +83,7 @@ do
 	instanceState=`aws ec2 describe-instance-status --instance-id $instanceID | awk -F " " '$1 == "\"Code\":" {print substr($2, 1, length($2) -1)}'`
 	if [[ $instanceState == "16" ]]; then
 	    #16 running: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-instance-status.html
-	    message "- instance $instance state $instanceState (running), mapping domain name"
+	    message "- instance $instance state $instanceState (running)"
 	    eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
 	    ###dateTime=`date '+%Y%m%d.%H%M%S'`
 	    ###echo "$eip" > $outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$eip.txt

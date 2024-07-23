@@ -62,7 +62,7 @@ do
     if [ $awsResult -eq 0 ]; then
 	message "`colour gl Success` starting instance: $instance"  $resultsFile
     else
-	message "`colour red Error` ($awsResult) starting instance: $instance}"  $resultsFile
+	message "`colour red Error` ($awsResult) starting instance: $instance"  $resultsFile
 	exit 2
     fi
 done

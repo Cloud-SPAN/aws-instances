@@ -85,10 +85,12 @@ do
 	    #16 running: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-instance-status.html
 	    message "- instance $instance state $instanceState (running), mapping domain name"
 	    eip=`aws ec2 describe-instances --instance-ids  "$instanceID" --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text`
-	    dateTime=`date '+%Y%m%d.%H%M%S'`
-	    echo "$eip" > $outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$eip.txt
+	    ###dateTime=`date '+%Y%m%d.%H%M%S'`
+	    ###echo "$eip" > $outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$eip.txt
+	    echo "$eip" > $outputsDir/instances-creation-output/$instance-ip-address.txt
 	    
-	    message "\n$(colour lb "Please note"): the IP address ($eip) of instance $instance was saved to file:\n$outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$eip.txt" $resultsFile
+	    ### message "\n$(colour lb "Please note"): the IP address ($eip) of instance $instance was saved to file:\n$outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$eip.txt" $resultsFile
+	    message "\n$(colour lb "Please note"): the IP address ($eip) of instance $instance was saved to the file:\n$outputsDir/instances-creation-output/$instance-ip-address.txt" $resultsFile
 	    break
 	else
 	    sleep 3
@@ -142,7 +144,7 @@ if [ -f $inputsDir/.csconfig_DOMAIN_NAMES.txt ]; then
 	    message "`colour gl Success` mapping `colour b "domain:"` $instanceDomainName, `colour b ip:` $eip"
 	    message2file "Success mapping domain: $instanceDomainName ip: $eip" $resultsFile
 	    ### write domain name and last mapping ip address to the domain name resource creation file as it is therein that
-	    ### the scripts csinstances_stop.sh  and aws_domainNames_delete.sh will recovered them when needed.
+	    ### the scripts csinstances_stop.sh  and aws_domainNames_delete.sh will recover them when needed.
 	    message2file "Success mapping domain: $instanceDomainName ip: $eip" $outputsDir/domain-names-creation-output/domain-name-create-$instance.txt
 	    message "ssh-keygen -f $HOME/.ssh/known_hosts -R ${instanceDomainName,,}" $resultsFile
 	    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${instanceDomainName,,}"   ### works w all lowercase: ${var,,}

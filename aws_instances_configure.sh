@@ -169,10 +169,12 @@ do
 	
 	ssh -o StrictHostKeyChecking=no -i $loginKeysDir/login-key-$instance.pem csuser@$instanceIPaddress "echo \"Hi from CSUSER at $instance\"; ls; echo \"Bye.\";  exit "
 
-	dateTime=`date '+%Y%m%d.%H%M%S'`
-	echo "$instanceIPaddress" > $outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$instanceIPaddress.txt
+	###dateTime=`date '+%Y%m%d.%H%M%S'`
+	###echo "$instanceIPaddress" > $outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$instanceIPaddress.txt
+	echo "$instanceIPaddress" > $outputsDir/instances-creation-output/$instance-ip-address.txt
 	
-	message "\n$(colour lb "Please note"): the IP address ($instanceIPaddress) of instance $instance was saved to file:\n$outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$instanceIPaddress.txt\n" $resultsFile
+	### message "\n$(colour lb "Please note"): the IP address ($instanceIPaddress) of instance $instance was saved to file:\n$outputsDir/instances-creation-output/$instance-ip-address-$dateTime-$instanceIPaddress.txt\n" $resultsFile
+	message "\n$(colour lb "Please note"): the IP address ($instanceIPaddress) of instance $instance was saved to the file:\n$outputsDir/instances-creation-output/$instance-ip-address.txt\n" $resultsFile
 
     else
 	################   WRONG option, abort   ############

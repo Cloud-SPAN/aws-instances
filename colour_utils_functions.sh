@@ -446,7 +446,7 @@ $(colour cyan instance01.$hostZone_value) (where instance01 is just an example o
     else
 	message "--> NO $(colour lb "base domain name") was FOUND. 
 Each instance to be created will be accessed with the $(colour lb "IP address") or the $(colour lb "generic domain name") provided
-by AWS, which look like this: $(colour cyan 52.215.49.10) or $(colour cyan ec2-54-171-158-66.eu-west-1.compute.amazonaws.com).\n"
+by AWS, which look like this: $(colour cyan 34.245.22.106) or $(colour cyan "ec2-34-245-22-106.eu-west-1.compute.amazonaws.com").\n"
     fi
     return 0
 }

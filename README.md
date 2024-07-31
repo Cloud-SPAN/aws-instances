@@ -13,16 +13,17 @@ A comprehensive [online tutorial](https://cloud-span.github.io/cloud-admin-guide
 
 This README file provides an overview of these topics:
 
-1. **[The Scripts organisation](#1-the-scripts-and-how-to-use-them)**
+1. **[The Scripts organisation](#1-the-scripts-organisation)**
 
-2. **[Managing instances for workshops --- preparing the Scripts environment]()**
+2. **[Preparing the Scripts environment](#2-preparing-a-scripts-running-environment)**
 
-3. **[Running the Scripts]()**
+3. **[Running the Scripts](#3-running-the-scripts)**
 
 4.
 
 
 ## 1. The Scripts organisation
+
 
 The scripts are listed below. The scripts "`csinstances_*.sh`" are to be run  by the person in charge of managing instances for workshops. The scripts "`aws_*.sh`" are invoked by the scripts `csinstances_create.sh` or `csinstances_delete.sh` to either create or delete instances and related resources: login keys, IP addresses, and domain names (if managed). The  script `colours_utils_functions.sh` provides text colouring functions and utility functions that validate the invocation and results of the other scripts.
 
@@ -69,14 +70,10 @@ hostZoneId        Z012538133YPRCJ0WP3UZ      ## optional: specify to use instanc
 As shown in this example, a resourcesIDs.txt file can have comments in addition to the "key value" pairs to specify. The "key value" pairs can be specified in any order, but each key word must be the first item in a line and its corresponding value the second item in the same line. The key words in the example must be used but they are NON-case sensitive. The three Not optional "key value" pairs must be specified.
 
 The values all are validated. The value ofimageIdis validated to correspond to an AMI in your AWS account or to a public AMI available in the AWS region on which your are running the scripts. The value ofinstanceTypeis validated to be a valid AWS instance type. The values of securityGroupId, subnetId,hostZone and hostZoneId are validated to exist in your AWS account. The key word subnetId and its value are optional. If not specified, the scripts will try to obtain a subnetID from your AWS account. We have successfully tested the scripts to obtain and use a subnetID running the scripts with a personal AWS account and with an institutional AWS account (see details in section Validating the Workshop Environment below). The key words `hostZone` and `hostZoneId` and their values are optional. If specified and valid, each instance will be accessed using a
-domain name which will look like this: instance01.cloud-span.aws.york.ac.uk , where instance01 is just an example of a specified
-instance name and cloud-span.aws.york.ac.uk is the base domain name (hostZone) in the example. IfhostZoneandhostZoneIdand
-their values are not specified, each instance will be accessed using the public IP address or the generic domain name allocated by AWS
-which will look like this: 34.245.22.106 or ec2-34-245-22-106.eu-west-1.compute.amazonaws.com.
+domain name which will look like this: instance01.cloud-span.aws.york.ac.uk , where instance01 is just an example of a specified instance name and cloud-span.aws.york.ac.uk is the base domain name (hostZone) in the example. If `hostZone` and `hostZoneId` and their values are not specified, each instance will be accessed using the public IP address or the generic domain name allocated by AWS which will look like this: `34.245.22.106` or `ec2-34-245-22-106.eu-west-1.compute.amazonaws.com`.
 
 
-The three files must be placed inside a directory called **inputs** , and the **inputs** directory must be placed within at least one other directory,
-whose name you can choose, and to which we refer to as **Workshop Environment** ( **WE** ). We use this directory structure to manage instances
+The three files must be placed inside a directory called **inputs** , and the **inputs** directory must be placed within at least one other directory, whose name you can choose, and to which we refer to as **Workshop Environment** ( **WE** ). We use this directory structure to manage instances
 for our workshops:
 
 ```
@@ -95,7 +92,7 @@ courses                          ### you can omit this directory or use other na
 The `outputs` directory inside a WE is automatically created by the Scripts to store the results of invoking AWS services as described below.
 
 
-### Running the Scripts
+## 3. Running the Scripts
 
 Running the scripts requires only the path of the file that contains the names of the instances to create, stop, start or delete. Login keys, IPcaddresses and domain names used by the instances are created or deleted automatically. Figure 1 shows a Linux terminal where the scriptcsinstance_create.shhas been run thus (second line in the figure):
 
@@ -130,21 +127,19 @@ Would you like to continue (y/n)?:
     instance host name to the **instance name** (the default host name is the instance IP address) **regardless of whether domain names are**
     **to be managed or not**. This step is not shown in the figure.
 
-![Figure 1.](./figs/fig01-scripts-run-validating-config-files.png){: width="600px"}
+![Figure 1.](./figs/fig01-scripts-run-validating-config-files.png)
+![Figure 2.](./figs/fig02-scripts-run-creating-instances.png)
+
+**Figure 1.** Running the script `csinstances_create.sh` (second line) to create 3 instances with the names specified in the filecourses/.../instancesNames.txt: **instance01**, **instance02** , and **instance03** (one name per line). Creating instances involves 5 or 4 steps depending on whether domain names to access instances are to be managed or not. The run in the figure corresponds to domain names being managed but only the first 4 steps are shown. The last step (5) involves configuring each instance both **to enable** the **_csuser_** account (used by workshop participants) to be logged in and **to change** the instance host name to the instance name (the default host name is the instance IP address). **If domain names are not to be managed** , the step **creating domain names** (4 in the figure) is not run.
 
 
-**Figure 1.** Running the scriptcsinstances_create.sh(second line) to create 3 instances with the names specified in the filecourses/.../instancesNames.txt: **instance01** ,
-**instance02** , and **instance03** (one name per line). Creating instances involves 5 or 4 steps depending on whether domain names to access instances are to be managed or not.
-The run in the figure corresponds to domain names being managed but only the first 4 steps are shown. The last step (5) involves configuring each instance both **to enable** the
-**_csuser_** account (used by workshop participants) to be logged in and **to change** the instance host name to the instance name (the default host name is the instance IP address).
-**If domain names are not to be managed** , the step **creating domain names** (4 in the figure) is not run.
+To stop or start the instances created with the command above, or to delete them along with all the related resources, you would run the scripts `csinstances_stop.sh`, `csinstances_start.sh` or `csinstances_delete.sh` using the same input file:
 
-
-To stop or start the instances created with the command above, or to delete them along with all the related resources, you would run the
-scriptscsinstances_stop.sh,csinstances_start.shorcsinstances_delete.shusing the same input file:
+```
 $ csinstance_stop.sh courses/instances-management/inputs/instancesNames.txt
 $ csinstance_start.sh courses/instances-management/inputs/instancesNames.txt
 $ csinstance_delete.sh courses/instances-management/inputs/instancesNames.txt
+```
 
 #### Using Instances and Customising AMIs
 
@@ -159,43 +154,29 @@ ssh -i login-key-instance01.pem ubuntu@instance01.cloud-span.aws.york.ac.uk
 ssh -i login-key-instance03.pem csuser@instance03.cloud-span.aws.york.ac.uk
 ssh -i login-key-instance03.pem ubuntu@instance03.cloud-span.aws.york.ac.uk
 ```
-Note that instance names are used by the scripts to "label" the names of the corresponding login key files, instances domain names, and
-other files. Each instance domain name is the previously configured _base domain name_ (in our casecloud-span.aws.york.ac.uk) prefixed
-with the corresponding instance name.
+Note that instance names are used by the scripts to "label" the names of the corresponding login key files, instances domain names, and other files. Each instance domain name is the previously configured _base domain name_ (in our casecloud-span.aws.york.ac.uk) prefixed with the corresponding instance name.
+
 Workshop participants use the **_csuser_** account — all ’omics data and most software analysis tools are installed in this account.
-The **_ubuntu_** account has **superuser privileges**. We use it to update system software, software analysis tools that need to be installed at
-system level, etc. We use the **_csuser_** account to update ’omics data and software analysis tools that can be installed at user account level. We
-update an instance as just outlined in order **to create a new AMI** (virtual machine template) from which to create new updated instances.
 
-**_Login to Instances When Domain Names Are NOT Managed_**
-Assuming that **domain names** were **not managed** in the example in Figure 1 (but the instance names specified were those in the example:
-**instance01** , etc.), you would login to the **_csuser_** and **_ubuntu_** accounts thus:
+The **_ubuntu_** account has **superuser privileges**. We use it to update system software, software analysis tools that need to be installed at system level, etc. We use the **_csuser_** account to update ’omics data and software analysis tools that can be installed at user account level. We update an instance as just outlined in order **to create a new AMI** (virtual machine template) from which to create new updated instances.
 
+#### Login to Instances When Domain Names Are NOT Managed
 
-#### J. Buenabad-Chavez et al. | 5
-
-**Figure 2.** The scripts environment: the admin user of the scripts (on the left), the AWS service infrastructure used when domain names to access instances are managed, and
-a workshop participant accessing **instance01** using **_ssh_** with the respective private login key part. The Route 53 AWS service is not used when domain names are not managed.
+Assuming that **domain names** were **not managed** in the example in Figure 1 (but the instance names specified were those in the example: **instance01** , etc.), you would login to the **_csuser_** and **_ubuntu_** accounts thus:
 
 ```
-ssh -i login-key-instance01.pem csuser@34.245.22.106 #### where 34.245.22.106 is just an example IP address
-ssh -i login-key-instance01.pem ubuntu@34.245.22.106 #### the IP address of each instance will vary
+ssh -i login-key-instance01.pem csuser@34.245.22.106      #### where 34.245.22.106 is just an example IP address
+ssh -i login-key-instance01.pem ubuntu@34.245.22.106      #### the IP address of each instance will vary
 ...
 ```
+
 #### Customising the Login Account of Workshop Participants
 
-The **_csuser_** account is only available on instances created from a Cloud-SPAN AMI — "cs" in **_csuser_** stands for Cloud-SPAN project [ 19 , 20 ];
-the Data Carpentry AMI uses the **_dcuser_** account for workshop participants.
-The **_ubuntu_** account is available on instances created from any AWS Linux Ubuntu AMI, and is the **only account** that is **enabled to
-be logged in** when an instance runs for the first time. This enabling is performed by the **AWS service** that launches instances. When
-an instance boots for the first time, that service **adds** the **public key** part of the login key created to access the instance to **the file**
-/home/ubuntu/.ssh/authorized_keys— thereafter the **private key** part of the login key can be used with **ssh** as shown above [ 21 ] to access
-the **_ubuntu_** account. The last step in creating instances, that is, **configuring instances** , enables the **_csuser_** account in each instance to be
-logged in by copying that file to the **_csuser_** account in/home/csuser/.ssh/authorized_keys. The copy is made through running a Bash script
-in the **_ubuntu_** account that is remotely invoked by the scriptaws_instances_configure.sh.
-If instead of the **_csuser_** account you would like to use an account with a name related to your project, institution, etc., you can follow the
-steps below to create a new AMI from which you will create instances with your new user account (see details in the section _Configure an
-Instance to Become AMI_ [**?** ] in the tutorial):
+The **_csuser_** account is only available on instances created from a Cloud-SPAN AMI — "cs" in **_csuser_** stands for Cloud-SPAN project [ 19 , 20 ]; the Data Carpentry AMI uses the **_dcuser_** account for workshop participants.
+
+The **_ubuntu_** account is available on instances created from any AWS Linux Ubuntu AMI, and is the **only account** that is **enabled to be logged in** when an instance runs for the first time. This enabling is performed by the **AWS service** that launches instances. When an instance boots for the first time, that service **adds** the **public key** part of the login key created to access the instance to **the file** `/home/ubuntu/.ssh/authorized_keys` --- thereafter the **private key** part of the login key can be used with **ssh** as shown above [ 21 ] to access the **_ubuntu_** account. The last step in creating instances, that is, **configuring instances** , enables the **_csuser_** account in each instance to be logged in by copying that file to the **_csuser_** account in/home/csuser/.ssh/authorized_keys. The copy is made through running a Bash script in the **_ubuntu_** account that is remotely invoked by the script `aws_instances_configure.sh`.
+
+If instead of the **_csuser_** account you would like to use an account with a name related to your project, institution, etc., you can follow the steps below to create a new AMI from which you will create instances with your new user account (see details in the section [Configure an Instance to Become AMI]() in the tutorial):
 
 - create an instance using the Cloud-SPAN (CS) Genomics AMI and login as the **_ubuntu_** user.
 - create and initialise your new user account (as described in the tutorial)
@@ -210,6 +191,12 @@ how to modify these scripts to install other applications and to remove the ones
 increase the size of secondary storage and the file system up to 2 Terabytes.
 Figure 2 shows an schematic of the scripts environment. We have described the left and right elements in that figure: the use of the
 scripts and the use of instances created with the scripts. How the scripts manage the relevant AWS services is described below.
+
+![Figure 3.](./figs/fig03-scripts-aws-infrastructure-n-users.png)
+
+
+**Figure 2.** The scripts environment: the admin user of the scripts (on the left), the AWS service infrastructure used when domain names to access instances are managed, and a workshop participant accessing **instance01** using **_ssh_** with the respective private login key part. The Route 53 AWS service is not used when domain names are not managed.
+
 
 ## The Scripts Design and Implementation
 

@@ -19,11 +19,22 @@ This README file provides an overview of these topics:
 
 3. **[Running the Scripts](#3-running-the-scripts)**
 
-4.
+4. **[Using Instances and Customising AMIs](#4-using-instances-and-customising-amis)**
+
+5. **[Customising the Login Account of Workshop Participants](#5-customising-the-login-account-of-workshop-participants)**
+
+6. **[The Scripts design and implementation](#6-the-scripts-design-and-implementation)**
+
+7. **[Validating the target Workshop Environment](#7-validating-the-target-workshop-environment)**
+
+8. **[Overview of the Online Tutorial](#8-overview-of-the-online-tutorial)**
+
+9. **[Conclusions](#9-conclusions)**
+
+10. **[Acknowledgements](#acknowledgements)**
 
 
 ## 1. The Scripts organisation
-
 
 The scripts are listed below. The scripts "`csinstances_*.sh`" are to be run  by the person in charge of managing instances for workshops. The scripts "`aws_*.sh`" are invoked by the scripts `csinstances_create.sh` or `csinstances_delete.sh` to either create or delete instances and related resources: login keys, IP addresses, and domain names (if managed). The  script `colours_utils_functions.sh` provides text colouring functions and utility functions that validate the invocation and results of the other scripts.
 
@@ -102,14 +113,11 @@ $ csinstances_create.sh courses/instances-management/inputs/instancesNames.txt
 
 Creating instances involves 5 or 4 steps depending on whether domain names to access instances are to be managed or not:
 
-- ( **1** ) validating the contents of the scripts configuration files ( **_instancesNames.txt_** passed as parameter, **tags.txt** if found, and **re-**
-    **sourcesIDs.txt** ) as described above and shown in Figure 1. **If no problem is found** in these files, the **option to continue** with the
-    **configuration detected** , regarding managing or not managing domain names to access instances, **is displayed** for the user to confirm
-    or cancel the run. **If there is a problem with the files** , messages (not shown) are displayed that point out the specific problem/s in each
-    file and the run is aborted.
-    In Figure 1, the configuration detected corresponds to managing domain names to access instances, that is,hostZoneandhostZoneId
-    and valid values were specified and found in the **resourcesIDs.txt** file and were validated.
-    IfhostZoneandhostZoneIdare **not** specified, the **option to continue** looks like this:
+( **1** ) validating the contents of the scripts configuration files ( **_instancesNames.txt_** passed as parameter, **tags.txt** if found, and **resourcesIDs.txt** ) as described above and shown in Figure 1. **If no problem is found** in these files, the **option to continue** with the **configuration detected** , regarding managing or not managing domain names to access instances, **is displayed** for the user to confirm or cancel the run. **If there is a problem with the files** , messages (not shown) are displayed that point out the specific problem/s in each file and the run is aborted.
+
+In Figure 1, the configuration detected corresponds to managing domain names to access instances, that is,`hostZone` and `hostZoneId` and valid values were specified and found in the **resourcesIDs.txt** file and were validated.
+    
+If `hostZone` and `hostZoneId` are **not** specified, the **option to continue** looks like this:
 
 ```
 --> NO base domain name was FOUND.
@@ -118,14 +126,13 @@ by AWS, which look like this: 34.245.22.106 or ec2-34-245-22-106.eu-west-1.compu
 
 Would you like to continue (y/n)?:
 ```
-- ( **2** ) creating login keys.
-- ( **3** ) creating instances, each configured to use one of the login keys created in the previous step.
-- ( **4** ) creating instances domain names as mapped to the respective instance IP addresses (AWS randomly allocates IP addresses to
-    instances when instances are launched for the first time or started after having been stopped) — **THIS STEP is only run if** hostZoneand
-    hostZoneIdand valid values were specified in the **resourcesIDs.txt** file.
-- ( **5** ) configuring each instance both **to enable** the **_csuser_** account (used by workshop participants) to be logged in and **to change** the
-    instance host name to the **instance name** (the default host name is the instance IP address) **regardless of whether domain names are**
-    **to be managed or not**. This step is not shown in the figure.
+( **2** ) creating login keys.
+
+( **3** ) creating instances, each configured to use one of the login keys created in the previous step.
+
+( **4** ) creating instances domain names as mapped to the respective instance IP addresses (AWS randomly allocates IP addresses to instances when instances are launched for the first time or started after having been stopped) — **THIS STEP is only run if** `hostZone` and `hostZoneId` and valid values were specified in the **resourcesIDs.txt** file.
+
+( **5** ) configuring each instance both **to enable** the **_csuser_** account (used by workshop participants) to be logged in and **to change** the instance host name to the **instance name** (the default host name is the instance IP address) **regardless of whether domain names are to be managed or not**. This step is not shown in the figure.
 
 ![Figure 1.](./figs/fig01-scripts-run-validating-config-files.png)
 ![Figure 2.](./figs/fig02-scripts-run-creating-instances.png)
@@ -141,7 +148,7 @@ $ csinstance_start.sh courses/instances-management/inputs/instancesNames.txt
 $ csinstance_delete.sh courses/instances-management/inputs/instancesNames.txt
 ```
 
-#### Using Instances and Customising AMIs
+## 4. Using Instances and Customising AMIs
 
 Each instance has two user accounts: **_csuser_** and **_ubuntu_**. You login to these accounts using the **ssh** program as in the examples below, which
 correspond to how you would login to those accounts on the instances created in the example in Figure 1, wherein the instance names
@@ -160,7 +167,7 @@ Workshop participants use the **_csuser_** account — all ’omics data and mos
 
 The **_ubuntu_** account has **superuser privileges**. We use it to update system software, software analysis tools that need to be installed at system level, etc. We use the **_csuser_** account to update ’omics data and software analysis tools that can be installed at user account level. We update an instance as just outlined in order **to create a new AMI** (virtual machine template) from which to create new updated instances.
 
-#### Login to Instances When Domain Names Are NOT Managed
+### Login to Instances When Domain Names Are NOT Managed
 
 Assuming that **domain names** were **not managed** in the example in Figure 1 (but the instance names specified were those in the example: **instance01** , etc.), you would login to the **_csuser_** and **_ubuntu_** accounts thus:
 
@@ -170,7 +177,7 @@ ssh -i login-key-instance01.pem ubuntu@34.245.22.106      #### the IP address of
 ...
 ```
 
-#### Customising the Login Account of Workshop Participants
+## 5. Customising the Login Account of Workshop Participants
 
 The **_csuser_** account is only available on instances created from a Cloud-SPAN AMI — "cs" in **_csuser_** stands for Cloud-SPAN project [ 19 , 20 ]; the Data Carpentry AMI uses the **_dcuser_** account for workshop participants.
 
@@ -180,8 +187,7 @@ If instead of the **_csuser_** account you would like to use an account with a n
 
 - create an instance using the Cloud-SPAN (CS) Genomics AMI and login as the **_ubuntu_** user.
 - create and initialise your new user account (as described in the tutorial)
-- edit the script/home/ubuntu/bin/usersAuthorizedKeys-activate.shto replace the string **_csuser_** with the name of your new account —
-    this script copies the file/home/ubuntu/.ssh/authorized_keysto the **_csuser_** account.
+- edit the script/home/ubuntu/bin/usersAuthorizedKeys-activate.shto replace the string **_csuser_** with the name of your new account — this script copies the file/home/ubuntu/.ssh/authorized_keysto the **_csuser_** account.
 - delete or edit the file/etc/motd(message of the day) — it contains a screen welcome message that includes the Cloud-SPAN name.
 - create a new AMI from the updated instance.
 
@@ -198,108 +204,59 @@ scripts and the use of instances created with the scripts. How the scripts manag
 **Figure 2.** The scripts environment: the admin user of the scripts (on the left), the AWS service infrastructure used when domain names to access instances are managed, and a workshop participant accessing **instance01** using **_ssh_** with the respective private login key part. The Route 53 AWS service is not used when domain names are not managed.
 
 
-## The Scripts Design and Implementation
+## 6. The Scripts design and implementation
 
-AWS services can be managed using (1) the AWS Console, (2) the AWS CLI (command line interface) program, (3) Software Development
-Kits (SDKs) or libraries with a programming language such as Python, Java, etc., or (4) infrastructure as code (IaC) blueprints. The level of
-automation increases from the AWS Console to IaC blueprints [22].
-The AWS Console is mostly used to open an AWS account, to do one-off configurations, and to browse the overall state of resources used
-by an account. The AWS CLI enables you to manage any AWS service but is complex to use on its own, yet combined with shell scripts is
-probably the fastest way to manage AWS services as shell scripts have been used for decades for such purpose. SDKs are mostly used to
-develop end user applications comprising a **front-end** (mobile or browser-based) user interface and **back-end** cloud-based server/s and
-databases. IaC blueprints are used to manage infrastructures (service architectures) that are complex [ 23 ], that change often because of
-continuous improvements, or that require "zero-downtime deployments" where "changes must be made with live traffic" [ 23 ]. Basically,
-a blueprint of the required infrastructure is written as code in a declarative language specifying “what we want”, as opposed to “how to do
+AWS services can be managed using (1) the AWS Console, (2) the AWS CLI (command line interface) program, (3) Software Development Kits (SDKs) or libraries with a programming language such as Python, Java, etc., or (4) infrastructure as code (IaC) blueprints. The level of automation increases from the AWS Console to IaC blueprints.
 
-
-(^6) | _GigaByte_ , 2020, Vol. 00, No. 0
-what we want” (which is typical of procedural languages). On “running” the blueprint using a software tool such as AWS CloudFormation
-or Terraform, the services making up the infrastructure will be created, configured to some extent, and launched. If later the blueprint is
-updated (say, to delete or add more services), the infrastructure will be updated accordingly when the blueprint is run again. As blueprints
-are simple text files, it is possible to use version control to roll-back to a previous version of the infrastructure.
-The scripts use the AWS CLI to manage instances and related resources. Using Bash scripts and the AWS CLI was a design decision based
-on convenience and feasibility given the time constraints we had when confronted with the task of managing multiple AWS instances.
-We had used the Python AWS SDK little (compared to Bash and the AWS CLI) and had not used IAC before. With hindsight, we believe
-our decision is practical and adequate too. The AWS infrastructure we manage (login keys, instances, IP addresses and domain names) is
-relatively simple and has not changed since we developed the scripts almost three years ago. Also, one of the main goals of the Cloud-SPAN
-project was that our solution to manage AWS instances be shared with others and taught to others, and having used Bash scripting with the
-AWS CLI has made the online tutorial simpler and more readily accessible to more people out of Bash being more widely known and used
-than SDKs, Terraform or similar tools.
-The scripts organisation is straightforward, with most communication between the scripts taking place through shared files. Some
+The scripts use the AWS CLI to manage instances and related resources. The scripts organisation is straightforward, with most communication between the scripts taking place through shared files. Some
 scripts perform a fair amount of pattern matching in preparing AWS service requests, processing results requests and other tasks.
 
-#### The Scripts Execution Flow — Overview
+### The Scripts Execution Flow — Overview
 
-We saw above how to run the scriptscsinstances_create.shandcsinstances_delete.sh: passing the path of the file that contains the
-names of the instances to be created or deleted (along with related resources). Those two scripts do not invoke the AWS CLI directly; they
-only invoke the scripts "aws_*.sh", passing each such script the file path received, as shown in the main code ofcsinstances_create.sh
-below. In the code, the file path is in the script variable$1, ascsinstances_create.shreceives the file path as the first (only) parameter:
+We saw above how to run the scriptscsinstances_create.shandcsinstances_delete.sh: passing the path of the file that contains the names of the instances to be created or deleted (along with related resources). Those two scripts do not invoke the AWS CLI directly; they only invoke the scripts "aws_*.sh", passing each such script the file path received, as shown in the main code of `csinstances_create.sh` below. In the code, the file path is in the script variable$1, ascsinstances_create.shreceives the file path as the first (only) parameter:
 
-check_theScripts_csconfiguration "$1" || { message "$error_msg"; exit 1; }
-aws_loginKeyPair_create.sh "$1" || { message "$error_msg"; exit 1; }
-aws_instances_launch.sh "$1" || { message "$error_msg"; exit 1; }
+```
+check_theScripts_csconfiguration "$1"  || { message "$error_msg"; exit 1; }
+aws_loginKeyPair_create.sh "$1"        || { message "$error_msg"; exit 1; }
+aws_instances_launch.sh "$1"           || { message "$error_msg"; exit 1; }
 
 if [ -f "${1%/*}/.csconfig_DOMAIN_NAMES.txt" ]; then ### %/* gets the inputs directory path
-aws_domainNames_create.sh "$1" || { message "$error_msg"; exit 1; }
+aws_domainNames_create.sh "$1"         || { message "$error_msg"; exit 1; }
 fi
-aws_instances_configure.sh "$1" || { message "$error_msg"; exit 1; }
+aws_instances_configure.sh "$1"        || { message "$error_msg"; exit 1; }
 exit 0
+```
 
-In the code, the functioncheck_theScripts_csconfiguration(which is in the script filecolour_utils_functions.sh) is first invoked to
-validate the contents of the configuration files **_instancesNamesFile.txt_** , **resourcesIDs.txt** , and **tags.txt** if specified. The scripts "aws_*.sh"
-are only invoked if that function or the previous script runs successfuly; otherwisecsinstances_create.shprints an error message and
-aborts execution (exit 1;) — **unsuccessful** runs are discussed below in the section _Validating the Workshop Environment_. The script
-aws_domainNames_create.shis only invoked if the file../inputs/.csconfig_DOMAIN_NAMES.txtexists, which is created if, in validating the
-**resourcesIDs.txt** file, a base domain name and its host zone ID are found and are valid AWS resources within the AWS account being used.
-The code ofcsinstances_delete.shis similar to the code above but instead invokes the scripts that delete AWS resources.
+In the code, the function `check_theScripts_csconfiguration` (which is in the script file `colour_utils_functions.sh`) is first invoked to validate the contents of the configuration files **_instancesNamesFile.txt_** , **resourcesIDs.txt** , and **tags.txt** if specified. The scripts "aws_*.sh" are only invoked if that function or the previous script runs successfuly; otherwisecsinstances_create.shprints an error message and aborts execution (exit 1;) — **unsuccessful** runs are discussed below in the section _Validating the Workshop Environment_. The script `aws_domainNames_create.sh` is only invoked if the file../inputs/.csconfig_DOMAIN_NAMES.txtexists, which is created if, in validating the **resourcesIDs.txt** file, a base domain name and its host zone ID are found and are valid AWS resources within the AWS account being used.
 
-#### Creating and Deleting Instances and Related Resources
+The code of `csinstances_delete.sh` is similar to the code above but instead invokes the scripts that delete AWS resources.
 
-Each "aws_*.sh" script (exceptaws_instances_configure.sh) can create or delete **_one_** or **_multiple_** AWS resources of a single type, for example:
-one or more login keys, or one or more instances, etc. Each script invokes the AWS CLI with a specific AWS service request for each instance
-name specified in the input file received as parameter. Each script makes a list with the instances names in the input file and then loops
-through the list, in each loop invoking the relevant AWS service "for the instance name" in the _current_ loop as outlined next. These are
-some of the AWS services invoked by the "aws_*.sh" scripts:
+### Creating and Deleting Instances and Related Resources
+
+Each "`aws_*.sh`" script (exceptaws_instances_configure.sh) can create or delete **_one_** or **_multiple_** AWS resources of a single type, for example: one or more login keys, or one or more instances, etc. Each script invokes the AWS CLI with a specific AWS service request for each instance name specified in the input file received as parameter. Each script makes a list with the instances names in the input file and then loops
+through the list, in each loop invoking the relevant AWS service "for the instance name" in the _current_ loop as outlined next. These are some of the AWS services invoked by the "`aws_*.sh`" scripts:
 
 ```
-aws ec2 create-key-pair --key-name $loginkey --key-type rsa ... ### invoked by aws_loginKeyPair_create.sh
-aws ec2 run-instances --image-id $resource_image_id ... ### invoked by aws_instances_launch.sh
-aws ec2 delete-key-pair --key-name $loginkey ... ### invoked by aws_loginKeyPair_delete.sh
-aws ec2 terminate-instances --instance-ids $instanceID ... ### invoked by aws_instances_terminate.sh
+aws ec2 create-key-pair --key-name $loginkey --key-type rsa ...   ### invoked by aws_loginKeyPair_create.sh
+aws ec2 run-instances --image-id $resource_image_id ...           ### invoked by aws_instances_launch.sh
+aws ec2 delete-key-pair --key-name $loginkey ...                  ### invoked by aws_loginKeyPair_delete.sh
+aws ec2 terminate-instances --instance-ids $instanceID ...        ### invoked by aws_instances_terminate.sh
 ```
-The AWS CLI program is calledawsonce installed. The first parameter,ec2(elastic compute cloud), is the AWS service being invoked;
-the second parameter,create-key-pair, orrun-instances, etc., is the operation being requested; the following parameters are key-
-value pairs required by the operation. Some values of the key-value pairs are specified as script variables, for example:$login_keyand
-$resource_image_id. Some of these variables are updated within each loop **just before** invoking the AWS CLI, so that each such invocation
+The AWS CLI program is called `aws` once installed. The first parameter,ec2(elastic compute cloud), is the AWS service being invoked; the second parameter,create-key-pair, orrun-instances, etc., is the operation being requested; the following parameters are key-value pairs required by the operation. Some values of the key-value pairs are specified as script variables, for example: `$login_key` and `$resource_image_id`. Some of these variables are updated within each loop **just before** invoking the AWS CLI, so that each such invocation
 uses the values (in those variables) that correspond to the relevant instance name.
 
-#### Scripts Communication
+### Scripts Communication
 
-Each invocation of the AWS CLI returns a result that states whether the AWS service request was successful or not along with other
-information. In the case of a successful request that **_creates_** or **_allocates_** a resource, the result includes the **_resource-id_** assigned by AWS to
-uniquely identify the resource. As resource-id’s are needed to further manage the corresponding resources, for example, to delete them, the
-scripts store the results of each AWS invocation to a file inside the **outputs** directory in the workshop environment (WE) being used. The
-name of each file has, as a sub-string, the instance name used to invoke the AWS service to create the resource. This file naming convention
-enables the other scripts to later recover the resource-id of the resources to delete, stop, etc.
+Each invocation of the AWS CLI returns a result that states whether the AWS service request was successful or not along with other information. In the case of a successful request that **_creates_** or **_allocates_** a resource, the result includes the **_resource-id_** assigned by AWS to uniquely identify the resource. As resource-id’s are needed to further manage the corresponding resources, for example, to delete them, the scripts store the results of each AWS invocation to a file inside the **outputs** directory in the workshop environment (WE) being used. The
+name of each file has, as a sub-string, the instance name used to invoke the AWS service to create the resource. This file naming convention enables the other scripts to later recover the resource-id of the resources to delete, stop, etc.
 
+The names of login key files and domain names are managed similarly, by including the relevant instance name as a sub-string, as shown in the login examples with **ssh** shown earlier.
 
-#### J. Buenabad-Chavez et al. | 7
+### Configuring, Stopping and Starting Instances
 
-The names of login key files and domain names are managed similarly, by including the relevant instance name as a sub-string, as
-shown in the login examples with **ssh** shown earlier.
+The scriptsaws_instances_configure.sh,csinstances_stop.sh, andcsinstances_start.share organised and work similarly to the other "`aws_*.sh`" scripts that create or delete AWS resources. They build a list of instance names and loop through the list in order to invoke the AWS services required to configure, stop, or start each instance in the list. However, these scripts are somewhat more complex than the others, as configuring, stopping and starting instances require different handling depending on whether domain names are managed or not, and these scripts handle both scenarios. The **relevant point to admin users** of the scripts is that **not managing domain names** requires knowing where to find the IP addresses allocated to instances in order to provide them to workshop participants. Each of these IP addresses is saved to a file in the directory **outputs/instances-creation-output** in the WE being used. For example, the contents of this directory after creating 3 instances (instance01, instance02,  instance03) **not managing domain names** would be as shown in this file listing:
 
-#### Configuring, Stopping and Starting Instances
-
-The scriptsaws_instances_configure.sh,csinstances_stop.sh, andcsinstances_start.share organised and work similarly to the other
-"aws_*.sh" scripts that create or delete AWS resources. They build a list of instance names and loop through the list in order to invoke the
-AWS services required to configure, stop, or start each instance in the list.
-However, these scripts are somewhat more complex than the others, as configuring, stopping and starting instances require different
-handling depending on whether domain names are managed or not, and these scripts handle both scenarios.
-The **relevant point to admin users** of the scripts is that **not managing domain names** requires knowing where to find the IP addresses
-allocated to instances in order to provide them to workshop participants. Each of these IP addresses is saved to a file in the directory
-**outputs/instances-creation-output** in the WE being used. For example, the contents of this directory after creating 3 instances (instance01,
-instance02, instance03) **not managing domain names** would be as shown in this file listing:
-
+```
 csuser@csadmin-instance:~
 $ ls courses/instances-management/outputs/instances-creation-output/
 instance01-ip-address.txt instance02-ip-address.txt instance03-ip-address.txt
@@ -307,73 +264,51 @@ instance01.txt instance02.txt instance03.txt
 
 ```
 The contents of the files "instance*-ip-address.txt" is just the instances IP addresses:
+
 ```
 csuser@csadmin-instance:~
 $ cat courses/instances-management/outputs/instances-creation-output/instance*-ip-address.txt
 3.252.164.
 34.242.5.
 3.249.248.
+```
 
-The files "instance??.txt" are created by the scriptaws_instances_launch.sh; the files "instance*-ip-address.txt" are created
-by the scriptaws_instances_configure.sh. This is because an instance public IP address is **not available** in the results of invoking
-aws_instances_launch.sh(that is, in the files "instance??.txt"), but is available until each instance is actually running, a condition
-that the scriptaws_instances_configure.shwaits for and detects in order to recover each instance IP address to start configuring the
-instance, and finally save the IP address to the file _instanceName_ -ip-address.txt.
-If instances are stopped and eventually started through runningcsinstances_stop.shandcsinstances_start.sh, the IP address of each
-instance will change because AWS randomly allocates IP addresses when instances are launched for the first time or when they are started
-after having been stopped. Therefore,csinstances_start.shoverwrites the contents of the files _instanceNames_ *-ip-address.txtwith the
-newly allocated IP addresses.
-By the way, the admin user of the scripts does not need to use IP addresses to login to the respective instances (only workshop participants
-need to use IP addresses if domain names are not managed). The admin user can instead use the scriptlginstance.shproviding the path of
-the instance login key file and the user account to login ( **_csuser_** or **_ubuntu_** ):
+The files "instance??.txt" are created by the scriptaws_instances_launch.sh; the files "instance*`-ip-address.txt`" are created by the script `aws_instances_configure.sh`. This is because an instance public IP address is **not available** in the results of invoking `aws_instances_launch.sh` (that is, in the files "instance??.txt"), but is available until each instance is actually running, a condition that the scriptaws_instances_configure.shwaits for and detects in order to recover each instance IP address to start configuring the instance, and finally save the IP address to the file "*instanceName*`-ip-address.txt`".
 
+If instances are stopped and eventually started through runningcsinstances_stop.shandcsinstances_start.sh, the IP address of each instance will change because AWS randomly allocates IP addresses when instances are launched for the first time or when they are started after having been stopped. Therefore,csinstances_start.shoverwrites the contents of the files "*instanceNames*`-ip-address.txt`" with the newly allocated IP addresses.
+
+By the way, the admin user of the scripts does not need to use IP addresses to login to the respective instances (only workshop participants need to use IP addresses if domain names are not managed). The admin user can instead use the script `lginstance.sh` providing the path of the instance login key file and the user account to login 
+(**_csuser_** or **_ubuntu_**):
+
+```
 csuser@csadmin-instance:~
 $ lginstance.sh courses/instances-management/outputs/login-keys/login-key-instance01.pem csuser
-logging you thus: ### this and the next line are displayed by lginstance.sh
+    logging you thus:                               ### this and the next line are displayed by lginstance.sh
 ssh -i courses/instances-management/outputs/login-keys/login-key-instance01.pem csuser@3.253.59.
-... ### instance welcome message
+...                                                 ### instance welcome message
 csuser@instance01:~ ### instance prompt
 $
+```
 
-Note that that long command is rather easy to enter using the **Tab** key for the shell to complete the name of the scriptlginstance.sh,
-the names of the intermediate directories and the name of the login key .pem file. Note also that, as mentioned above, the host name of an
-instance is the instance name and not its IP address, regardless of whether domain names are managed or not. These two points will help
-troubleshooting if domain names are not managed.
+Note that that long command is rather easy to enter using the **Tab** key for the shell to complete the name of the script `lginstance.sh`, the names of the intermediate directories and the name of the login key .pem file. Note also that, as mentioned above, the host name of an instance is the instance name and not its IP address, regardless of whether domain names are managed or not. These two points will help troubleshooting if domain names are not managed.
 
-#### Validating the Target Workshop Environment
+## 7. Validating the target Workshop Environment
 
-We have already discussed above most of the validating of the contents of the scripts configuration files: **_instancesNames.txt_** , **tags.txt** (if
-specified), and **resourcesIDs.txt**. The following points will help understand better how the scripts work.
-The scripts configuration files are all validated **only** the first time any of the scripts is run against a WE; thereafter only the file
-**_instancesNames.txt_** is validated (below is outlined why and how you may want to handle multiple **_instancesNames.txt_** files in the same
-WE). Specifically, once it is determined, validated, and confirmed (by the user of the scripts) whether **domain names** **_are to be managed_** or
-**_not_** , either the fileinputs/.csconfig_DOMAIN_NAMES.txtor the fileinputs/.csconfig_NO_DOMAIN_NAMES.txtis created in the WE being used.
-These files are empty. It is only their existence that is used to drive the execution of the scripts accordingly.
-Recall that, in the file **resourcesIDs.txt** , the key wordsubnetIdand its value are optional and that if they are not specified, the scripts
-will try to obtain a subnetID from the AWS account being used. As mentioned above, we have successfully tested the scripts to obtain and
-use a **subnetID** running the scripts with a **personal** AWS account and with an **institutional** AWS account. Our personal account uses the
-**default** subnets allocated by AWS. Our institutional account is configured not to use the default subnets but other subnets configured by the
-Information Technology (IT) Department at our institution. If the scripts cannot obtain asubnetID, they will display a message telling you
+We have already discussed above most of the validating of the contents of the scripts configuration files: **_instancesNames.txt_** , **tags.txt** (if specified), and **resourcesIDs.txt**. The following points will help understand better how the scripts work. 
 
+The scripts configuration files are all validated **only** the first time any of the scripts is run against a WE; thereafter only the file **_instancesNames.txt_** is validated (below is outlined why and how you may want to handle multiple **_instancesNames.txt_** files in the same WE). Specifically, once it is determined, validated, and confirmed (by the user of the scripts) whether **domain names** **_are to be managed_** or **_not_** , either the file `inputs/.csconfig_DOMAIN_NAMES.txt` or the file `inputs/.csconfig_NO_DOMAIN_NAMES.txt` is created in the WE being used. These files are empty. It is only their existence that is used to drive the execution of the scripts accordingly.
 
-(^8) | _GigaByte_ , 2020, Vol. 00, No. 0
-to search for **vpc** (virtual private cloud) in the AWS Console (in the search box at the top), then click on **subnets** on the left menu. Copy one
-of thesubnetIDsdisplayed and paste in the **resourcesIDs.txt** file. If nosubnetIDis displayed in the AWS Console, you need to contact your
-IT department.
-In addition to the validating already discussed, the scripts follow an ALL or NOTHING policy in managing resources, as follows. When
-creating, deleting, stopping, starting, or configuring instances or related resources, any such operation must be possible for **_all_** the instances
-(or resources implicitly) specified in the file " _instanceNamesFile.txt_ " passed to the scripts. If there is a problem the scripts cancel their
-operation. The policy is implemented by checking whether any of the specified instances/resources **exists** already, that is, whether any
-of the files containing the AWS resource-id of the specified instances/resources **exists** in the **outputs** directory of the target workshop
-environment. No such file should exist when creating instances/resources. Conversely, all relevant files should exist when deleting
-instances/resources, or stopping, starting or configuring instances.
-The policy was implemented to **avoid overwriting** the files with AWS resource-id’s accidentally, as when this happened the corresponding
-AWS resources had to be deleted manually using the AWS Console.
-Note that you can manage multiple " _instanceNamesFiles.txt_ " in the **inputs** directory of any workshop environment. We do so to handle
-late registrations and cancellations to our workshops. The section _Unforeseen Instance Management_ [ 24 ] in the tutorial describes our
-approach to naming multiple " _instanceNamesFiles.txt_ " so we can easily track all the scripts runs performed on a workshop environment.
+Recall that, in the file **resourcesIDs.txt** , the key word `subnetId` and its value are optional and that if they are not specified, the scripts will try to obtain a subnetID from the AWS account being used. As mentioned above, we have successfully tested the scripts to obtain and use a **subnetID** running the scripts with a **personal** AWS account and with an **institutional** AWS account. Our personal account uses the **default** subnets allocated by AWS. Our institutional account is configured not to use the default subnets but other subnets configured by the
+Information Technology (IT) Department at our institution. If the scripts cannot obtain a `subnetID`, they will display a message telling you to search for **vpc** (virtual private cloud) in the AWS Console (in the search box at the top), then click on **subnets** on the left menu. Copy one
+of thesubnetIDsdisplayed and paste in the **resourcesIDs.txt** file. If nosubnetIDis displayed in the AWS Console, you need to contact your IT department.
 
-#### Overview of the Online Tutorial
+In addition to the validating already discussed, the scripts follow an ALL or NOTHING policy in managing resources, as follows. When creating, deleting, stopping, starting, or configuring instances or related resources, any such operation must be possible for **_all_** the instances (or resources implicitly) specified in the file " _instanceNamesFile.txt_ " passed to the scripts. If there is a problem the scripts cancel their operation. The policy is implemented by checking whether any of the specified instances/resources **exists** already, that is, whether any of the files containing the AWS resource-id of the specified instances/resources **exists** in the **outputs** directory of the target workshop environment. No such file should exist when creating instances/resources. Conversely, all relevant files should exist when deleting instances/resources, or stopping, starting or configuring instances.
+
+The policy was implemented to **avoid overwriting** the files with AWS resource-id’s accidentally, as when this happened the corresponding AWS resources had to be deleted manually using the AWS Console.
+
+Note that you can manage multiple " _instanceNamesFiles.txt_ " in the **inputs** directory of any workshop environment. We do so to handle late registrations and cancellations to our workshops. The section _Unforeseen Instance Management_ [ 24 ] in the tutorial describes our approach to naming multiple "_instanceNamesFiles.txt_" so we can easily track all the scripts runs performed on a workshop environment.
+
+## 8. Overview of the Online Tutorial
 
 How to configure and use the scripts is described in detail in the tutorial _Automated Management of AWS Instances_ [ 13 ] which covers these
 main topics:
@@ -387,77 +322,21 @@ main topics:
 - how to create, manage and configure Amazon Machine Images (AMIs) which serve as templates to create AWS instances.
 - the organisation and workings of the scripts.
 
-## Conclusions
+## 9. Conclusions
 
-We have presented a set of scripts that make it easy and convenient to manage AWS instances for training delivery. Once an AWS account and
-a _terminal_ environment have been configured, only two or three files need to be configured to create and manage instances for a workshop.
-Yet most of the time only the file **_instancesNames.txt_** needs to be configured with the names of the instances to manage. The file **tags.txt** is
-optional; if specified, it has to be configured only once and we copy it for all our workshops. Similarly, the file **resourcesIDs.txt** needs to be
-configured only once for all the workshops that use instances created with the same AMI template and the same instance type (number of
-processors, memory size, etc.). The configuration of instances can also be managed with AWS _launch templates_ [ 25 , 26 ]: **json** objects that
-specify the AWS resources to use in creating instances. We did not explore this option while designing the scripts. With hindsight, we
-consider our solution based on plain text configuration files much simpler to use for the management of multiple instances that we require.
-Using launch templates with our scripts would involve handling for each launch template a local file with the template resource-id (the
-equivalent to our resourcesIDs.txt file), but also creating and managing the launch templates in the AWS Console or with the AWS CLI.
-Configuring an AWS account and a _terminal_ environment for use with the scripts is somewhat involved for the various technologies
-involved, but it has to be made only once and the online tutorial covers all the details. It should take 2 to 4 hours depending on experience to
-cover the tutorial along with configuring the AWS account and the _terminal_ environment.
-We use the scripts to support delivery of ’omics training, but the scripts will work equally well for AWS Linux Ubuntu instances configured
-for other purposes.
+We have presented a set of scripts that make it easy and convenient to manage AWS instances for training delivery. Once an AWS account and a _terminal_ environment have been configured, only two or three files need to be configured to create and manage instances for a workshop. Yet most of the time only the file **_instancesNames.txt_** needs to be configured with the names of the instances to manage. The file **tags.txt** is
+optional; if specified, it has to be configured only once and we copy it for all our workshops. Similarly, the file **resourcesIDs.txt** needs to be configured only once for all the workshops that use instances created with the same AMI template and the same instance type (number of processors, memory size, etc.). The configuration of instances can also be managed with AWS _launch templates_ [ 25 , 26 ]: **json** objects that specify the AWS resources to use in creating instances. We did not explore this option while designing the scripts. With hindsight, we consider our solution based on plain text configuration files much simpler to use for the management of multiple instances that we require. Using launch templates with our scripts would involve handling for each launch template a local file with the template resource-id (the equivalent to our resourcesIDs.txt file), but also creating and managing the launch templates in the AWS Console or with the AWS CLI.
 
-## Availability of source code and requirements
+Configuring an AWS account and a _terminal_ environment for use with the scripts is somewhat involved for the various technologies involved, but it has to be made only once and the online tutorial covers all the details. It should take 2 to 4 hours depending on experience to cover the tutorial along with configuring the AWS account and the _terminal_ environment.
 
-- Project name: Cloud-SPAN (https://cloud-span.york.ac.uk/—https://github.com/Cloud-SPAN)
-- Project home page (the _Bash scripts_ ):https://github.com/Cloud-SPAN/aws-instances.
-- Operating system(s): Linux, Windows, MacOS.
-- Programming language: Bash Shell.
-- Other requirements: Bash version 5.0 or higher. Windows users must install Git Bash. MacOS users must install or update Bash. The
-    online tutorial provides instructions for Windows and MacOS users to do so [ 14 ]. The AWS CLI must be installed and configured. The
-    online tutorial provides instructions for Linux, Windows and MacOS users to install and configure the AWS CLI [27].
-- License: MIT Licence.
+We use the scripts to support delivery of ’omics training, but the scripts will work equally well for AWS Linux Ubuntu instances configured for other purposes.
 
-## Availability of Test Data
-
-Not applicable.
-
-
-#### J. Buenabad-Chavez et al. | 9
-
-## Declarations
-
-#### List of abbreviations
-
-**AMI** : Amazon Machine Image; **AWS** : Amazon Web Services; **CLI** : Command Line Interface; **CS** : Cloud-SPAN (project); **DC** : Data Carpentry;
-**GB** : Gigabyte; **GUI** : Graphical User Interface; **IaC** : Infrastructure as Code; **IP** : Internet Protocol; **SDK** : Software Development Kit; **ssh** : Secure
-SHell; **WE** : Workshop Environment;
-
-#### Ethical Approval (optional)
-
-Not applicable.
-
-#### Competing Interests
-
-The author(s) declare that they have no competing interests.
-
-#### Funding
-
-This work was supported by UK Research and Innovation (UKRI) scholars award, project reference MR/V038680/1; and the Natural
-Environment Research Council (NERC), project references: NE/X006999/1 and NE/Y003527/1.
-
-#### Author’s Contributions
-
-- JBC: Conceptualization, Investigation, Methodology, Software, Validation, Writing – original draft, Writing – review & editing.
-- EG: Writing – review & editing.
-- JPJC: Conceptualization, Funding acquisition.
-- ER: Conceptualization, Funding acquisition, Project administration, Supervision, Resources, Writing – review & editing.
 
 ## Acknowledgements
 
-The authors are pleased to acknowledge the invaluable feedback from Dr. Emma J. Barnes^1 , Richard Fuller^2 , Stuart Lacy^3 , Killian Murphy^2 ,
-and Rosa Vicente^4. Their participation in the first workshop on how to use the scripts and their feedback were **_key_** for the scripts, the online
-tutorial, and the workshops organisation to be much improved.
-The authors are deeply grateful to the reviewers for their thorough revision of the paper and the detailed comments to improve the
-scripts and the documentation. We feel others will more easily benefit from using the scripts thanks to the reviewers’ suggestions.
+The authors are pleased to acknowledge the invaluable feedback from Dr. Emma J. Barnes^1 , Richard Fuller^2 , Stuart Lacy^3 , Killian Murphy^2, and Rosa Vicente^4. Their participation in the first workshop on how to use the scripts and their feedback were **_key_** for the scripts, the online tutorial, and the workshops organisation to be much improved.
+
+The authors are deeply grateful to the reviewers for their thorough revision of the paper and the detailed comments to improve the scripts and the documentation. We feel others will more easily benefit from using the scripts thanks to the reviewers’ suggestions.
 
 ## References
 
@@ -499,10 +378,8 @@ doi/abs/10.1002/bmb.21646.
 12. Posit Software, PBC (formerly RStudio, PBC), posit cloud;. Accessed: 2024-07-24.https://posit.cloud/.
 13.Cloud-SPAN Project, Automated Management of AWS Instances (2023);. Accessed: 2023-10-25.https://cloud-span.github.io/
 cloud-admin-guide-v2q.
-14.Cloud-SPAN Project, Automated Management of AWS Instances: **Precourse Instructions** (2024);. Accessed: 2024-06-26.https:
-//cloud-span.github.io/cloud-admin-guide-v2q/docs/miscellanea/precourse-instructions.html.
-15.Cloud-SPAN Project, Automated Management of AWS Instances: **Configure an Instance to Become AMI** (2023);. Accessed: 2024-
-07-24.https://cloud-span.github.io/cloud-admin-guide-v2q/docs/lesson02-managing-aws-instances/03-ami-management.html#
+14.Cloud-SPAN Project, Automated Management of AWS Instances: **Precourse Instructions** (2024);. Accessed: 2024-06-26. https://cloud-span.github.io/cloud-admin-guide-v2q/docs/miscellanea/precourse-instructions.html.
+15.Cloud-SPAN Project, Automated Management of AWS Instances: **Configure an Instance to Become AMI** (2023);. Accessed: 2024-07-24. https://cloud-span.github.io/cloud-admin-guide-v2q/docs/lesson02-managing-aws-instances/03-ami-management.html#
 configure-an-instance-to-become-ami.
 16.Cloud-SPAN Project, Automated Management of AWS Instances: **Troubleshooting** (2023);. Accessed: 2024-07-24.https://cloud-span.
 github.io/cloud-admin-guide-v2q/docs/lesson02-managing-aws-instances/02-instances-management.html#troubleshooting.

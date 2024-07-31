@@ -31,8 +31,6 @@ This README file provides an overview of these topics:
 
 9. **[Conclusions](#9-conclusions)**
 
-10. **[Acknowledgements](#acknowledgements)**
-
 
 ## 1. The Scripts organisation
 
@@ -311,7 +309,7 @@ Note that you can manage multiple " _instanceNamesFiles.txt_ " in the **inputs**
 
 ## 8. Overview of the Online Tutorial
 
-How to configure and use the scripts is described in detail in the tutorial [Automated Management of AWS Instances](https://cloud-span.github.io/clo ud-admin-guide-v2q) which covers these main topics:
+How to configure and use the scripts is described in detail in the tutorial [Automated Management of AWS Instances](https://cloud-span.github.io/cloud-admin-guide-v2q) which covers these main topics:
 
 - how to open an AWS account and how to configure it both with programmatic access with the AWS CLI and with a base domain name from which to create instances (sub) domain names.
 - how to configure a **_terminal_** environment with the scripts and the AWS CLI on Linux, MacOS, and Windows (Git Bash), or in the AWS CloudShell, a browser-based Linux Bash _terminal_.
@@ -329,13 +327,3 @@ Configuring an AWS account and a _terminal_ environment for use with the scripts
 We use the scripts to support delivery of ’omics training, but the scripts will work equally well for AWS Linux Ubuntu instances configured for other purposes.
 
 
-## Acknowledgements
-
-The authors are pleased to acknowledge the invaluable feedback from Dr. Emma J. Barnes<sup>1</sup>, Richard Fuller<sup>2</sup>, Stuart Lacy<sup>3</sup>, Killian Murphy<sup>2</sup>, and Rosa Vicente<sup>4</sup>. Their participation in the first workshop on how to use the scripts and their feedback were **_key_** for the scripts, the online tutorial, and the workshops organisation to be much improved.
-
-```
-1 University of York - Information Technology (IT) Services - Research IT.
-2 University of York - IT Services.
-3 University of York - Research Software Engineering Team.
-4 University of York - School of Physics, Engineering and Technology.
-```

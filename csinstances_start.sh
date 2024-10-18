@@ -162,6 +162,9 @@ if [ -f $inputsDir/.csconfig_DOMAIN_NAMES.txt ]; then
 	instance=${instanceFullName%-src*}		### get rid of suffix "-srcAMInn.." if it exists
 	resultsFile=$outputsDirThisRun/$instance.txt
 	
+	### we only need the last occurrence of Success, and therefore we are printing the last result found at the END block
+	instanceDomainName=`awk -F " " '$1 == "Success" {domainName=$4} END {print domainName}' $outputsDir/domain-names-creation-output/domain-name-create-$instance.txt`
+
 	domainNameChangeID=`awk -F " " '$1 == "\"Id\":" {print substr($2, 2, length($2) -3)}' $outputsDirThisRun/$instance.txt`
 	
 	while true 

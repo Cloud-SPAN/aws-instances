@@ -75,4 +75,4 @@ some \"updates can be applied immediately\", run this command:
 sudo apt-get --with-new-pkgs upgrade --yes
 
 You may need to reboot, login again  and run the above command a few times until the system
-message reads \"0 updates can be applied immediately\" - you may want to make a not the command\n"  $logfile
+message reads \"0 updates can be applied immediately\" - please make a note of the command\n"  $logfile
